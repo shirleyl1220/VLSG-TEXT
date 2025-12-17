@@ -1,0 +1,74 @@
+Learning rate: 0.0005
+Epochs: 100
+Log every: 10 steps
+Checkpoints: checkpoints/
+
+======================================================================
+Starting Training
+======================================================================
+
+[WARNING] No text edges in 137a8156-1db5-2cc0-80ff-73ceef09cc7c.json, generating fallback
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([199, 128])
+Edge index: torch.Size([2, 893])
+Edge attr: torch.Size([893, 8])
+Projected edge attr: torch.Size([893, 128])
+GAT output: torch.Size([199, 128])
+Output after norm and activation: torch.Size([199, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([199, 128])
+Edge index: torch.Size([2, 893])
+Edge attr: torch.Size([893, 8])
+Projected edge attr: torch.Size([893, 128])
+GAT output: torch.Size([199, 128])
+Output after norm and activation: torch.Size([199, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([199, 128])
+Edge index: torch.Size([2, 777291])
+Edge attr: torch.Size([777291, 512])
+Projected edge attr: torch.Size([777291, 128])
+GAT output: torch.Size([199, 128])
+Output after norm and activation: torch.Size([199, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([199, 128])
+Edge index: torch.Size([2, 777291])
+Edge attr: torch.Size([777291, 512])
+Projected edge attr: torch.Size([777291, 128])
+GAT output: torch.Size([199, 128])
+Output after norm and activation: torch.Size([199, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([210, 128])
+Edge index: torch.Size([2, 943])
+Edge attr: torch.Size([943, 8])
+Projected edge attr: torch.Size([943, 128])
+GAT output: torch.Size([210, 128])
+Output after norm and activation: torch.Size([210, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([210, 128])
+Edge index: torch.Size([2, 943])
+Edge attr: torch.Size([943, 8])
+Projected edge attr: torch.Size([943, 128])
+GAT output: torch.Size([210, 128])
+Output after norm and activation: torch.Size([210, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([210, 128])
+Edge index: torch.Size([2, 1258073])
+Edge attr: torch.Size([1258073, 512])
+Projected edge attr: torch.Size([1258073, 128])
+GAT output: torch.Size([210, 128])
+Output after norm and activation: torch.Size([210, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([210, 128])
+Edge index: torch.Size([2, 1258073])
+Edge attr: torch.Size([1258073, 512])
+Projected edge attr: torch.Size([1258073, 128])
+GAT output: torch.Size([210, 128])
+Output after norm and activation: torch.Size([210, 128])

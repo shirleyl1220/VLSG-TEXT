@@ -1,0 +1,48 @@
+
+=== ENCODE SCENE DEBUG ===
+Node feats: torch.Size([115, 518])
+Geom edges: torch.Size([2, 487])
+Geom attr: torch.Size([487, 8])
+Text edges: torch.Size([2, 487])
+Text attr: torch.Size([487, 1])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([115, 128])
+Edge index: torch.Size([2, 487])
+Edge attr: torch.Size([487, 8])
+Projected edge attr: torch.Size([487, 128])
+GAT output: torch.Size([115, 128])
+Output after norm and activation: torch.Size([115, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([115, 128])
+Edge index: torch.Size([2, 487])
+Edge attr: torch.Size([487, 8])
+Projected edge attr: torch.Size([487, 128])
+GAT output: torch.Size([115, 128])
+Output after norm and activation: torch.Size([115, 128])
+Relation IDs: tensor([6, 2, 8, 3, 3, 8, 8, 7, 3, 3])
+Unique relation IDs: tensor([1, 2, 3, 4, 5, 6, 7, 8])
+CLIP relation embedding: tensor([[ 0.0090,  0.0048,  0.0053,  ..., -0.0125, -0.0288,  0.0106],
+        [-0.0169, -0.0089, -0.0143,  ..., -0.0191, -0.0105, -0.0009],
+        [-0.0003,  0.0164, -0.0206,  ..., -0.0538, -0.0114,  0.0142],
+        [-0.0195, -0.0101,  0.0104,  ..., -0.0537, -0.0115,  0.0295],
+        [-0.0195, -0.0101,  0.0104,  ..., -0.0537, -0.0115,  0.0295]])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([115, 128])
+Edge index: torch.Size([2, 487])
+Edge attr: torch.Size([487, 512])
+Projected edge attr: torch.Size([487, 128])
+GAT output: torch.Size([115, 128])
+Output after norm and activation: torch.Size([115, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([115, 128])
+Edge index: torch.Size([2, 487])
+Edge attr: torch.Size([487, 512])
+Projected edge attr: torch.Size([487, 128])
+GAT output: torch.Size([115, 128])
+Output after norm and activation: torch.Size([115, 128])
+G geom: torch.Size([115, 128]) mean: 1.0288968086242676 std: 1.5056788921356201
+T text: torch.Size([115, 128]) mean: 1.98287832736969 std: 2.4732346534729004
