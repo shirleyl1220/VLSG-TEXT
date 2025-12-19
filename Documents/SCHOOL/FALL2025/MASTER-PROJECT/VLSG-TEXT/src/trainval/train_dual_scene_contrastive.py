@@ -249,6 +249,9 @@ def train(args):
     # Build dummy CLIP matrix for relations (we're not really using it)
     num_relations = len(dataset.rel2id)
     dummy_clip_matrix = torch.randn(num_relations, 512) * 0.1  # Small random
+    num_relations = max(dataset.rel2id.values()) + 1  # Use max ID + 1
+    dummy_clip_matrix = torch.randn(num_relations, 512) * 0.1
+    print(f"Created embedding for {num_relations} relations (IDs 0-{num_relations-1})")
     
     model = DualSceneAligner(
         node_input_dim=518,
