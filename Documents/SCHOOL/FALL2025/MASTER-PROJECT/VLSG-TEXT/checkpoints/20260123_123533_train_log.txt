@@ -1,0 +1,3313 @@
+Learning rate: 0.0001
+Epochs: 1
+Log every: 10 steps
+Checkpoints: checkpoints/
+
+======================================================================
+Starting Training
+======================================================================
+
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([60, 128])
+Edge index: torch.Size([2, 270])
+Edge attr: torch.Size([270, 8])
+Projected edge attr: torch.Size([270, 128])
+GAT output: torch.Size([60, 128])
+Output after norm and activation: torch.Size([60, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([60, 128])
+Edge index: torch.Size([2, 270])
+Edge attr: torch.Size([270, 8])
+Projected edge attr: torch.Size([270, 128])
+GAT output: torch.Size([60, 128])
+Output after norm and activation: torch.Size([60, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([60, 128])
+Edge index: torch.Size([2, 336])
+Edge attr: torch.Size([336, 512])
+Projected edge attr: torch.Size([336, 128])
+GAT output: torch.Size([60, 128])
+Output after norm and activation: torch.Size([60, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([60, 128])
+Edge index: torch.Size([2, 336])
+Edge attr: torch.Size([336, 512])
+Projected edge attr: torch.Size([336, 128])
+GAT output: torch.Size([60, 128])
+Output after norm and activation: torch.Size([60, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([57, 128])
+Edge index: torch.Size([2, 256])
+Edge attr: torch.Size([256, 8])
+Projected edge attr: torch.Size([256, 128])
+GAT output: torch.Size([57, 128])
+Output after norm and activation: torch.Size([57, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([57, 128])
+Edge index: torch.Size([2, 256])
+Edge attr: torch.Size([256, 8])
+Projected edge attr: torch.Size([256, 128])
+GAT output: torch.Size([57, 128])
+Output after norm and activation: torch.Size([57, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([57, 128])
+Edge index: torch.Size([2, 322])
+Edge attr: torch.Size([322, 512])
+Projected edge attr: torch.Size([322, 128])
+GAT output: torch.Size([57, 128])
+Output after norm and activation: torch.Size([57, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([57, 128])
+Edge index: torch.Size([2, 322])
+Edge attr: torch.Size([322, 512])
+Projected edge attr: torch.Size([322, 128])
+GAT output: torch.Size([57, 128])
+Output after norm and activation: torch.Size([57, 128])
+
+[Epoch 0] Step 0
+  Total Loss       = 83.2960
+  InfoNCE          = 0.3796
+  Variance Loss    = 0.8290
+  Covariance Loss  = 0.0021
+  ---
+  Var(src, ref)    = 0.0382, 0.0531
+  STD(src, ref)    = 0.1566, 0.1839
+  Norm(src, ref)   = 6.3767, 6.0615
+  Cov(src, ref)    = 0.0245, 0.0338
+  Cosine Sim       = 0.7854
+  Grad Norm        = 158.7695
+  LR               = 0.000020
+  ⚠️  Low variance → Severe collapse!
+  💾 Saved best model (loss=83.2960)
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([65, 128])
+Edge index: torch.Size([2, 292])
+Edge attr: torch.Size([292, 8])
+Projected edge attr: torch.Size([292, 128])
+GAT output: torch.Size([65, 128])
+Output after norm and activation: torch.Size([65, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([65, 128])
+Edge index: torch.Size([2, 292])
+Edge attr: torch.Size([292, 8])
+Projected edge attr: torch.Size([292, 128])
+GAT output: torch.Size([65, 128])
+Output after norm and activation: torch.Size([65, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([65, 128])
+Edge index: torch.Size([2, 349])
+Edge attr: torch.Size([349, 512])
+Projected edge attr: torch.Size([349, 128])
+GAT output: torch.Size([65, 128])
+Output after norm and activation: torch.Size([65, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([65, 128])
+Edge index: torch.Size([2, 349])
+Edge attr: torch.Size([349, 512])
+Projected edge attr: torch.Size([349, 128])
+GAT output: torch.Size([65, 128])
+Output after norm and activation: torch.Size([65, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([56, 128])
+Edge index: torch.Size([2, 251])
+Edge attr: torch.Size([251, 8])
+Projected edge attr: torch.Size([251, 128])
+GAT output: torch.Size([56, 128])
+Output after norm and activation: torch.Size([56, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([56, 128])
+Edge index: torch.Size([2, 251])
+Edge attr: torch.Size([251, 8])
+Projected edge attr: torch.Size([251, 128])
+GAT output: torch.Size([56, 128])
+Output after norm and activation: torch.Size([56, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([56, 128])
+Edge index: torch.Size([2, 311])
+Edge attr: torch.Size([311, 512])
+Projected edge attr: torch.Size([311, 128])
+GAT output: torch.Size([56, 128])
+Output after norm and activation: torch.Size([56, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([56, 128])
+Edge index: torch.Size([2, 311])
+Edge attr: torch.Size([311, 512])
+Projected edge attr: torch.Size([311, 128])
+GAT output: torch.Size([56, 128])
+Output after norm and activation: torch.Size([56, 128])
+  💾 Saved best model (loss=82.5564)
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([46, 128])
+Edge index: torch.Size([2, 207])
+Edge attr: torch.Size([207, 8])
+Projected edge attr: torch.Size([207, 128])
+GAT output: torch.Size([46, 128])
+Output after norm and activation: torch.Size([46, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([46, 128])
+Edge index: torch.Size([2, 207])
+Edge attr: torch.Size([207, 8])
+Projected edge attr: torch.Size([207, 128])
+GAT output: torch.Size([46, 128])
+Output after norm and activation: torch.Size([46, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([46, 128])
+Edge index: torch.Size([2, 257])
+Edge attr: torch.Size([257, 512])
+Projected edge attr: torch.Size([257, 128])
+GAT output: torch.Size([46, 128])
+Output after norm and activation: torch.Size([46, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([46, 128])
+Edge index: torch.Size([2, 257])
+Edge attr: torch.Size([257, 512])
+Projected edge attr: torch.Size([257, 128])
+GAT output: torch.Size([46, 128])
+Output after norm and activation: torch.Size([46, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([34, 128])
+Edge index: torch.Size([2, 152])
+Edge attr: torch.Size([152, 8])
+Projected edge attr: torch.Size([152, 128])
+GAT output: torch.Size([34, 128])
+Output after norm and activation: torch.Size([34, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([34, 128])
+Edge index: torch.Size([2, 152])
+Edge attr: torch.Size([152, 8])
+Projected edge attr: torch.Size([152, 128])
+GAT output: torch.Size([34, 128])
+Output after norm and activation: torch.Size([34, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([34, 128])
+Edge index: torch.Size([2, 186])
+Edge attr: torch.Size([186, 512])
+Projected edge attr: torch.Size([186, 128])
+GAT output: torch.Size([34, 128])
+Output after norm and activation: torch.Size([34, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([34, 128])
+Edge index: torch.Size([2, 186])
+Edge attr: torch.Size([186, 512])
+Projected edge attr: torch.Size([186, 128])
+GAT output: torch.Size([34, 128])
+Output after norm and activation: torch.Size([34, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([28, 128])
+Edge index: torch.Size([2, 125])
+Edge attr: torch.Size([125, 8])
+Projected edge attr: torch.Size([125, 128])
+GAT output: torch.Size([28, 128])
+Output after norm and activation: torch.Size([28, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([28, 128])
+Edge index: torch.Size([2, 125])
+Edge attr: torch.Size([125, 8])
+Projected edge attr: torch.Size([125, 128])
+GAT output: torch.Size([28, 128])
+Output after norm and activation: torch.Size([28, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([28, 128])
+Edge index: torch.Size([2, 149])
+Edge attr: torch.Size([149, 512])
+Projected edge attr: torch.Size([149, 128])
+GAT output: torch.Size([28, 128])
+Output after norm and activation: torch.Size([28, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([28, 128])
+Edge index: torch.Size([2, 149])
+Edge attr: torch.Size([149, 512])
+Projected edge attr: torch.Size([149, 128])
+GAT output: torch.Size([28, 128])
+Output after norm and activation: torch.Size([28, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([33, 128])
+Edge index: torch.Size([2, 148])
+Edge attr: torch.Size([148, 8])
+Projected edge attr: torch.Size([148, 128])
+GAT output: torch.Size([33, 128])
+Output after norm and activation: torch.Size([33, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([33, 128])
+Edge index: torch.Size([2, 148])
+Edge attr: torch.Size([148, 8])
+Projected edge attr: torch.Size([148, 128])
+GAT output: torch.Size([33, 128])
+Output after norm and activation: torch.Size([33, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([33, 128])
+Edge index: torch.Size([2, 179])
+Edge attr: torch.Size([179, 512])
+Projected edge attr: torch.Size([179, 128])
+GAT output: torch.Size([33, 128])
+Output after norm and activation: torch.Size([33, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([33, 128])
+Edge index: torch.Size([2, 179])
+Edge attr: torch.Size([179, 512])
+Projected edge attr: torch.Size([179, 128])
+GAT output: torch.Size([33, 128])
+Output after norm and activation: torch.Size([33, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([28, 128])
+Edge index: torch.Size([2, 126])
+Edge attr: torch.Size([126, 8])
+Projected edge attr: torch.Size([126, 128])
+GAT output: torch.Size([28, 128])
+Output after norm and activation: torch.Size([28, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([28, 128])
+Edge index: torch.Size([2, 126])
+Edge attr: torch.Size([126, 8])
+Projected edge attr: torch.Size([126, 128])
+GAT output: torch.Size([28, 128])
+Output after norm and activation: torch.Size([28, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([28, 128])
+Edge index: torch.Size([2, 154])
+Edge attr: torch.Size([154, 512])
+Projected edge attr: torch.Size([154, 128])
+GAT output: torch.Size([28, 128])
+Output after norm and activation: torch.Size([28, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([28, 128])
+Edge index: torch.Size([2, 154])
+Edge attr: torch.Size([154, 512])
+Projected edge attr: torch.Size([154, 128])
+GAT output: torch.Size([28, 128])
+Output after norm and activation: torch.Size([28, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([28, 128])
+Edge index: torch.Size([2, 125])
+Edge attr: torch.Size([125, 8])
+Projected edge attr: torch.Size([125, 128])
+GAT output: torch.Size([28, 128])
+Output after norm and activation: torch.Size([28, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([28, 128])
+Edge index: torch.Size([2, 125])
+Edge attr: torch.Size([125, 8])
+Projected edge attr: torch.Size([125, 128])
+GAT output: torch.Size([28, 128])
+Output after norm and activation: torch.Size([28, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([28, 128])
+Edge index: torch.Size([2, 151])
+Edge attr: torch.Size([151, 512])
+Projected edge attr: torch.Size([151, 128])
+GAT output: torch.Size([28, 128])
+Output after norm and activation: torch.Size([28, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([28, 128])
+Edge index: torch.Size([2, 151])
+Edge attr: torch.Size([151, 512])
+Projected edge attr: torch.Size([151, 128])
+GAT output: torch.Size([28, 128])
+Output after norm and activation: torch.Size([28, 128])
+  💾 Saved best model (loss=80.6024)
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([63, 128])
+Edge index: torch.Size([2, 283])
+Edge attr: torch.Size([283, 8])
+Projected edge attr: torch.Size([283, 128])
+GAT output: torch.Size([63, 128])
+Output after norm and activation: torch.Size([63, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([63, 128])
+Edge index: torch.Size([2, 283])
+Edge attr: torch.Size([283, 8])
+Projected edge attr: torch.Size([283, 128])
+GAT output: torch.Size([63, 128])
+Output after norm and activation: torch.Size([63, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([63, 128])
+Edge index: torch.Size([2, 361])
+Edge attr: torch.Size([361, 512])
+Projected edge attr: torch.Size([361, 128])
+GAT output: torch.Size([63, 128])
+Output after norm and activation: torch.Size([63, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([63, 128])
+Edge index: torch.Size([2, 361])
+Edge attr: torch.Size([361, 512])
+Projected edge attr: torch.Size([361, 128])
+GAT output: torch.Size([63, 128])
+Output after norm and activation: torch.Size([63, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([74, 128])
+Edge index: torch.Size([2, 333])
+Edge attr: torch.Size([333, 8])
+Projected edge attr: torch.Size([333, 128])
+GAT output: torch.Size([74, 128])
+Output after norm and activation: torch.Size([74, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([74, 128])
+Edge index: torch.Size([2, 333])
+Edge attr: torch.Size([333, 8])
+Projected edge attr: torch.Size([333, 128])
+GAT output: torch.Size([74, 128])
+Output after norm and activation: torch.Size([74, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([74, 128])
+Edge index: torch.Size([2, 419])
+Edge attr: torch.Size([419, 512])
+Projected edge attr: torch.Size([419, 128])
+GAT output: torch.Size([74, 128])
+Output after norm and activation: torch.Size([74, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([74, 128])
+Edge index: torch.Size([2, 419])
+Edge attr: torch.Size([419, 512])
+Projected edge attr: torch.Size([419, 128])
+GAT output: torch.Size([74, 128])
+Output after norm and activation: torch.Size([74, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([35, 128])
+Edge index: torch.Size([2, 157])
+Edge attr: torch.Size([157, 8])
+Projected edge attr: torch.Size([157, 128])
+GAT output: torch.Size([35, 128])
+Output after norm and activation: torch.Size([35, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([35, 128])
+Edge index: torch.Size([2, 157])
+Edge attr: torch.Size([157, 8])
+Projected edge attr: torch.Size([157, 128])
+GAT output: torch.Size([35, 128])
+Output after norm and activation: torch.Size([35, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([35, 128])
+Edge index: torch.Size([2, 198])
+Edge attr: torch.Size([198, 512])
+Projected edge attr: torch.Size([198, 128])
+GAT output: torch.Size([35, 128])
+Output after norm and activation: torch.Size([35, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([35, 128])
+Edge index: torch.Size([2, 198])
+Edge attr: torch.Size([198, 512])
+Projected edge attr: torch.Size([198, 128])
+GAT output: torch.Size([35, 128])
+Output after norm and activation: torch.Size([35, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([69, 128])
+Edge index: torch.Size([2, 310])
+Edge attr: torch.Size([310, 8])
+Projected edge attr: torch.Size([310, 128])
+GAT output: torch.Size([69, 128])
+Output after norm and activation: torch.Size([69, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([69, 128])
+Edge index: torch.Size([2, 310])
+Edge attr: torch.Size([310, 8])
+Projected edge attr: torch.Size([310, 128])
+GAT output: torch.Size([69, 128])
+Output after norm and activation: torch.Size([69, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([69, 128])
+Edge index: torch.Size([2, 385])
+Edge attr: torch.Size([385, 512])
+Projected edge attr: torch.Size([385, 128])
+GAT output: torch.Size([69, 128])
+Output after norm and activation: torch.Size([69, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([69, 128])
+Edge index: torch.Size([2, 385])
+Edge attr: torch.Size([385, 512])
+Projected edge attr: torch.Size([385, 128])
+GAT output: torch.Size([69, 128])
+Output after norm and activation: torch.Size([69, 128])
+  💾 Saved best model (loss=80.1872)
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([52, 128])
+Edge index: torch.Size([2, 233])
+Edge attr: torch.Size([233, 8])
+Projected edge attr: torch.Size([233, 128])
+GAT output: torch.Size([52, 128])
+Output after norm and activation: torch.Size([52, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([52, 128])
+Edge index: torch.Size([2, 233])
+Edge attr: torch.Size([233, 8])
+Projected edge attr: torch.Size([233, 128])
+GAT output: torch.Size([52, 128])
+Output after norm and activation: torch.Size([52, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([52, 128])
+Edge index: torch.Size([2, 277])
+Edge attr: torch.Size([277, 512])
+Projected edge attr: torch.Size([277, 128])
+GAT output: torch.Size([52, 128])
+Output after norm and activation: torch.Size([52, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([52, 128])
+Edge index: torch.Size([2, 277])
+Edge attr: torch.Size([277, 512])
+Projected edge attr: torch.Size([277, 128])
+GAT output: torch.Size([52, 128])
+Output after norm and activation: torch.Size([52, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([41, 128])
+Edge index: torch.Size([2, 184])
+Edge attr: torch.Size([184, 8])
+Projected edge attr: torch.Size([184, 128])
+GAT output: torch.Size([41, 128])
+Output after norm and activation: torch.Size([41, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([41, 128])
+Edge index: torch.Size([2, 184])
+Edge attr: torch.Size([184, 8])
+Projected edge attr: torch.Size([184, 128])
+GAT output: torch.Size([41, 128])
+Output after norm and activation: torch.Size([41, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([41, 128])
+Edge index: torch.Size([2, 230])
+Edge attr: torch.Size([230, 512])
+Projected edge attr: torch.Size([230, 128])
+GAT output: torch.Size([41, 128])
+Output after norm and activation: torch.Size([41, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([41, 128])
+Edge index: torch.Size([2, 230])
+Edge attr: torch.Size([230, 512])
+Projected edge attr: torch.Size([230, 128])
+GAT output: torch.Size([41, 128])
+Output after norm and activation: torch.Size([41, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([52, 128])
+Edge index: torch.Size([2, 234])
+Edge attr: torch.Size([234, 8])
+Projected edge attr: torch.Size([234, 128])
+GAT output: torch.Size([52, 128])
+Output after norm and activation: torch.Size([52, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([52, 128])
+Edge index: torch.Size([2, 234])
+Edge attr: torch.Size([234, 8])
+Projected edge attr: torch.Size([234, 128])
+GAT output: torch.Size([52, 128])
+Output after norm and activation: torch.Size([52, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([52, 128])
+Edge index: torch.Size([2, 292])
+Edge attr: torch.Size([292, 512])
+Projected edge attr: torch.Size([292, 128])
+GAT output: torch.Size([52, 128])
+Output after norm and activation: torch.Size([52, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([52, 128])
+Edge index: torch.Size([2, 292])
+Edge attr: torch.Size([292, 512])
+Projected edge attr: torch.Size([292, 128])
+GAT output: torch.Size([52, 128])
+Output after norm and activation: torch.Size([52, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([32, 128])
+Edge index: torch.Size([2, 143])
+Edge attr: torch.Size([143, 8])
+Projected edge attr: torch.Size([143, 128])
+GAT output: torch.Size([32, 128])
+Output after norm and activation: torch.Size([32, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([32, 128])
+Edge index: torch.Size([2, 143])
+Edge attr: torch.Size([143, 8])
+Projected edge attr: torch.Size([143, 128])
+GAT output: torch.Size([32, 128])
+Output after norm and activation: torch.Size([32, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([32, 128])
+Edge index: torch.Size([2, 175])
+Edge attr: torch.Size([175, 512])
+Projected edge attr: torch.Size([175, 128])
+GAT output: torch.Size([32, 128])
+Output after norm and activation: torch.Size([32, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([32, 128])
+Edge index: torch.Size([2, 175])
+Edge attr: torch.Size([175, 512])
+Projected edge attr: torch.Size([175, 128])
+GAT output: torch.Size([32, 128])
+Output after norm and activation: torch.Size([32, 128])
+  💾 Saved best model (loss=76.6945)
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([97, 128])
+Edge index: torch.Size([2, 436])
+Edge attr: torch.Size([436, 8])
+Projected edge attr: torch.Size([436, 128])
+GAT output: torch.Size([97, 128])
+Output after norm and activation: torch.Size([97, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([97, 128])
+Edge index: torch.Size([2, 436])
+Edge attr: torch.Size([436, 8])
+Projected edge attr: torch.Size([436, 128])
+GAT output: torch.Size([97, 128])
+Output after norm and activation: torch.Size([97, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([97, 128])
+Edge index: torch.Size([2, 550])
+Edge attr: torch.Size([550, 512])
+Projected edge attr: torch.Size([550, 128])
+GAT output: torch.Size([97, 128])
+Output after norm and activation: torch.Size([97, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([97, 128])
+Edge index: torch.Size([2, 550])
+Edge attr: torch.Size([550, 512])
+Projected edge attr: torch.Size([550, 128])
+GAT output: torch.Size([97, 128])
+Output after norm and activation: torch.Size([97, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([43, 128])
+Edge index: torch.Size([2, 193])
+Edge attr: torch.Size([193, 8])
+Projected edge attr: torch.Size([193, 128])
+GAT output: torch.Size([43, 128])
+Output after norm and activation: torch.Size([43, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([43, 128])
+Edge index: torch.Size([2, 193])
+Edge attr: torch.Size([193, 8])
+Projected edge attr: torch.Size([193, 128])
+GAT output: torch.Size([43, 128])
+Output after norm and activation: torch.Size([43, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([43, 128])
+Edge index: torch.Size([2, 249])
+Edge attr: torch.Size([249, 512])
+Projected edge attr: torch.Size([249, 128])
+GAT output: torch.Size([43, 128])
+Output after norm and activation: torch.Size([43, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([43, 128])
+Edge index: torch.Size([2, 249])
+Edge attr: torch.Size([249, 512])
+Projected edge attr: torch.Size([249, 128])
+GAT output: torch.Size([43, 128])
+Output after norm and activation: torch.Size([43, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([33, 128])
+Edge index: torch.Size([2, 148])
+Edge attr: torch.Size([148, 8])
+Projected edge attr: torch.Size([148, 128])
+GAT output: torch.Size([33, 128])
+Output after norm and activation: torch.Size([33, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([33, 128])
+Edge index: torch.Size([2, 148])
+Edge attr: torch.Size([148, 8])
+Projected edge attr: torch.Size([148, 128])
+GAT output: torch.Size([33, 128])
+Output after norm and activation: torch.Size([33, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([33, 128])
+Edge index: torch.Size([2, 181])
+Edge attr: torch.Size([181, 512])
+Projected edge attr: torch.Size([181, 128])
+GAT output: torch.Size([33, 128])
+Output after norm and activation: torch.Size([33, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([33, 128])
+Edge index: torch.Size([2, 181])
+Edge attr: torch.Size([181, 512])
+Projected edge attr: torch.Size([181, 128])
+GAT output: torch.Size([33, 128])
+Output after norm and activation: torch.Size([33, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([29, 128])
+Edge index: torch.Size([2, 130])
+Edge attr: torch.Size([130, 8])
+Projected edge attr: torch.Size([130, 128])
+GAT output: torch.Size([29, 128])
+Output after norm and activation: torch.Size([29, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([29, 128])
+Edge index: torch.Size([2, 130])
+Edge attr: torch.Size([130, 8])
+Projected edge attr: torch.Size([130, 128])
+GAT output: torch.Size([29, 128])
+Output after norm and activation: torch.Size([29, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([29, 128])
+Edge index: torch.Size([2, 155])
+Edge attr: torch.Size([155, 512])
+Projected edge attr: torch.Size([155, 128])
+GAT output: torch.Size([29, 128])
+Output after norm and activation: torch.Size([29, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([29, 128])
+Edge index: torch.Size([2, 155])
+Edge attr: torch.Size([155, 512])
+Projected edge attr: torch.Size([155, 128])
+GAT output: torch.Size([29, 128])
+Output after norm and activation: torch.Size([29, 128])
+
+[Epoch 0] Step 10
+  Total Loss       = 79.7841
+  InfoNCE          = 1.7930
+  Variance Loss    = 0.7794
+  Covariance Loss  = 0.0055
+  ---
+  Var(src, ref)    = 0.0802, 0.0688
+  STD(src, ref)    = 0.2298, 0.2103
+  Norm(src, ref)   = 6.0291, 6.3763
+  Cov(src, ref)    = 0.0528, 0.0442
+  Cosine Sim       = 0.5094
+  Grad Norm        = 222.3936
+  LR               = 0.000096
+  ⚠️  Low variance → Severe collapse!
+  ✓  Healthy training dynamics!
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([52, 128])
+Edge index: torch.Size([2, 233])
+Edge attr: torch.Size([233, 8])
+Projected edge attr: torch.Size([233, 128])
+GAT output: torch.Size([52, 128])
+Output after norm and activation: torch.Size([52, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([52, 128])
+Edge index: torch.Size([2, 233])
+Edge attr: torch.Size([233, 8])
+Projected edge attr: torch.Size([233, 128])
+GAT output: torch.Size([52, 128])
+Output after norm and activation: torch.Size([52, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([52, 128])
+Edge index: torch.Size([2, 281])
+Edge attr: torch.Size([281, 512])
+Projected edge attr: torch.Size([281, 128])
+GAT output: torch.Size([52, 128])
+Output after norm and activation: torch.Size([52, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([52, 128])
+Edge index: torch.Size([2, 281])
+Edge attr: torch.Size([281, 512])
+Projected edge attr: torch.Size([281, 128])
+GAT output: torch.Size([52, 128])
+Output after norm and activation: torch.Size([52, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([32, 128])
+Edge index: torch.Size([2, 143])
+Edge attr: torch.Size([143, 8])
+Projected edge attr: torch.Size([143, 128])
+GAT output: torch.Size([32, 128])
+Output after norm and activation: torch.Size([32, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([32, 128])
+Edge index: torch.Size([2, 143])
+Edge attr: torch.Size([143, 8])
+Projected edge attr: torch.Size([143, 128])
+GAT output: torch.Size([32, 128])
+Output after norm and activation: torch.Size([32, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([32, 128])
+Edge index: torch.Size([2, 177])
+Edge attr: torch.Size([177, 512])
+Projected edge attr: torch.Size([177, 128])
+GAT output: torch.Size([32, 128])
+Output after norm and activation: torch.Size([32, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([32, 128])
+Edge index: torch.Size([2, 177])
+Edge attr: torch.Size([177, 512])
+Projected edge attr: torch.Size([177, 128])
+GAT output: torch.Size([32, 128])
+Output after norm and activation: torch.Size([32, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([44, 128])
+Edge index: torch.Size([2, 197])
+Edge attr: torch.Size([197, 8])
+Projected edge attr: torch.Size([197, 128])
+GAT output: torch.Size([44, 128])
+Output after norm and activation: torch.Size([44, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([44, 128])
+Edge index: torch.Size([2, 197])
+Edge attr: torch.Size([197, 8])
+Projected edge attr: torch.Size([197, 128])
+GAT output: torch.Size([44, 128])
+Output after norm and activation: torch.Size([44, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([44, 128])
+Edge index: torch.Size([2, 237])
+Edge attr: torch.Size([237, 512])
+Projected edge attr: torch.Size([237, 128])
+GAT output: torch.Size([44, 128])
+Output after norm and activation: torch.Size([44, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([44, 128])
+Edge index: torch.Size([2, 237])
+Edge attr: torch.Size([237, 512])
+Projected edge attr: torch.Size([237, 128])
+GAT output: torch.Size([44, 128])
+Output after norm and activation: torch.Size([44, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([66, 128])
+Edge index: torch.Size([2, 296])
+Edge attr: torch.Size([296, 8])
+Projected edge attr: torch.Size([296, 128])
+GAT output: torch.Size([66, 128])
+Output after norm and activation: torch.Size([66, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([66, 128])
+Edge index: torch.Size([2, 296])
+Edge attr: torch.Size([296, 8])
+Projected edge attr: torch.Size([296, 128])
+GAT output: torch.Size([66, 128])
+Output after norm and activation: torch.Size([66, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([66, 128])
+Edge index: torch.Size([2, 372])
+Edge attr: torch.Size([372, 512])
+Projected edge attr: torch.Size([372, 128])
+GAT output: torch.Size([66, 128])
+Output after norm and activation: torch.Size([66, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([66, 128])
+Edge index: torch.Size([2, 372])
+Edge attr: torch.Size([372, 512])
+Projected edge attr: torch.Size([372, 128])
+GAT output: torch.Size([66, 128])
+Output after norm and activation: torch.Size([66, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([65, 128])
+Edge index: torch.Size([2, 292])
+Edge attr: torch.Size([292, 8])
+Projected edge attr: torch.Size([292, 128])
+GAT output: torch.Size([65, 128])
+Output after norm and activation: torch.Size([65, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([65, 128])
+Edge index: torch.Size([2, 292])
+Edge attr: torch.Size([292, 8])
+Projected edge attr: torch.Size([292, 128])
+GAT output: torch.Size([65, 128])
+Output after norm and activation: torch.Size([65, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([65, 128])
+Edge index: torch.Size([2, 359])
+Edge attr: torch.Size([359, 512])
+Projected edge attr: torch.Size([359, 128])
+GAT output: torch.Size([65, 128])
+Output after norm and activation: torch.Size([65, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([65, 128])
+Edge index: torch.Size([2, 359])
+Edge attr: torch.Size([359, 512])
+Projected edge attr: torch.Size([359, 128])
+GAT output: torch.Size([65, 128])
+Output after norm and activation: torch.Size([65, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([54, 128])
+Edge index: torch.Size([2, 242])
+Edge attr: torch.Size([242, 8])
+Projected edge attr: torch.Size([242, 128])
+GAT output: torch.Size([54, 128])
+Output after norm and activation: torch.Size([54, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([54, 128])
+Edge index: torch.Size([2, 242])
+Edge attr: torch.Size([242, 8])
+Projected edge attr: torch.Size([242, 128])
+GAT output: torch.Size([54, 128])
+Output after norm and activation: torch.Size([54, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([54, 128])
+Edge index: torch.Size([2, 289])
+Edge attr: torch.Size([289, 512])
+Projected edge attr: torch.Size([289, 128])
+GAT output: torch.Size([54, 128])
+Output after norm and activation: torch.Size([54, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([54, 128])
+Edge index: torch.Size([2, 289])
+Edge attr: torch.Size([289, 512])
+Projected edge attr: torch.Size([289, 128])
+GAT output: torch.Size([54, 128])
+Output after norm and activation: torch.Size([54, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([59, 128])
+Edge index: torch.Size([2, 265])
+Edge attr: torch.Size([265, 8])
+Projected edge attr: torch.Size([265, 128])
+GAT output: torch.Size([59, 128])
+Output after norm and activation: torch.Size([59, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([59, 128])
+Edge index: torch.Size([2, 265])
+Edge attr: torch.Size([265, 8])
+Projected edge attr: torch.Size([265, 128])
+GAT output: torch.Size([59, 128])
+Output after norm and activation: torch.Size([59, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([59, 128])
+Edge index: torch.Size([2, 332])
+Edge attr: torch.Size([332, 512])
+Projected edge attr: torch.Size([332, 128])
+GAT output: torch.Size([59, 128])
+Output after norm and activation: torch.Size([59, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([59, 128])
+Edge index: torch.Size([2, 332])
+Edge attr: torch.Size([332, 512])
+Projected edge attr: torch.Size([332, 128])
+GAT output: torch.Size([59, 128])
+Output after norm and activation: torch.Size([59, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([41, 128])
+Edge index: torch.Size([2, 184])
+Edge attr: torch.Size([184, 8])
+Projected edge attr: torch.Size([184, 128])
+GAT output: torch.Size([41, 128])
+Output after norm and activation: torch.Size([41, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([41, 128])
+Edge index: torch.Size([2, 184])
+Edge attr: torch.Size([184, 8])
+Projected edge attr: torch.Size([184, 128])
+GAT output: torch.Size([41, 128])
+Output after norm and activation: torch.Size([41, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([41, 128])
+Edge index: torch.Size([2, 239])
+Edge attr: torch.Size([239, 512])
+Projected edge attr: torch.Size([239, 128])
+GAT output: torch.Size([41, 128])
+Output after norm and activation: torch.Size([41, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([41, 128])
+Edge index: torch.Size([2, 239])
+Edge attr: torch.Size([239, 512])
+Projected edge attr: torch.Size([239, 128])
+GAT output: torch.Size([41, 128])
+Output after norm and activation: torch.Size([41, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([51, 128])
+Edge index: torch.Size([2, 229])
+Edge attr: torch.Size([229, 8])
+Projected edge attr: torch.Size([229, 128])
+GAT output: torch.Size([51, 128])
+Output after norm and activation: torch.Size([51, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([51, 128])
+Edge index: torch.Size([2, 229])
+Edge attr: torch.Size([229, 8])
+Projected edge attr: torch.Size([229, 128])
+GAT output: torch.Size([51, 128])
+Output after norm and activation: torch.Size([51, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([51, 128])
+Edge index: torch.Size([2, 294])
+Edge attr: torch.Size([294, 512])
+Projected edge attr: torch.Size([294, 128])
+GAT output: torch.Size([51, 128])
+Output after norm and activation: torch.Size([51, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([51, 128])
+Edge index: torch.Size([2, 294])
+Edge attr: torch.Size([294, 512])
+Projected edge attr: torch.Size([294, 128])
+GAT output: torch.Size([51, 128])
+Output after norm and activation: torch.Size([51, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([74, 128])
+Edge index: torch.Size([2, 333])
+Edge attr: torch.Size([333, 8])
+Projected edge attr: torch.Size([333, 128])
+GAT output: torch.Size([74, 128])
+Output after norm and activation: torch.Size([74, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([74, 128])
+Edge index: torch.Size([2, 333])
+Edge attr: torch.Size([333, 8])
+Projected edge attr: torch.Size([333, 128])
+GAT output: torch.Size([74, 128])
+Output after norm and activation: torch.Size([74, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([74, 128])
+Edge index: torch.Size([2, 406])
+Edge attr: torch.Size([406, 512])
+Projected edge attr: torch.Size([406, 128])
+GAT output: torch.Size([74, 128])
+Output after norm and activation: torch.Size([74, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([74, 128])
+Edge index: torch.Size([2, 406])
+Edge attr: torch.Size([406, 512])
+Projected edge attr: torch.Size([406, 128])
+GAT output: torch.Size([74, 128])
+Output after norm and activation: torch.Size([74, 128])
+  💾 Saved best model (loss=74.2182)
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([41, 128])
+Edge index: torch.Size([2, 184])
+Edge attr: torch.Size([184, 8])
+Projected edge attr: torch.Size([184, 128])
+GAT output: torch.Size([41, 128])
+Output after norm and activation: torch.Size([41, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([41, 128])
+Edge index: torch.Size([2, 184])
+Edge attr: torch.Size([184, 8])
+Projected edge attr: torch.Size([184, 128])
+GAT output: torch.Size([41, 128])
+Output after norm and activation: torch.Size([41, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([41, 128])
+Edge index: torch.Size([2, 224])
+Edge attr: torch.Size([224, 512])
+Projected edge attr: torch.Size([224, 128])
+GAT output: torch.Size([41, 128])
+Output after norm and activation: torch.Size([41, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([41, 128])
+Edge index: torch.Size([2, 224])
+Edge attr: torch.Size([224, 512])
+Projected edge attr: torch.Size([224, 128])
+GAT output: torch.Size([41, 128])
+Output after norm and activation: torch.Size([41, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([67, 128])
+Edge index: torch.Size([2, 301])
+Edge attr: torch.Size([301, 8])
+Projected edge attr: torch.Size([301, 128])
+GAT output: torch.Size([67, 128])
+Output after norm and activation: torch.Size([67, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([67, 128])
+Edge index: torch.Size([2, 301])
+Edge attr: torch.Size([301, 8])
+Projected edge attr: torch.Size([301, 128])
+GAT output: torch.Size([67, 128])
+Output after norm and activation: torch.Size([67, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([67, 128])
+Edge index: torch.Size([2, 382])
+Edge attr: torch.Size([382, 512])
+Projected edge attr: torch.Size([382, 128])
+GAT output: torch.Size([67, 128])
+Output after norm and activation: torch.Size([67, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([67, 128])
+Edge index: torch.Size([2, 382])
+Edge attr: torch.Size([382, 512])
+Projected edge attr: torch.Size([382, 128])
+GAT output: torch.Size([67, 128])
+Output after norm and activation: torch.Size([67, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([43, 128])
+Edge index: torch.Size([2, 193])
+Edge attr: torch.Size([193, 8])
+Projected edge attr: torch.Size([193, 128])
+GAT output: torch.Size([43, 128])
+Output after norm and activation: torch.Size([43, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([43, 128])
+Edge index: torch.Size([2, 193])
+Edge attr: torch.Size([193, 8])
+Projected edge attr: torch.Size([193, 128])
+GAT output: torch.Size([43, 128])
+Output after norm and activation: torch.Size([43, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([43, 128])
+Edge index: torch.Size([2, 228])
+Edge attr: torch.Size([228, 512])
+Projected edge attr: torch.Size([228, 128])
+GAT output: torch.Size([43, 128])
+Output after norm and activation: torch.Size([43, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([43, 128])
+Edge index: torch.Size([2, 228])
+Edge attr: torch.Size([228, 512])
+Projected edge attr: torch.Size([228, 128])
+GAT output: torch.Size([43, 128])
+Output after norm and activation: torch.Size([43, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([40, 128])
+Edge index: torch.Size([2, 180])
+Edge attr: torch.Size([180, 8])
+Projected edge attr: torch.Size([180, 128])
+GAT output: torch.Size([40, 128])
+Output after norm and activation: torch.Size([40, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([40, 128])
+Edge index: torch.Size([2, 180])
+Edge attr: torch.Size([180, 8])
+Projected edge attr: torch.Size([180, 128])
+GAT output: torch.Size([40, 128])
+Output after norm and activation: torch.Size([40, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([40, 128])
+Edge index: torch.Size([2, 211])
+Edge attr: torch.Size([211, 512])
+Projected edge attr: torch.Size([211, 128])
+GAT output: torch.Size([40, 128])
+Output after norm and activation: torch.Size([40, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([40, 128])
+Edge index: torch.Size([2, 211])
+Edge attr: torch.Size([211, 512])
+Projected edge attr: torch.Size([211, 128])
+GAT output: torch.Size([40, 128])
+Output after norm and activation: torch.Size([40, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([59, 128])
+Edge index: torch.Size([2, 265])
+Edge attr: torch.Size([265, 8])
+Projected edge attr: torch.Size([265, 128])
+GAT output: torch.Size([59, 128])
+Output after norm and activation: torch.Size([59, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([59, 128])
+Edge index: torch.Size([2, 265])
+Edge attr: torch.Size([265, 8])
+Projected edge attr: torch.Size([265, 128])
+GAT output: torch.Size([59, 128])
+Output after norm and activation: torch.Size([59, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([59, 128])
+Edge index: torch.Size([2, 328])
+Edge attr: torch.Size([328, 512])
+Projected edge attr: torch.Size([328, 128])
+GAT output: torch.Size([59, 128])
+Output after norm and activation: torch.Size([59, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([59, 128])
+Edge index: torch.Size([2, 328])
+Edge attr: torch.Size([328, 512])
+Projected edge attr: torch.Size([328, 128])
+GAT output: torch.Size([59, 128])
+Output after norm and activation: torch.Size([59, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([51, 128])
+Edge index: torch.Size([2, 229])
+Edge attr: torch.Size([229, 8])
+Projected edge attr: torch.Size([229, 128])
+GAT output: torch.Size([51, 128])
+Output after norm and activation: torch.Size([51, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([51, 128])
+Edge index: torch.Size([2, 229])
+Edge attr: torch.Size([229, 8])
+Projected edge attr: torch.Size([229, 128])
+GAT output: torch.Size([51, 128])
+Output after norm and activation: torch.Size([51, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([51, 128])
+Edge index: torch.Size([2, 275])
+Edge attr: torch.Size([275, 512])
+Projected edge attr: torch.Size([275, 128])
+GAT output: torch.Size([51, 128])
+Output after norm and activation: torch.Size([51, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([51, 128])
+Edge index: torch.Size([2, 275])
+Edge attr: torch.Size([275, 512])
+Projected edge attr: torch.Size([275, 128])
+GAT output: torch.Size([51, 128])
+Output after norm and activation: torch.Size([51, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([84, 128])
+Edge index: torch.Size([2, 377])
+Edge attr: torch.Size([377, 8])
+Projected edge attr: torch.Size([377, 128])
+GAT output: torch.Size([84, 128])
+Output after norm and activation: torch.Size([84, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([84, 128])
+Edge index: torch.Size([2, 377])
+Edge attr: torch.Size([377, 8])
+Projected edge attr: torch.Size([377, 128])
+GAT output: torch.Size([84, 128])
+Output after norm and activation: torch.Size([84, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([84, 128])
+Edge index: torch.Size([2, 478])
+Edge attr: torch.Size([478, 512])
+Projected edge attr: torch.Size([478, 128])
+GAT output: torch.Size([84, 128])
+Output after norm and activation: torch.Size([84, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([84, 128])
+Edge index: torch.Size([2, 478])
+Edge attr: torch.Size([478, 512])
+Projected edge attr: torch.Size([478, 128])
+GAT output: torch.Size([84, 128])
+Output after norm and activation: torch.Size([84, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([63, 128])
+Edge index: torch.Size([2, 283])
+Edge attr: torch.Size([283, 8])
+Projected edge attr: torch.Size([283, 128])
+GAT output: torch.Size([63, 128])
+Output after norm and activation: torch.Size([63, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([63, 128])
+Edge index: torch.Size([2, 283])
+Edge attr: torch.Size([283, 8])
+Projected edge attr: torch.Size([283, 128])
+GAT output: torch.Size([63, 128])
+Output after norm and activation: torch.Size([63, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([63, 128])
+Edge index: torch.Size([2, 345])
+Edge attr: torch.Size([345, 512])
+Projected edge attr: torch.Size([345, 128])
+GAT output: torch.Size([63, 128])
+Output after norm and activation: torch.Size([63, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([63, 128])
+Edge index: torch.Size([2, 345])
+Edge attr: torch.Size([345, 512])
+Projected edge attr: torch.Size([345, 128])
+GAT output: torch.Size([63, 128])
+Output after norm and activation: torch.Size([63, 128])
+  💾 Saved best model (loss=70.4364)
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([61, 128])
+Edge index: torch.Size([2, 274])
+Edge attr: torch.Size([274, 8])
+Projected edge attr: torch.Size([274, 128])
+GAT output: torch.Size([61, 128])
+Output after norm and activation: torch.Size([61, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([61, 128])
+Edge index: torch.Size([2, 274])
+Edge attr: torch.Size([274, 8])
+Projected edge attr: torch.Size([274, 128])
+GAT output: torch.Size([61, 128])
+Output after norm and activation: torch.Size([61, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([61, 128])
+Edge index: torch.Size([2, 353])
+Edge attr: torch.Size([353, 512])
+Projected edge attr: torch.Size([353, 128])
+GAT output: torch.Size([61, 128])
+Output after norm and activation: torch.Size([61, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([61, 128])
+Edge index: torch.Size([2, 353])
+Edge attr: torch.Size([353, 512])
+Projected edge attr: torch.Size([353, 128])
+GAT output: torch.Size([61, 128])
+Output after norm and activation: torch.Size([61, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([70, 128])
+Edge index: torch.Size([2, 314])
+Edge attr: torch.Size([314, 8])
+Projected edge attr: torch.Size([314, 128])
+GAT output: torch.Size([70, 128])
+Output after norm and activation: torch.Size([70, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([70, 128])
+Edge index: torch.Size([2, 314])
+Edge attr: torch.Size([314, 8])
+Projected edge attr: torch.Size([314, 128])
+GAT output: torch.Size([70, 128])
+Output after norm and activation: torch.Size([70, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([70, 128])
+Edge index: torch.Size([2, 403])
+Edge attr: torch.Size([403, 512])
+Projected edge attr: torch.Size([403, 128])
+GAT output: torch.Size([70, 128])
+Output after norm and activation: torch.Size([70, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([70, 128])
+Edge index: torch.Size([2, 403])
+Edge attr: torch.Size([403, 512])
+Projected edge attr: torch.Size([403, 128])
+GAT output: torch.Size([70, 128])
+Output after norm and activation: torch.Size([70, 128])
+
+[Epoch 0] Step 20
+  Total Loss       = 73.2689
+  InfoNCE          = 2.4669
+  Variance Loss    = 0.7061
+  Covariance Loss  = 0.0187
+  ---
+  Var(src, ref)    = 0.1559, 0.1157
+  STD(src, ref)    = 0.3165, 0.2705
+  Norm(src, ref)   = 6.8754, 6.9757
+  Cov(src, ref)    = 0.1001, 0.0732
+  Cosine Sim       = 0.4467
+  Grad Norm        = 199.9411
+  LR               = 0.000072
+  ⚠️  Low variance → Severe collapse!
+  ✓  Healthy training dynamics!
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([68, 128])
+Edge index: torch.Size([2, 306])
+Edge attr: torch.Size([306, 8])
+Projected edge attr: torch.Size([306, 128])
+GAT output: torch.Size([68, 128])
+Output after norm and activation: torch.Size([68, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([68, 128])
+Edge index: torch.Size([2, 306])
+Edge attr: torch.Size([306, 8])
+Projected edge attr: torch.Size([306, 128])
+GAT output: torch.Size([68, 128])
+Output after norm and activation: torch.Size([68, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([68, 128])
+Edge index: torch.Size([2, 405])
+Edge attr: torch.Size([405, 512])
+Projected edge attr: torch.Size([405, 128])
+GAT output: torch.Size([68, 128])
+Output after norm and activation: torch.Size([68, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([68, 128])
+Edge index: torch.Size([2, 405])
+Edge attr: torch.Size([405, 512])
+Projected edge attr: torch.Size([405, 128])
+GAT output: torch.Size([68, 128])
+Output after norm and activation: torch.Size([68, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([51, 128])
+Edge index: torch.Size([2, 229])
+Edge attr: torch.Size([229, 8])
+Projected edge attr: torch.Size([229, 128])
+GAT output: torch.Size([51, 128])
+Output after norm and activation: torch.Size([51, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([51, 128])
+Edge index: torch.Size([2, 229])
+Edge attr: torch.Size([229, 8])
+Projected edge attr: torch.Size([229, 128])
+GAT output: torch.Size([51, 128])
+Output after norm and activation: torch.Size([51, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([51, 128])
+Edge index: torch.Size([2, 283])
+Edge attr: torch.Size([283, 512])
+Projected edge attr: torch.Size([283, 128])
+GAT output: torch.Size([51, 128])
+Output after norm and activation: torch.Size([51, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([51, 128])
+Edge index: torch.Size([2, 283])
+Edge attr: torch.Size([283, 512])
+Projected edge attr: torch.Size([283, 128])
+GAT output: torch.Size([51, 128])
+Output after norm and activation: torch.Size([51, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([47, 128])
+Edge index: torch.Size([2, 211])
+Edge attr: torch.Size([211, 8])
+Projected edge attr: torch.Size([211, 128])
+GAT output: torch.Size([47, 128])
+Output after norm and activation: torch.Size([47, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([47, 128])
+Edge index: torch.Size([2, 211])
+Edge attr: torch.Size([211, 8])
+Projected edge attr: torch.Size([211, 128])
+GAT output: torch.Size([47, 128])
+Output after norm and activation: torch.Size([47, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([47, 128])
+Edge index: torch.Size([2, 262])
+Edge attr: torch.Size([262, 512])
+Projected edge attr: torch.Size([262, 128])
+GAT output: torch.Size([47, 128])
+Output after norm and activation: torch.Size([47, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([47, 128])
+Edge index: torch.Size([2, 262])
+Edge attr: torch.Size([262, 512])
+Projected edge attr: torch.Size([262, 128])
+GAT output: torch.Size([47, 128])
+Output after norm and activation: torch.Size([47, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([28, 128])
+Edge index: torch.Size([2, 125])
+Edge attr: torch.Size([125, 8])
+Projected edge attr: torch.Size([125, 128])
+GAT output: torch.Size([28, 128])
+Output after norm and activation: torch.Size([28, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([28, 128])
+Edge index: torch.Size([2, 125])
+Edge attr: torch.Size([125, 8])
+Projected edge attr: torch.Size([125, 128])
+GAT output: torch.Size([28, 128])
+Output after norm and activation: torch.Size([28, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([28, 128])
+Edge index: torch.Size([2, 153])
+Edge attr: torch.Size([153, 512])
+Projected edge attr: torch.Size([153, 128])
+GAT output: torch.Size([28, 128])
+Output after norm and activation: torch.Size([28, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([28, 128])
+Edge index: torch.Size([2, 153])
+Edge attr: torch.Size([153, 512])
+Projected edge attr: torch.Size([153, 128])
+GAT output: torch.Size([28, 128])
+Output after norm and activation: torch.Size([28, 128])
+  💾 Saved best model (loss=68.0096)
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([72, 128])
+Edge index: torch.Size([2, 323])
+Edge attr: torch.Size([323, 8])
+Projected edge attr: torch.Size([323, 128])
+GAT output: torch.Size([72, 128])
+Output after norm and activation: torch.Size([72, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([72, 128])
+Edge index: torch.Size([2, 323])
+Edge attr: torch.Size([323, 8])
+Projected edge attr: torch.Size([323, 128])
+GAT output: torch.Size([72, 128])
+Output after norm and activation: torch.Size([72, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([72, 128])
+Edge index: torch.Size([2, 404])
+Edge attr: torch.Size([404, 512])
+Projected edge attr: torch.Size([404, 128])
+GAT output: torch.Size([72, 128])
+Output after norm and activation: torch.Size([72, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([72, 128])
+Edge index: torch.Size([2, 404])
+Edge attr: torch.Size([404, 512])
+Projected edge attr: torch.Size([404, 128])
+GAT output: torch.Size([72, 128])
+Output after norm and activation: torch.Size([72, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([62, 128])
+Edge index: torch.Size([2, 279])
+Edge attr: torch.Size([279, 8])
+Projected edge attr: torch.Size([279, 128])
+GAT output: torch.Size([62, 128])
+Output after norm and activation: torch.Size([62, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([62, 128])
+Edge index: torch.Size([2, 279])
+Edge attr: torch.Size([279, 8])
+Projected edge attr: torch.Size([279, 128])
+GAT output: torch.Size([62, 128])
+Output after norm and activation: torch.Size([62, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([62, 128])
+Edge index: torch.Size([2, 350])
+Edge attr: torch.Size([350, 512])
+Projected edge attr: torch.Size([350, 128])
+GAT output: torch.Size([62, 128])
+Output after norm and activation: torch.Size([62, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([62, 128])
+Edge index: torch.Size([2, 350])
+Edge attr: torch.Size([350, 512])
+Projected edge attr: torch.Size([350, 128])
+GAT output: torch.Size([62, 128])
+Output after norm and activation: torch.Size([62, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([59, 128])
+Edge index: torch.Size([2, 265])
+Edge attr: torch.Size([265, 8])
+Projected edge attr: torch.Size([265, 128])
+GAT output: torch.Size([59, 128])
+Output after norm and activation: torch.Size([59, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([59, 128])
+Edge index: torch.Size([2, 265])
+Edge attr: torch.Size([265, 8])
+Projected edge attr: torch.Size([265, 128])
+GAT output: torch.Size([59, 128])
+Output after norm and activation: torch.Size([59, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([59, 128])
+Edge index: torch.Size([2, 323])
+Edge attr: torch.Size([323, 512])
+Projected edge attr: torch.Size([323, 128])
+GAT output: torch.Size([59, 128])
+Output after norm and activation: torch.Size([59, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([59, 128])
+Edge index: torch.Size([2, 323])
+Edge attr: torch.Size([323, 512])
+Projected edge attr: torch.Size([323, 128])
+GAT output: torch.Size([59, 128])
+Output after norm and activation: torch.Size([59, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([52, 128])
+Edge index: torch.Size([2, 234])
+Edge attr: torch.Size([234, 8])
+Projected edge attr: torch.Size([234, 128])
+GAT output: torch.Size([52, 128])
+Output after norm and activation: torch.Size([52, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([52, 128])
+Edge index: torch.Size([2, 234])
+Edge attr: torch.Size([234, 8])
+Projected edge attr: torch.Size([234, 128])
+GAT output: torch.Size([52, 128])
+Output after norm and activation: torch.Size([52, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([52, 128])
+Edge index: torch.Size([2, 291])
+Edge attr: torch.Size([291, 512])
+Projected edge attr: torch.Size([291, 128])
+GAT output: torch.Size([52, 128])
+Output after norm and activation: torch.Size([52, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([52, 128])
+Edge index: torch.Size([2, 291])
+Edge attr: torch.Size([291, 512])
+Projected edge attr: torch.Size([291, 128])
+GAT output: torch.Size([52, 128])
+Output after norm and activation: torch.Size([52, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([83, 128])
+Edge index: torch.Size([2, 373])
+Edge attr: torch.Size([373, 8])
+Projected edge attr: torch.Size([373, 128])
+GAT output: torch.Size([83, 128])
+Output after norm and activation: torch.Size([83, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([83, 128])
+Edge index: torch.Size([2, 373])
+Edge attr: torch.Size([373, 8])
+Projected edge attr: torch.Size([373, 128])
+GAT output: torch.Size([83, 128])
+Output after norm and activation: torch.Size([83, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([83, 128])
+Edge index: torch.Size([2, 485])
+Edge attr: torch.Size([485, 512])
+Projected edge attr: torch.Size([485, 128])
+GAT output: torch.Size([83, 128])
+Output after norm and activation: torch.Size([83, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([83, 128])
+Edge index: torch.Size([2, 485])
+Edge attr: torch.Size([485, 512])
+Projected edge attr: torch.Size([485, 128])
+GAT output: torch.Size([83, 128])
+Output after norm and activation: torch.Size([83, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([56, 128])
+Edge index: torch.Size([2, 251])
+Edge attr: torch.Size([251, 8])
+Projected edge attr: torch.Size([251, 128])
+GAT output: torch.Size([56, 128])
+Output after norm and activation: torch.Size([56, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([56, 128])
+Edge index: torch.Size([2, 251])
+Edge attr: torch.Size([251, 8])
+Projected edge attr: torch.Size([251, 128])
+GAT output: torch.Size([56, 128])
+Output after norm and activation: torch.Size([56, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([56, 128])
+Edge index: torch.Size([2, 321])
+Edge attr: torch.Size([321, 512])
+Projected edge attr: torch.Size([321, 128])
+GAT output: torch.Size([56, 128])
+Output after norm and activation: torch.Size([56, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([56, 128])
+Edge index: torch.Size([2, 321])
+Edge attr: torch.Size([321, 512])
+Projected edge attr: torch.Size([321, 128])
+GAT output: torch.Size([56, 128])
+Output after norm and activation: torch.Size([56, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([48, 128])
+Edge index: torch.Size([2, 215])
+Edge attr: torch.Size([215, 8])
+Projected edge attr: torch.Size([215, 128])
+GAT output: torch.Size([48, 128])
+Output after norm and activation: torch.Size([48, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([48, 128])
+Edge index: torch.Size([2, 215])
+Edge attr: torch.Size([215, 8])
+Projected edge attr: torch.Size([215, 128])
+GAT output: torch.Size([48, 128])
+Output after norm and activation: torch.Size([48, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([48, 128])
+Edge index: torch.Size([2, 259])
+Edge attr: torch.Size([259, 512])
+Projected edge attr: torch.Size([259, 128])
+GAT output: torch.Size([48, 128])
+Output after norm and activation: torch.Size([48, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([48, 128])
+Edge index: torch.Size([2, 259])
+Edge attr: torch.Size([259, 512])
+Projected edge attr: torch.Size([259, 128])
+GAT output: torch.Size([48, 128])
+Output after norm and activation: torch.Size([48, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([55, 128])
+Edge index: torch.Size([2, 247])
+Edge attr: torch.Size([247, 8])
+Projected edge attr: torch.Size([247, 128])
+GAT output: torch.Size([55, 128])
+Output after norm and activation: torch.Size([55, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([55, 128])
+Edge index: torch.Size([2, 247])
+Edge attr: torch.Size([247, 8])
+Projected edge attr: torch.Size([247, 128])
+GAT output: torch.Size([55, 128])
+Output after norm and activation: torch.Size([55, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([55, 128])
+Edge index: torch.Size([2, 296])
+Edge attr: torch.Size([296, 512])
+Projected edge attr: torch.Size([296, 128])
+GAT output: torch.Size([55, 128])
+Output after norm and activation: torch.Size([55, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([55, 128])
+Edge index: torch.Size([2, 296])
+Edge attr: torch.Size([296, 512])
+Projected edge attr: torch.Size([296, 128])
+GAT output: torch.Size([55, 128])
+Output after norm and activation: torch.Size([55, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([37, 128])
+Edge index: torch.Size([2, 166])
+Edge attr: torch.Size([166, 8])
+Projected edge attr: torch.Size([166, 128])
+GAT output: torch.Size([37, 128])
+Output after norm and activation: torch.Size([37, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([37, 128])
+Edge index: torch.Size([2, 166])
+Edge attr: torch.Size([166, 8])
+Projected edge attr: torch.Size([166, 128])
+GAT output: torch.Size([37, 128])
+Output after norm and activation: torch.Size([37, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([37, 128])
+Edge index: torch.Size([2, 201])
+Edge attr: torch.Size([201, 512])
+Projected edge attr: torch.Size([201, 128])
+GAT output: torch.Size([37, 128])
+Output after norm and activation: torch.Size([37, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([37, 128])
+Edge index: torch.Size([2, 201])
+Edge attr: torch.Size([201, 512])
+Projected edge attr: torch.Size([201, 128])
+GAT output: torch.Size([37, 128])
+Output after norm and activation: torch.Size([37, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([32, 128])
+Edge index: torch.Size([2, 143])
+Edge attr: torch.Size([143, 8])
+Projected edge attr: torch.Size([143, 128])
+GAT output: torch.Size([32, 128])
+Output after norm and activation: torch.Size([32, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([32, 128])
+Edge index: torch.Size([2, 143])
+Edge attr: torch.Size([143, 8])
+Projected edge attr: torch.Size([143, 128])
+GAT output: torch.Size([32, 128])
+Output after norm and activation: torch.Size([32, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([32, 128])
+Edge index: torch.Size([2, 197])
+Edge attr: torch.Size([197, 512])
+Projected edge attr: torch.Size([197, 128])
+GAT output: torch.Size([32, 128])
+Output after norm and activation: torch.Size([32, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([32, 128])
+Edge index: torch.Size([2, 197])
+Edge attr: torch.Size([197, 512])
+Projected edge attr: torch.Size([197, 128])
+GAT output: torch.Size([32, 128])
+Output after norm and activation: torch.Size([32, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([45, 128])
+Edge index: torch.Size([2, 202])
+Edge attr: torch.Size([202, 8])
+Projected edge attr: torch.Size([202, 128])
+GAT output: torch.Size([45, 128])
+Output after norm and activation: torch.Size([45, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([45, 128])
+Edge index: torch.Size([2, 202])
+Edge attr: torch.Size([202, 8])
+Projected edge attr: torch.Size([202, 128])
+GAT output: torch.Size([45, 128])
+Output after norm and activation: torch.Size([45, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([45, 128])
+Edge index: torch.Size([2, 244])
+Edge attr: torch.Size([244, 512])
+Projected edge attr: torch.Size([244, 128])
+GAT output: torch.Size([45, 128])
+Output after norm and activation: torch.Size([45, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([45, 128])
+Edge index: torch.Size([2, 244])
+Edge attr: torch.Size([244, 512])
+Projected edge attr: torch.Size([244, 128])
+GAT output: torch.Size([45, 128])
+Output after norm and activation: torch.Size([45, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([50, 128])
+Edge index: torch.Size([2, 225])
+Edge attr: torch.Size([225, 8])
+Projected edge attr: torch.Size([225, 128])
+GAT output: torch.Size([50, 128])
+Output after norm and activation: torch.Size([50, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([50, 128])
+Edge index: torch.Size([2, 225])
+Edge attr: torch.Size([225, 8])
+Projected edge attr: torch.Size([225, 128])
+GAT output: torch.Size([50, 128])
+Output after norm and activation: torch.Size([50, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([50, 128])
+Edge index: torch.Size([2, 274])
+Edge attr: torch.Size([274, 512])
+Projected edge attr: torch.Size([274, 128])
+GAT output: torch.Size([50, 128])
+Output after norm and activation: torch.Size([50, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([50, 128])
+Edge index: torch.Size([2, 274])
+Edge attr: torch.Size([274, 512])
+Projected edge attr: torch.Size([274, 128])
+GAT output: torch.Size([50, 128])
+Output after norm and activation: torch.Size([50, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([33, 128])
+Edge index: torch.Size([2, 148])
+Edge attr: torch.Size([148, 8])
+Projected edge attr: torch.Size([148, 128])
+GAT output: torch.Size([33, 128])
+Output after norm and activation: torch.Size([33, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([33, 128])
+Edge index: torch.Size([2, 148])
+Edge attr: torch.Size([148, 8])
+Projected edge attr: torch.Size([148, 128])
+GAT output: torch.Size([33, 128])
+Output after norm and activation: torch.Size([33, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([33, 128])
+Edge index: torch.Size([2, 179])
+Edge attr: torch.Size([179, 512])
+Projected edge attr: torch.Size([179, 128])
+GAT output: torch.Size([33, 128])
+Output after norm and activation: torch.Size([33, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([33, 128])
+Edge index: torch.Size([2, 179])
+Edge attr: torch.Size([179, 512])
+Projected edge attr: torch.Size([179, 128])
+GAT output: torch.Size([33, 128])
+Output after norm and activation: torch.Size([33, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([48, 128])
+Edge index: torch.Size([2, 216])
+Edge attr: torch.Size([216, 8])
+Projected edge attr: torch.Size([216, 128])
+GAT output: torch.Size([48, 128])
+Output after norm and activation: torch.Size([48, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([48, 128])
+Edge index: torch.Size([2, 216])
+Edge attr: torch.Size([216, 8])
+Projected edge attr: torch.Size([216, 128])
+GAT output: torch.Size([48, 128])
+Output after norm and activation: torch.Size([48, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([48, 128])
+Edge index: torch.Size([2, 273])
+Edge attr: torch.Size([273, 512])
+Projected edge attr: torch.Size([273, 128])
+GAT output: torch.Size([48, 128])
+Output after norm and activation: torch.Size([48, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([48, 128])
+Edge index: torch.Size([2, 273])
+Edge attr: torch.Size([273, 512])
+Projected edge attr: torch.Size([273, 128])
+GAT output: torch.Size([48, 128])
+Output after norm and activation: torch.Size([48, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([51, 128])
+Edge index: torch.Size([2, 229])
+Edge attr: torch.Size([229, 8])
+Projected edge attr: torch.Size([229, 128])
+GAT output: torch.Size([51, 128])
+Output after norm and activation: torch.Size([51, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([51, 128])
+Edge index: torch.Size([2, 229])
+Edge attr: torch.Size([229, 8])
+Projected edge attr: torch.Size([229, 128])
+GAT output: torch.Size([51, 128])
+Output after norm and activation: torch.Size([51, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([51, 128])
+Edge index: torch.Size([2, 282])
+Edge attr: torch.Size([282, 512])
+Projected edge attr: torch.Size([282, 128])
+GAT output: torch.Size([51, 128])
+Output after norm and activation: torch.Size([51, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([51, 128])
+Edge index: torch.Size([2, 282])
+Edge attr: torch.Size([282, 512])
+Projected edge attr: torch.Size([282, 128])
+GAT output: torch.Size([51, 128])
+Output after norm and activation: torch.Size([51, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([31, 128])
+Edge index: torch.Size([2, 139])
+Edge attr: torch.Size([139, 8])
+Projected edge attr: torch.Size([139, 128])
+GAT output: torch.Size([31, 128])
+Output after norm and activation: torch.Size([31, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([31, 128])
+Edge index: torch.Size([2, 139])
+Edge attr: torch.Size([139, 8])
+Projected edge attr: torch.Size([139, 128])
+GAT output: torch.Size([31, 128])
+Output after norm and activation: torch.Size([31, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([31, 128])
+Edge index: torch.Size([2, 167])
+Edge attr: torch.Size([167, 512])
+Projected edge attr: torch.Size([167, 128])
+GAT output: torch.Size([31, 128])
+Output after norm and activation: torch.Size([31, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([31, 128])
+Edge index: torch.Size([2, 167])
+Edge attr: torch.Size([167, 512])
+Projected edge attr: torch.Size([167, 128])
+GAT output: torch.Size([31, 128])
+Output after norm and activation: torch.Size([31, 128])
+
+[Epoch 0] Step 30
+  Total Loss       = 78.9116
+  InfoNCE          = 0.7956
+  Variance Loss    = 0.7805
+  Covariance Loss  = 0.0064
+  ---
+  Var(src, ref)    = 0.0973, 0.0583
+  STD(src, ref)    = 0.2484, 0.1891
+  Norm(src, ref)   = 6.9831, 6.3006
+  Cov(src, ref)    = 0.0617, 0.0358
+  Cosine Sim       = 0.3809
+  Grad Norm        = 230.2418
+  LR               = 0.000038
+  ⚠️  Low variance → Severe collapse!
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([64, 128])
+Edge index: torch.Size([2, 288])
+Edge attr: torch.Size([288, 8])
+Projected edge attr: torch.Size([288, 128])
+GAT output: torch.Size([64, 128])
+Output after norm and activation: torch.Size([64, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([64, 128])
+Edge index: torch.Size([2, 288])
+Edge attr: torch.Size([288, 8])
+Projected edge attr: torch.Size([288, 128])
+GAT output: torch.Size([64, 128])
+Output after norm and activation: torch.Size([64, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([64, 128])
+Edge index: torch.Size([2, 372])
+Edge attr: torch.Size([372, 512])
+Projected edge attr: torch.Size([372, 128])
+GAT output: torch.Size([64, 128])
+Output after norm and activation: torch.Size([64, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([64, 128])
+Edge index: torch.Size([2, 372])
+Edge attr: torch.Size([372, 512])
+Projected edge attr: torch.Size([372, 128])
+GAT output: torch.Size([64, 128])
+Output after norm and activation: torch.Size([64, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([48, 128])
+Edge index: torch.Size([2, 215])
+Edge attr: torch.Size([215, 8])
+Projected edge attr: torch.Size([215, 128])
+GAT output: torch.Size([48, 128])
+Output after norm and activation: torch.Size([48, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([48, 128])
+Edge index: torch.Size([2, 215])
+Edge attr: torch.Size([215, 8])
+Projected edge attr: torch.Size([215, 128])
+GAT output: torch.Size([48, 128])
+Output after norm and activation: torch.Size([48, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([48, 128])
+Edge index: torch.Size([2, 275])
+Edge attr: torch.Size([275, 512])
+Projected edge attr: torch.Size([275, 128])
+GAT output: torch.Size([48, 128])
+Output after norm and activation: torch.Size([48, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([48, 128])
+Edge index: torch.Size([2, 275])
+Edge attr: torch.Size([275, 512])
+Projected edge attr: torch.Size([275, 128])
+GAT output: torch.Size([48, 128])
+Output after norm and activation: torch.Size([48, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([58, 128])
+Edge index: torch.Size([2, 260])
+Edge attr: torch.Size([260, 8])
+Projected edge attr: torch.Size([260, 128])
+GAT output: torch.Size([58, 128])
+Output after norm and activation: torch.Size([58, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([58, 128])
+Edge index: torch.Size([2, 260])
+Edge attr: torch.Size([260, 8])
+Projected edge attr: torch.Size([260, 128])
+GAT output: torch.Size([58, 128])
+Output after norm and activation: torch.Size([58, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([58, 128])
+Edge index: torch.Size([2, 322])
+Edge attr: torch.Size([322, 512])
+Projected edge attr: torch.Size([322, 128])
+GAT output: torch.Size([58, 128])
+Output after norm and activation: torch.Size([58, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([58, 128])
+Edge index: torch.Size([2, 322])
+Edge attr: torch.Size([322, 512])
+Projected edge attr: torch.Size([322, 128])
+GAT output: torch.Size([58, 128])
+Output after norm and activation: torch.Size([58, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([45, 128])
+Edge index: torch.Size([2, 202])
+Edge attr: torch.Size([202, 8])
+Projected edge attr: torch.Size([202, 128])
+GAT output: torch.Size([45, 128])
+Output after norm and activation: torch.Size([45, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([45, 128])
+Edge index: torch.Size([2, 202])
+Edge attr: torch.Size([202, 8])
+Projected edge attr: torch.Size([202, 128])
+GAT output: torch.Size([45, 128])
+Output after norm and activation: torch.Size([45, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([45, 128])
+Edge index: torch.Size([2, 247])
+Edge attr: torch.Size([247, 512])
+Projected edge attr: torch.Size([247, 128])
+GAT output: torch.Size([45, 128])
+Output after norm and activation: torch.Size([45, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([45, 128])
+Edge index: torch.Size([2, 247])
+Edge attr: torch.Size([247, 512])
+Projected edge attr: torch.Size([247, 128])
+GAT output: torch.Size([45, 128])
+Output after norm and activation: torch.Size([45, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([44, 128])
+Edge index: torch.Size([2, 198])
+Edge attr: torch.Size([198, 8])
+Projected edge attr: torch.Size([198, 128])
+GAT output: torch.Size([44, 128])
+Output after norm and activation: torch.Size([44, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([44, 128])
+Edge index: torch.Size([2, 198])
+Edge attr: torch.Size([198, 8])
+Projected edge attr: torch.Size([198, 128])
+GAT output: torch.Size([44, 128])
+Output after norm and activation: torch.Size([44, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([44, 128])
+Edge index: torch.Size([2, 242])
+Edge attr: torch.Size([242, 512])
+Projected edge attr: torch.Size([242, 128])
+GAT output: torch.Size([44, 128])
+Output after norm and activation: torch.Size([44, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([44, 128])
+Edge index: torch.Size([2, 242])
+Edge attr: torch.Size([242, 512])
+Projected edge attr: torch.Size([242, 128])
+GAT output: torch.Size([44, 128])
+Output after norm and activation: torch.Size([44, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([47, 128])
+Edge index: torch.Size([2, 211])
+Edge attr: torch.Size([211, 8])
+Projected edge attr: torch.Size([211, 128])
+GAT output: torch.Size([47, 128])
+Output after norm and activation: torch.Size([47, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([47, 128])
+Edge index: torch.Size([2, 211])
+Edge attr: torch.Size([211, 8])
+Projected edge attr: torch.Size([211, 128])
+GAT output: torch.Size([47, 128])
+Output after norm and activation: torch.Size([47, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([47, 128])
+Edge index: torch.Size([2, 250])
+Edge attr: torch.Size([250, 512])
+Projected edge attr: torch.Size([250, 128])
+GAT output: torch.Size([47, 128])
+Output after norm and activation: torch.Size([47, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([47, 128])
+Edge index: torch.Size([2, 250])
+Edge attr: torch.Size([250, 512])
+Projected edge attr: torch.Size([250, 128])
+GAT output: torch.Size([47, 128])
+Output after norm and activation: torch.Size([47, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([29, 128])
+Edge index: torch.Size([2, 130])
+Edge attr: torch.Size([130, 8])
+Projected edge attr: torch.Size([130, 128])
+GAT output: torch.Size([29, 128])
+Output after norm and activation: torch.Size([29, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([29, 128])
+Edge index: torch.Size([2, 130])
+Edge attr: torch.Size([130, 8])
+Projected edge attr: torch.Size([130, 128])
+GAT output: torch.Size([29, 128])
+Output after norm and activation: torch.Size([29, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([29, 128])
+Edge index: torch.Size([2, 168])
+Edge attr: torch.Size([168, 512])
+Projected edge attr: torch.Size([168, 128])
+GAT output: torch.Size([29, 128])
+Output after norm and activation: torch.Size([29, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([29, 128])
+Edge index: torch.Size([2, 168])
+Edge attr: torch.Size([168, 512])
+Projected edge attr: torch.Size([168, 128])
+GAT output: torch.Size([29, 128])
+Output after norm and activation: torch.Size([29, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([24, 128])
+Edge index: torch.Size([2, 107])
+Edge attr: torch.Size([107, 8])
+Projected edge attr: torch.Size([107, 128])
+GAT output: torch.Size([24, 128])
+Output after norm and activation: torch.Size([24, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([24, 128])
+Edge index: torch.Size([2, 107])
+Edge attr: torch.Size([107, 8])
+Projected edge attr: torch.Size([107, 128])
+GAT output: torch.Size([24, 128])
+Output after norm and activation: torch.Size([24, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([24, 128])
+Edge index: torch.Size([2, 136])
+Edge attr: torch.Size([136, 512])
+Projected edge attr: torch.Size([136, 128])
+GAT output: torch.Size([24, 128])
+Output after norm and activation: torch.Size([24, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([24, 128])
+Edge index: torch.Size([2, 136])
+Edge attr: torch.Size([136, 512])
+Projected edge attr: torch.Size([136, 128])
+GAT output: torch.Size([24, 128])
+Output after norm and activation: torch.Size([24, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([69, 128])
+Edge index: torch.Size([2, 310])
+Edge attr: torch.Size([310, 8])
+Projected edge attr: torch.Size([310, 128])
+GAT output: torch.Size([69, 128])
+Output after norm and activation: torch.Size([69, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([69, 128])
+Edge index: torch.Size([2, 310])
+Edge attr: torch.Size([310, 8])
+Projected edge attr: torch.Size([310, 128])
+GAT output: torch.Size([69, 128])
+Output after norm and activation: torch.Size([69, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([69, 128])
+Edge index: torch.Size([2, 394])
+Edge attr: torch.Size([394, 512])
+Projected edge attr: torch.Size([394, 128])
+GAT output: torch.Size([69, 128])
+Output after norm and activation: torch.Size([69, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([69, 128])
+Edge index: torch.Size([2, 394])
+Edge attr: torch.Size([394, 512])
+Projected edge attr: torch.Size([394, 128])
+GAT output: torch.Size([69, 128])
+Output after norm and activation: torch.Size([69, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([43, 128])
+Edge index: torch.Size([2, 193])
+Edge attr: torch.Size([193, 8])
+Projected edge attr: torch.Size([193, 128])
+GAT output: torch.Size([43, 128])
+Output after norm and activation: torch.Size([43, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([43, 128])
+Edge index: torch.Size([2, 193])
+Edge attr: torch.Size([193, 8])
+Projected edge attr: torch.Size([193, 128])
+GAT output: torch.Size([43, 128])
+Output after norm and activation: torch.Size([43, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([43, 128])
+Edge index: torch.Size([2, 239])
+Edge attr: torch.Size([239, 512])
+Projected edge attr: torch.Size([239, 128])
+GAT output: torch.Size([43, 128])
+Output after norm and activation: torch.Size([43, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([43, 128])
+Edge index: torch.Size([2, 239])
+Edge attr: torch.Size([239, 512])
+Projected edge attr: torch.Size([239, 128])
+GAT output: torch.Size([43, 128])
+Output after norm and activation: torch.Size([43, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([36, 128])
+Edge index: torch.Size([2, 161])
+Edge attr: torch.Size([161, 8])
+Projected edge attr: torch.Size([161, 128])
+GAT output: torch.Size([36, 128])
+Output after norm and activation: torch.Size([36, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([36, 128])
+Edge index: torch.Size([2, 161])
+Edge attr: torch.Size([161, 8])
+Projected edge attr: torch.Size([161, 128])
+GAT output: torch.Size([36, 128])
+Output after norm and activation: torch.Size([36, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([36, 128])
+Edge index: torch.Size([2, 195])
+Edge attr: torch.Size([195, 512])
+Projected edge attr: torch.Size([195, 128])
+GAT output: torch.Size([36, 128])
+Output after norm and activation: torch.Size([36, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([36, 128])
+Edge index: torch.Size([2, 195])
+Edge attr: torch.Size([195, 512])
+Projected edge attr: torch.Size([195, 128])
+GAT output: torch.Size([36, 128])
+Output after norm and activation: torch.Size([36, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([60, 128])
+Edge index: torch.Size([2, 270])
+Edge attr: torch.Size([270, 8])
+Projected edge attr: torch.Size([270, 128])
+GAT output: torch.Size([60, 128])
+Output after norm and activation: torch.Size([60, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([60, 128])
+Edge index: torch.Size([2, 270])
+Edge attr: torch.Size([270, 8])
+Projected edge attr: torch.Size([270, 128])
+GAT output: torch.Size([60, 128])
+Output after norm and activation: torch.Size([60, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([60, 128])
+Edge index: torch.Size([2, 338])
+Edge attr: torch.Size([338, 512])
+Projected edge attr: torch.Size([338, 128])
+GAT output: torch.Size([60, 128])
+Output after norm and activation: torch.Size([60, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([60, 128])
+Edge index: torch.Size([2, 338])
+Edge attr: torch.Size([338, 512])
+Projected edge attr: torch.Size([338, 128])
+GAT output: torch.Size([60, 128])
+Output after norm and activation: torch.Size([60, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([61, 128])
+Edge index: torch.Size([2, 274])
+Edge attr: torch.Size([274, 8])
+Projected edge attr: torch.Size([274, 128])
+GAT output: torch.Size([61, 128])
+Output after norm and activation: torch.Size([61, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([61, 128])
+Edge index: torch.Size([2, 274])
+Edge attr: torch.Size([274, 8])
+Projected edge attr: torch.Size([274, 128])
+GAT output: torch.Size([61, 128])
+Output after norm and activation: torch.Size([61, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([61, 128])
+Edge index: torch.Size([2, 347])
+Edge attr: torch.Size([347, 512])
+Projected edge attr: torch.Size([347, 128])
+GAT output: torch.Size([61, 128])
+Output after norm and activation: torch.Size([61, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([61, 128])
+Edge index: torch.Size([2, 347])
+Edge attr: torch.Size([347, 512])
+Projected edge attr: torch.Size([347, 128])
+GAT output: torch.Size([61, 128])
+Output after norm and activation: torch.Size([61, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([47, 128])
+Edge index: torch.Size([2, 211])
+Edge attr: torch.Size([211, 8])
+Projected edge attr: torch.Size([211, 128])
+GAT output: torch.Size([47, 128])
+Output after norm and activation: torch.Size([47, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([47, 128])
+Edge index: torch.Size([2, 211])
+Edge attr: torch.Size([211, 8])
+Projected edge attr: torch.Size([211, 128])
+GAT output: torch.Size([47, 128])
+Output after norm and activation: torch.Size([47, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([47, 128])
+Edge index: torch.Size([2, 267])
+Edge attr: torch.Size([267, 512])
+Projected edge attr: torch.Size([267, 128])
+GAT output: torch.Size([47, 128])
+Output after norm and activation: torch.Size([47, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([47, 128])
+Edge index: torch.Size([2, 267])
+Edge attr: torch.Size([267, 512])
+Projected edge attr: torch.Size([267, 128])
+GAT output: torch.Size([47, 128])
+Output after norm and activation: torch.Size([47, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([38, 128])
+Edge index: torch.Size([2, 170])
+Edge attr: torch.Size([170, 8])
+Projected edge attr: torch.Size([170, 128])
+GAT output: torch.Size([38, 128])
+Output after norm and activation: torch.Size([38, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([38, 128])
+Edge index: torch.Size([2, 170])
+Edge attr: torch.Size([170, 8])
+Projected edge attr: torch.Size([170, 128])
+GAT output: torch.Size([38, 128])
+Output after norm and activation: torch.Size([38, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([38, 128])
+Edge index: torch.Size([2, 206])
+Edge attr: torch.Size([206, 512])
+Projected edge attr: torch.Size([206, 128])
+GAT output: torch.Size([38, 128])
+Output after norm and activation: torch.Size([38, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([38, 128])
+Edge index: torch.Size([2, 206])
+Edge attr: torch.Size([206, 512])
+Projected edge attr: torch.Size([206, 128])
+GAT output: torch.Size([38, 128])
+Output after norm and activation: torch.Size([38, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([49, 128])
+Edge index: torch.Size([2, 220])
+Edge attr: torch.Size([220, 8])
+Projected edge attr: torch.Size([220, 128])
+GAT output: torch.Size([49, 128])
+Output after norm and activation: torch.Size([49, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([49, 128])
+Edge index: torch.Size([2, 220])
+Edge attr: torch.Size([220, 8])
+Projected edge attr: torch.Size([220, 128])
+GAT output: torch.Size([49, 128])
+Output after norm and activation: torch.Size([49, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([49, 128])
+Edge index: torch.Size([2, 291])
+Edge attr: torch.Size([291, 512])
+Projected edge attr: torch.Size([291, 128])
+GAT output: torch.Size([49, 128])
+Output after norm and activation: torch.Size([49, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([49, 128])
+Edge index: torch.Size([2, 291])
+Edge attr: torch.Size([291, 512])
+Projected edge attr: torch.Size([291, 128])
+GAT output: torch.Size([49, 128])
+Output after norm and activation: torch.Size([49, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([83, 128])
+Edge index: torch.Size([2, 373])
+Edge attr: torch.Size([373, 8])
+Projected edge attr: torch.Size([373, 128])
+GAT output: torch.Size([83, 128])
+Output after norm and activation: torch.Size([83, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([83, 128])
+Edge index: torch.Size([2, 373])
+Edge attr: torch.Size([373, 8])
+Projected edge attr: torch.Size([373, 128])
+GAT output: torch.Size([83, 128])
+Output after norm and activation: torch.Size([83, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([83, 128])
+Edge index: torch.Size([2, 453])
+Edge attr: torch.Size([453, 512])
+Projected edge attr: torch.Size([453, 128])
+GAT output: torch.Size([83, 128])
+Output after norm and activation: torch.Size([83, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([83, 128])
+Edge index: torch.Size([2, 453])
+Edge attr: torch.Size([453, 512])
+Projected edge attr: torch.Size([453, 128])
+GAT output: torch.Size([83, 128])
+Output after norm and activation: torch.Size([83, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([77, 128])
+Edge index: torch.Size([2, 346])
+Edge attr: torch.Size([346, 8])
+Projected edge attr: torch.Size([346, 128])
+GAT output: torch.Size([77, 128])
+Output after norm and activation: torch.Size([77, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([77, 128])
+Edge index: torch.Size([2, 346])
+Edge attr: torch.Size([346, 8])
+Projected edge attr: torch.Size([346, 128])
+GAT output: torch.Size([77, 128])
+Output after norm and activation: torch.Size([77, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([77, 128])
+Edge index: torch.Size([2, 416])
+Edge attr: torch.Size([416, 512])
+Projected edge attr: torch.Size([416, 128])
+GAT output: torch.Size([77, 128])
+Output after norm and activation: torch.Size([77, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([77, 128])
+Edge index: torch.Size([2, 416])
+Edge attr: torch.Size([416, 512])
+Projected edge attr: torch.Size([416, 128])
+GAT output: torch.Size([77, 128])
+Output after norm and activation: torch.Size([77, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([31, 128])
+Edge index: torch.Size([2, 139])
+Edge attr: torch.Size([139, 8])
+Projected edge attr: torch.Size([139, 128])
+GAT output: torch.Size([31, 128])
+Output after norm and activation: torch.Size([31, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([31, 128])
+Edge index: torch.Size([2, 139])
+Edge attr: torch.Size([139, 8])
+Projected edge attr: torch.Size([139, 128])
+GAT output: torch.Size([31, 128])
+Output after norm and activation: torch.Size([31, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([31, 128])
+Edge index: torch.Size([2, 176])
+Edge attr: torch.Size([176, 512])
+Projected edge attr: torch.Size([176, 128])
+GAT output: torch.Size([31, 128])
+Output after norm and activation: torch.Size([31, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([31, 128])
+Edge index: torch.Size([2, 176])
+Edge attr: torch.Size([176, 512])
+Projected edge attr: torch.Size([176, 128])
+GAT output: torch.Size([31, 128])
+Output after norm and activation: torch.Size([31, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([21, 128])
+Edge index: torch.Size([2, 94])
+Edge attr: torch.Size([94, 8])
+Projected edge attr: torch.Size([94, 128])
+GAT output: torch.Size([21, 128])
+Output after norm and activation: torch.Size([21, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([21, 128])
+Edge index: torch.Size([2, 94])
+Edge attr: torch.Size([94, 8])
+Projected edge attr: torch.Size([94, 128])
+GAT output: torch.Size([21, 128])
+Output after norm and activation: torch.Size([21, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([21, 128])
+Edge index: torch.Size([2, 118])
+Edge attr: torch.Size([118, 512])
+Projected edge attr: torch.Size([118, 128])
+GAT output: torch.Size([21, 128])
+Output after norm and activation: torch.Size([21, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([21, 128])
+Edge index: torch.Size([2, 118])
+Edge attr: torch.Size([118, 512])
+Projected edge attr: torch.Size([118, 128])
+GAT output: torch.Size([21, 128])
+Output after norm and activation: torch.Size([21, 128])
+
+[Epoch 0] Step 40
+  Total Loss       = 78.5573
+  InfoNCE          = 1.8144
+  Variance Loss    = 0.7667
+  Covariance Loss  = 0.0077
+  ---
+  Var(src, ref)    = 0.0809, 0.0946
+  STD(src, ref)    = 0.2241, 0.2411
+  Norm(src, ref)   = 6.5440, 6.3967
+  Cov(src, ref)    = 0.0502, 0.0582
+  Cosine Sim       = 0.3909
+  Grad Norm        = 236.2362
+  LR               = 0.000010
+  ⚠️  Low variance → Severe collapse!
+  ✓  Healthy training dynamics!
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([99, 128])
+Edge index: torch.Size([2, 445])
+Edge attr: torch.Size([445, 8])
+Projected edge attr: torch.Size([445, 128])
+GAT output: torch.Size([99, 128])
+Output after norm and activation: torch.Size([99, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([99, 128])
+Edge index: torch.Size([2, 445])
+Edge attr: torch.Size([445, 8])
+Projected edge attr: torch.Size([445, 128])
+GAT output: torch.Size([99, 128])
+Output after norm and activation: torch.Size([99, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([99, 128])
+Edge index: torch.Size([2, 576])
+Edge attr: torch.Size([576, 512])
+Projected edge attr: torch.Size([576, 128])
+GAT output: torch.Size([99, 128])
+Output after norm and activation: torch.Size([99, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([99, 128])
+Edge index: torch.Size([2, 576])
+Edge attr: torch.Size([576, 512])
+Projected edge attr: torch.Size([576, 128])
+GAT output: torch.Size([99, 128])
+Output after norm and activation: torch.Size([99, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([61, 128])
+Edge index: torch.Size([2, 274])
+Edge attr: torch.Size([274, 8])
+Projected edge attr: torch.Size([274, 128])
+GAT output: torch.Size([61, 128])
+Output after norm and activation: torch.Size([61, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([61, 128])
+Edge index: torch.Size([2, 274])
+Edge attr: torch.Size([274, 8])
+Projected edge attr: torch.Size([274, 128])
+GAT output: torch.Size([61, 128])
+Output after norm and activation: torch.Size([61, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([61, 128])
+Edge index: torch.Size([2, 338])
+Edge attr: torch.Size([338, 512])
+Projected edge attr: torch.Size([338, 128])
+GAT output: torch.Size([61, 128])
+Output after norm and activation: torch.Size([61, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([61, 128])
+Edge index: torch.Size([2, 338])
+Edge attr: torch.Size([338, 512])
+Projected edge attr: torch.Size([338, 128])
+GAT output: torch.Size([61, 128])
+Output after norm and activation: torch.Size([61, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([43, 128])
+Edge index: torch.Size([2, 193])
+Edge attr: torch.Size([193, 8])
+Projected edge attr: torch.Size([193, 128])
+GAT output: torch.Size([43, 128])
+Output after norm and activation: torch.Size([43, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([43, 128])
+Edge index: torch.Size([2, 193])
+Edge attr: torch.Size([193, 8])
+Projected edge attr: torch.Size([193, 128])
+GAT output: torch.Size([43, 128])
+Output after norm and activation: torch.Size([43, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([43, 128])
+Edge index: torch.Size([2, 229])
+Edge attr: torch.Size([229, 512])
+Projected edge attr: torch.Size([229, 128])
+GAT output: torch.Size([43, 128])
+Output after norm and activation: torch.Size([43, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([43, 128])
+Edge index: torch.Size([2, 229])
+Edge attr: torch.Size([229, 512])
+Projected edge attr: torch.Size([229, 128])
+GAT output: torch.Size([43, 128])
+Output after norm and activation: torch.Size([43, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([30, 128])
+Edge index: torch.Size([2, 134])
+Edge attr: torch.Size([134, 8])
+Projected edge attr: torch.Size([134, 128])
+GAT output: torch.Size([30, 128])
+Output after norm and activation: torch.Size([30, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([30, 128])
+Edge index: torch.Size([2, 134])
+Edge attr: torch.Size([134, 8])
+Projected edge attr: torch.Size([134, 128])
+GAT output: torch.Size([30, 128])
+Output after norm and activation: torch.Size([30, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([30, 128])
+Edge index: torch.Size([2, 156])
+Edge attr: torch.Size([156, 512])
+Projected edge attr: torch.Size([156, 128])
+GAT output: torch.Size([30, 128])
+Output after norm and activation: torch.Size([30, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([30, 128])
+Edge index: torch.Size([2, 156])
+Edge attr: torch.Size([156, 512])
+Projected edge attr: torch.Size([156, 128])
+GAT output: torch.Size([30, 128])
+Output after norm and activation: torch.Size([30, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([24, 128])
+Edge index: torch.Size([2, 107])
+Edge attr: torch.Size([107, 8])
+Projected edge attr: torch.Size([107, 128])
+GAT output: torch.Size([24, 128])
+Output after norm and activation: torch.Size([24, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([24, 128])
+Edge index: torch.Size([2, 107])
+Edge attr: torch.Size([107, 8])
+Projected edge attr: torch.Size([107, 128])
+GAT output: torch.Size([24, 128])
+Output after norm and activation: torch.Size([24, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([24, 128])
+Edge index: torch.Size([2, 134])
+Edge attr: torch.Size([134, 512])
+Projected edge attr: torch.Size([134, 128])
+GAT output: torch.Size([24, 128])
+Output after norm and activation: torch.Size([24, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([24, 128])
+Edge index: torch.Size([2, 134])
+Edge attr: torch.Size([134, 512])
+Projected edge attr: torch.Size([134, 128])
+GAT output: torch.Size([24, 128])
+Output after norm and activation: torch.Size([24, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([23, 128])
+Edge index: torch.Size([2, 103])
+Edge attr: torch.Size([103, 8])
+Projected edge attr: torch.Size([103, 128])
+GAT output: torch.Size([23, 128])
+Output after norm and activation: torch.Size([23, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([23, 128])
+Edge index: torch.Size([2, 103])
+Edge attr: torch.Size([103, 8])
+Projected edge attr: torch.Size([103, 128])
+GAT output: torch.Size([23, 128])
+Output after norm and activation: torch.Size([23, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([23, 128])
+Edge index: torch.Size([2, 125])
+Edge attr: torch.Size([125, 512])
+Projected edge attr: torch.Size([125, 128])
+GAT output: torch.Size([23, 128])
+Output after norm and activation: torch.Size([23, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([23, 128])
+Edge index: torch.Size([2, 125])
+Edge attr: torch.Size([125, 512])
+Projected edge attr: torch.Size([125, 128])
+GAT output: torch.Size([23, 128])
+Output after norm and activation: torch.Size([23, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([38, 128])
+Edge index: torch.Size([2, 171])
+Edge attr: torch.Size([171, 8])
+Projected edge attr: torch.Size([171, 128])
+GAT output: torch.Size([38, 128])
+Output after norm and activation: torch.Size([38, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([38, 128])
+Edge index: torch.Size([2, 171])
+Edge attr: torch.Size([171, 8])
+Projected edge attr: torch.Size([171, 128])
+GAT output: torch.Size([38, 128])
+Output after norm and activation: torch.Size([38, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([38, 128])
+Edge index: torch.Size([2, 213])
+Edge attr: torch.Size([213, 512])
+Projected edge attr: torch.Size([213, 128])
+GAT output: torch.Size([38, 128])
+Output after norm and activation: torch.Size([38, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([38, 128])
+Edge index: torch.Size([2, 213])
+Edge attr: torch.Size([213, 512])
+Projected edge attr: torch.Size([213, 128])
+GAT output: torch.Size([38, 128])
+Output after norm and activation: torch.Size([38, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([42, 128])
+Edge index: torch.Size([2, 188])
+Edge attr: torch.Size([188, 8])
+Projected edge attr: torch.Size([188, 128])
+GAT output: torch.Size([42, 128])
+Output after norm and activation: torch.Size([42, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([42, 128])
+Edge index: torch.Size([2, 188])
+Edge attr: torch.Size([188, 8])
+Projected edge attr: torch.Size([188, 128])
+GAT output: torch.Size([42, 128])
+Output after norm and activation: torch.Size([42, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([42, 128])
+Edge index: torch.Size([2, 237])
+Edge attr: torch.Size([237, 512])
+Projected edge attr: torch.Size([237, 128])
+GAT output: torch.Size([42, 128])
+Output after norm and activation: torch.Size([42, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([42, 128])
+Edge index: torch.Size([2, 237])
+Edge attr: torch.Size([237, 512])
+Projected edge attr: torch.Size([237, 128])
+GAT output: torch.Size([42, 128])
+Output after norm and activation: torch.Size([42, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([59, 128])
+Edge index: torch.Size([2, 265])
+Edge attr: torch.Size([265, 8])
+Projected edge attr: torch.Size([265, 128])
+GAT output: torch.Size([59, 128])
+Output after norm and activation: torch.Size([59, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([59, 128])
+Edge index: torch.Size([2, 265])
+Edge attr: torch.Size([265, 8])
+Projected edge attr: torch.Size([265, 128])
+GAT output: torch.Size([59, 128])
+Output after norm and activation: torch.Size([59, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([59, 128])
+Edge index: torch.Size([2, 327])
+Edge attr: torch.Size([327, 512])
+Projected edge attr: torch.Size([327, 128])
+GAT output: torch.Size([59, 128])
+Output after norm and activation: torch.Size([59, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([59, 128])
+Edge index: torch.Size([2, 327])
+Edge attr: torch.Size([327, 512])
+Projected edge attr: torch.Size([327, 128])
+GAT output: torch.Size([59, 128])
+Output after norm and activation: torch.Size([59, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([49, 128])
+Edge index: torch.Size([2, 220])
+Edge attr: torch.Size([220, 8])
+Projected edge attr: torch.Size([220, 128])
+GAT output: torch.Size([49, 128])
+Output after norm and activation: torch.Size([49, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([49, 128])
+Edge index: torch.Size([2, 220])
+Edge attr: torch.Size([220, 8])
+Projected edge attr: torch.Size([220, 128])
+GAT output: torch.Size([49, 128])
+Output after norm and activation: torch.Size([49, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([49, 128])
+Edge index: torch.Size([2, 282])
+Edge attr: torch.Size([282, 512])
+Projected edge attr: torch.Size([282, 128])
+GAT output: torch.Size([49, 128])
+Output after norm and activation: torch.Size([49, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([49, 128])
+Edge index: torch.Size([2, 282])
+Edge attr: torch.Size([282, 512])
+Projected edge attr: torch.Size([282, 128])
+GAT output: torch.Size([49, 128])
+Output after norm and activation: torch.Size([49, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([39, 128])
+Edge index: torch.Size([2, 175])
+Edge attr: torch.Size([175, 8])
+Projected edge attr: torch.Size([175, 128])
+GAT output: torch.Size([39, 128])
+Output after norm and activation: torch.Size([39, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([39, 128])
+Edge index: torch.Size([2, 175])
+Edge attr: torch.Size([175, 8])
+Projected edge attr: torch.Size([175, 128])
+GAT output: torch.Size([39, 128])
+Output after norm and activation: torch.Size([39, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([39, 128])
+Edge index: torch.Size([2, 228])
+Edge attr: torch.Size([228, 512])
+Projected edge attr: torch.Size([228, 128])
+GAT output: torch.Size([39, 128])
+Output after norm and activation: torch.Size([39, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([39, 128])
+Edge index: torch.Size([2, 228])
+Edge attr: torch.Size([228, 512])
+Projected edge attr: torch.Size([228, 128])
+GAT output: torch.Size([39, 128])
+Output after norm and activation: torch.Size([39, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([29, 128])
+Edge index: torch.Size([2, 130])
+Edge attr: torch.Size([130, 8])
+Projected edge attr: torch.Size([130, 128])
+GAT output: torch.Size([29, 128])
+Output after norm and activation: torch.Size([29, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([29, 128])
+Edge index: torch.Size([2, 130])
+Edge attr: torch.Size([130, 8])
+Projected edge attr: torch.Size([130, 128])
+GAT output: torch.Size([29, 128])
+Output after norm and activation: torch.Size([29, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([29, 128])
+Edge index: torch.Size([2, 161])
+Edge attr: torch.Size([161, 512])
+Projected edge attr: torch.Size([161, 128])
+GAT output: torch.Size([29, 128])
+Output after norm and activation: torch.Size([29, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([29, 128])
+Edge index: torch.Size([2, 161])
+Edge attr: torch.Size([161, 512])
+Projected edge attr: torch.Size([161, 128])
+GAT output: torch.Size([29, 128])
+Output after norm and activation: torch.Size([29, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([68, 128])
+Edge index: torch.Size([2, 305])
+Edge attr: torch.Size([305, 8])
+Projected edge attr: torch.Size([305, 128])
+GAT output: torch.Size([68, 128])
+Output after norm and activation: torch.Size([68, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([68, 128])
+Edge index: torch.Size([2, 305])
+Edge attr: torch.Size([305, 8])
+Projected edge attr: torch.Size([305, 128])
+GAT output: torch.Size([68, 128])
+Output after norm and activation: torch.Size([68, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([68, 128])
+Edge index: torch.Size([2, 388])
+Edge attr: torch.Size([388, 512])
+Projected edge attr: torch.Size([388, 128])
+GAT output: torch.Size([68, 128])
+Output after norm and activation: torch.Size([68, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([68, 128])
+Edge index: torch.Size([2, 388])
+Edge attr: torch.Size([388, 512])
+Projected edge attr: torch.Size([388, 128])
+GAT output: torch.Size([68, 128])
+Output after norm and activation: torch.Size([68, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([54, 128])
+Edge index: torch.Size([2, 242])
+Edge attr: torch.Size([242, 8])
+Projected edge attr: torch.Size([242, 128])
+GAT output: torch.Size([54, 128])
+Output after norm and activation: torch.Size([54, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([54, 128])
+Edge index: torch.Size([2, 242])
+Edge attr: torch.Size([242, 8])
+Projected edge attr: torch.Size([242, 128])
+GAT output: torch.Size([54, 128])
+Output after norm and activation: torch.Size([54, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([54, 128])
+Edge index: torch.Size([2, 292])
+Edge attr: torch.Size([292, 512])
+Projected edge attr: torch.Size([292, 128])
+GAT output: torch.Size([54, 128])
+Output after norm and activation: torch.Size([54, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([54, 128])
+Edge index: torch.Size([2, 292])
+Edge attr: torch.Size([292, 512])
+Projected edge attr: torch.Size([292, 128])
+GAT output: torch.Size([54, 128])
+Output after norm and activation: torch.Size([54, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([42, 128])
+Edge index: torch.Size([2, 189])
+Edge attr: torch.Size([189, 8])
+Projected edge attr: torch.Size([189, 128])
+GAT output: torch.Size([42, 128])
+Output after norm and activation: torch.Size([42, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([42, 128])
+Edge index: torch.Size([2, 189])
+Edge attr: torch.Size([189, 8])
+Projected edge attr: torch.Size([189, 128])
+GAT output: torch.Size([42, 128])
+Output after norm and activation: torch.Size([42, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([42, 128])
+Edge index: torch.Size([2, 235])
+Edge attr: torch.Size([235, 512])
+Projected edge attr: torch.Size([235, 128])
+GAT output: torch.Size([42, 128])
+Output after norm and activation: torch.Size([42, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([42, 128])
+Edge index: torch.Size([2, 235])
+Edge attr: torch.Size([235, 512])
+Projected edge attr: torch.Size([235, 128])
+GAT output: torch.Size([42, 128])
+Output after norm and activation: torch.Size([42, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([41, 128])
+Edge index: torch.Size([2, 184])
+Edge attr: torch.Size([184, 8])
+Projected edge attr: torch.Size([184, 128])
+GAT output: torch.Size([41, 128])
+Output after norm and activation: torch.Size([41, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([41, 128])
+Edge index: torch.Size([2, 184])
+Edge attr: torch.Size([184, 8])
+Projected edge attr: torch.Size([184, 128])
+GAT output: torch.Size([41, 128])
+Output after norm and activation: torch.Size([41, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([41, 128])
+Edge index: torch.Size([2, 222])
+Edge attr: torch.Size([222, 512])
+Projected edge attr: torch.Size([222, 128])
+GAT output: torch.Size([41, 128])
+Output after norm and activation: torch.Size([41, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([41, 128])
+Edge index: torch.Size([2, 222])
+Edge attr: torch.Size([222, 512])
+Projected edge attr: torch.Size([222, 128])
+GAT output: torch.Size([41, 128])
+Output after norm and activation: torch.Size([41, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([64, 128])
+Edge index: torch.Size([2, 288])
+Edge attr: torch.Size([288, 8])
+Projected edge attr: torch.Size([288, 128])
+GAT output: torch.Size([64, 128])
+Output after norm and activation: torch.Size([64, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([64, 128])
+Edge index: torch.Size([2, 288])
+Edge attr: torch.Size([288, 8])
+Projected edge attr: torch.Size([288, 128])
+GAT output: torch.Size([64, 128])
+Output after norm and activation: torch.Size([64, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([64, 128])
+Edge index: torch.Size([2, 347])
+Edge attr: torch.Size([347, 512])
+Projected edge attr: torch.Size([347, 128])
+GAT output: torch.Size([64, 128])
+Output after norm and activation: torch.Size([64, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([64, 128])
+Edge index: torch.Size([2, 347])
+Edge attr: torch.Size([347, 512])
+Projected edge attr: torch.Size([347, 128])
+GAT output: torch.Size([64, 128])
+Output after norm and activation: torch.Size([64, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([43, 128])
+Edge index: torch.Size([2, 193])
+Edge attr: torch.Size([193, 8])
+Projected edge attr: torch.Size([193, 128])
+GAT output: torch.Size([43, 128])
+Output after norm and activation: torch.Size([43, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([43, 128])
+Edge index: torch.Size([2, 193])
+Edge attr: torch.Size([193, 8])
+Projected edge attr: torch.Size([193, 128])
+GAT output: torch.Size([43, 128])
+Output after norm and activation: torch.Size([43, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([43, 128])
+Edge index: torch.Size([2, 232])
+Edge attr: torch.Size([232, 512])
+Projected edge attr: torch.Size([232, 128])
+GAT output: torch.Size([43, 128])
+Output after norm and activation: torch.Size([43, 128])
+
+=== EdgeGATLayer DEBUG ===
+Input x: torch.Size([43, 128])
+Edge index: torch.Size([2, 232])
+Edge attr: torch.Size([232, 512])
+Projected edge attr: torch.Size([232, 128])
+GAT output: torch.Size([43, 128])
+Output after norm and activation: torch.Size([43, 128])
+
+======================================================================
+Epoch 0 Summary
+======================================================================
+  Avg Total Loss = 77.5579
+  Avg InfoNCE    = 1.4187
+  Avg Var Loss   = 0.7604
+  Avg Cov Loss   = 0.0102
+  Final SRC: mean=-0.0273, std=0.4230
+  Final REF: mean=-0.0180, std=0.4333
+======================================================================
+
+
+======================================================================
+Training Complete!
+======================================================================
+Best loss: 68.0096
+Final checkpoint: checkpoints//model_best.pth

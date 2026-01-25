@@ -15,7 +15,7 @@ from torch.utils.data import Dataset
 # Fallback: Generate Text Edges ONLY if missing
 # ============================================================
 
-def generate_text_edges_fallback(nodes, k_neighbors=5):
+def generate_text_edges_fallback(nodes, k_neighbors=3):
     """
     FALLBACK: Only called if scene has no text edges.
     Generates basic spatial relations based on geometry.
@@ -26,6 +26,7 @@ def generate_text_edges_fallback(nodes, k_neighbors=5):
     
     centroids = {nid: np.array(nodes[nid]["centroid"]) for nid in node_ids}
     text_edges = []
+    seen_pairs = set()
     
     for nid1 in node_ids:
         c1 = centroids[nid1]
@@ -41,6 +42,12 @@ def generate_text_edges_fallback(nodes, k_neighbors=5):
         distances.sort(key=lambda x: x[0])
         
         for dist, nid2, c2 in distances[:k_neighbors]:
+
+            pair = (str(nid1), str(nid2))
+            if pair in seen_pairs:
+                continue
+
+            seen_pairs.add(pair)
             diff = c2 - c1
             dx, dy, dz = diff
             
@@ -59,6 +66,10 @@ def generate_text_edges_fallback(nodes, k_neighbors=5):
                 "object": str(nid2),
                 "relation": relation
             })
+            
+    if len(text_edges) > len(node_ids) * k_neighbors * 2:
+        print(f"⚠️  Truncating {len(text_edges)} to {len(node_ids) * k_neighbors}")
+        text_edges = text_edges[:len(node_ids) * k_neighbors]
     
     return text_edges
 
@@ -179,6 +190,10 @@ def build_text_edges(relations, rel2id, id_to_idx):
     Build text edges from relations.
     This properly handles your scene graph format!
     """
+
+    if len(relations) > 1000:
+        print(f"    ⚠️  WARNING: Too many relations ({len(relations)}), truncating to 500")
+        relations = relations[:500]
     edge_index = []
     rel_ids = []
 

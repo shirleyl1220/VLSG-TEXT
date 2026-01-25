@@ -11,6 +11,8 @@ import argparse
 from src.datasets.dual_scene_graph_dataset import DualSceneGraphDataset
 from src.models.sgaligner.src.aligner.dual_scene_aligner import DualSceneAligner
 import torch.nn as nn
+from torch.optim.lr_scheduler import LambdaLR
+import math
 
 
 # ============================================================
@@ -286,14 +288,29 @@ def train(args):
     )
 
     # Warmup + Cosine schedule
+    warmup_ratio = 0.1
+
     def lr_schedule(step):
-        warmup_steps = 50
+        """
+        Learning rate schedule with warmup and cosine decay.
+        Fixed to prevent division by zero for small datasets.
+        """
+        total_steps = args.epochs * len(dataloader)
+        warmup_steps = int(warmup_ratio * total_steps)
+        
+        # CRITICAL: Ensure warmup_steps < total_steps
+        warmup_steps = min(warmup_steps, max(1, total_steps - 1))
+        
         if step < warmup_steps:
-            return step / warmup_steps
-        progress = (step - warmup_steps) / (args.epochs * len(dataloader) - warmup_steps)
-        return 0.5 * (1 + np.cos(progress * np.pi))
-    
-    scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer, lr_schedule)
+            # Linear warmup
+            return step / max(warmup_steps, 1)
+        else:
+            # Cosine decay
+            decay_steps = max(1, total_steps - warmup_steps)
+            progress = min(1.0, (step - warmup_steps) / decay_steps)
+            return 0.5 * (1 + math.cos(math.pi * progress))
+
+    scheduler = LambdaLR(optimizer, lr_lambda=lr_schedule)
 
     # ===== Logging =====
     os.makedirs(args.save_dir, exist_ok=True)

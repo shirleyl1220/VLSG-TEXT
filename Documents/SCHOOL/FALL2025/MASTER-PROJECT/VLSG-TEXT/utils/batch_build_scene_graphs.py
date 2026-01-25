@@ -5,19 +5,14 @@ Usage:
     python batch_build_scene_graphs.py
     
     # Or with custom parameters:
-    python batch_build_scene_graphs.py --max_scenes 50 --skip_existing
+    python batch_build_scene_graphs.py --max_scenes 100 --overwrite
 """
 
 import os
-import json
+import subprocess
 import argparse
 from pathlib import Path
-from typing import List, Tuple
 import time
-
-# Import the scene graph builder
-# Make sure build_scene_graph.py is in the same directory or adjust the import
-from build_scene_graph import build_scene_graph
 
 
 # ============================================================
@@ -26,10 +21,9 @@ from build_scene_graph import build_scene_graph
 
 DEFAULT_CONFIG = {
     "root_dir": "/Users/shirley/Documents/SCHOOL/FALL2025/MASTER-PROJECT/3RScan",
-    "out_dir": "/Users/shirley/Documents/SCHOOL/FALL2025/MASTER-PROJECT/VLSG-TEXT/scene_graphs",
-    "objects_json": "/Users/shirley/Documents/SCHOOL/FALL2025/MASTER-PROJECT/meta_files/objects.json",
+    "out_dir": "/Users/shirley/Documents/SCHOOL/FALL2025/MASTER-PROJECT/VLSG-TEXT-1/Documents/SCHOOL/FALL2025/MASTER-PROJECT/VLSG-TEXT/scene_graphs",
+    "script_path": "/Users/shirley/Documents/SCHOOL/FALL2025/MASTER-PROJECT/VLSG-TEXT-1/Documents/SCHOOL/FALL2025/MASTER-PROJECT/VLSG-TEXT/utils/build_scene_graph_from_raw.py",
     "max_scenes": 100,
-    "skip_existing": True,  # Skip scenes that already have output files
 }
 
 
@@ -37,17 +31,19 @@ DEFAULT_CONFIG = {
 # Scene Discovery
 # ============================================================
 
-def find_valid_scenes(root_dir: str, max_scenes: int = None) -> List[Tuple[str, str]]:
+def find_valid_scenes(root_dir: str, max_scenes: int = None):
     """
     Find all valid scene directories with required files.
     
     Returns:
-        List of (scene_id, scene_path) tuples
+        List of (scene_id, ply_path, semseg_path) tuples
     """
     root = Path(root_dir)
     valid_scenes = []
     
+    print("\n" + "="*70)
     print("Scanning for valid scenes...")
+    print("="*70)
     
     for scene_dir in sorted(root.iterdir()):
         if not scene_dir.is_dir():
@@ -57,22 +53,26 @@ def find_valid_scenes(root_dir: str, max_scenes: int = None) -> List[Tuple[str, 
         
         # Check for required files
         ply_path = scene_dir / "labels.instances.annotated.v2.ply"
+        semseg_path = scene_dir / "semseg.v2.json"
         
         if not ply_path.exists():
             print(f"  ⊗ {scene_id}: Missing PLY file")
             continue
         
-        # Optional: Check for description file
-        desc_path = scene_dir / "output" / "descriptions" / "all_descriptions.json"
-        if not desc_path.exists():
-            print(f"  ⚠ {scene_id}: No descriptions (will process anyway)")
+        if not semseg_path.exists():
+            print(f"  ⊗ {scene_id}: Missing semseg file")
+            continue
         
-        valid_scenes.append((scene_id, str(scene_dir)))
+        valid_scenes.append((scene_id, str(ply_path), str(semseg_path)))
+        print(f"  ✓ {scene_id}")
         
         if max_scenes and len(valid_scenes) >= max_scenes:
+            print(f"\n  Reached max_scenes limit ({max_scenes})")
             break
     
     print(f"\nFound {len(valid_scenes)} valid scenes")
+    print("="*70 + "\n")
+    
     return valid_scenes
 
 
@@ -82,13 +82,14 @@ def find_valid_scenes(root_dir: str, max_scenes: int = None) -> List[Tuple[str, 
 
 def process_scene(
     scene_id: str,
-    scene_path: str,
+    ply_path: str,
+    semseg_path: str,
     out_dir: str,
-    objects_json: str,
+    script_path: str,
     skip_existing: bool = True
-) -> Tuple[bool, str]:
+):
     """
-    Process a single scene and save the scene graph.
+    Process a single scene by calling the build_scene_graph script.
     
     Returns:
         (success: bool, message: str)
@@ -100,23 +101,48 @@ def process_scene(
         return True, "Already exists (skipped)"
     
     try:
-        # Build scene graph
-        scene_graph = build_scene_graph(scene_path, objects_json)
+        # Call the build_scene_graph script
+        cmd = [
+            "python3",
+            script_path,
+            "--ply", ply_path,
+            "--semseg", semseg_path,
+            "--out", str(out_path)
+        ]
         
-        # Save to file
-        with open(out_path, 'w') as f:
-            json.dump(scene_graph, f, indent=2)
+        result = subprocess.run(
+            cmd,
+            capture_output=True,
+            text=True,
+            timeout=60  # 60 second timeout per scene
+        )
         
-        # Return success with stats
-        n_nodes = len(scene_graph['nodes'])
-        n_edges_geom = len(scene_graph['edges_geometric'])
-        n_edges_text = len(scene_graph['edges_text'])
+        if result.returncode != 0:
+            # Script failed
+            error_msg = result.stderr.strip() if result.stderr else "Unknown error"
+            return False, f"✗ Script failed: {error_msg[:100]}"
         
-        msg = f"✓ {n_nodes} nodes, {n_edges_geom} geom edges, {n_edges_text} text edges"
+        # Check if output file was created
+        if not out_path.exists():
+            return False, "✗ Output file not created"
+        
+        # Parse the output to get stats (optional)
+        try:
+            import json
+            with open(out_path, 'r') as f:
+                data = json.load(f)
+            
+            n_nodes = len(data.get('nodes', {}))
+            n_edges = len(data.get('edges_text', []))
+            
+            msg = f"✓ {n_nodes} nodes, {n_edges} edges"
+        except:
+            msg = "✓ Created"
+        
         return True, msg
     
-    except FileNotFoundError as e:
-        return False, f"✗ Missing file: {e}"
+    except subprocess.TimeoutExpired:
+        return False, "✗ Timeout (>60s)"
     
     except Exception as e:
         return False, f"✗ Error: {str(e)}"
@@ -125,7 +151,7 @@ def process_scene(
 def batch_process_scenes(
     root_dir: str,
     out_dir: str,
-    objects_json: str,
+    script_path: str,
     max_scenes: int = None,
     skip_existing: bool = True
 ):
@@ -150,17 +176,19 @@ def batch_process_scenes(
     success_count = 0
     skip_count = 0
     error_count = 0
+    errors = []
     
     start_time = time.time()
     
-    for i, (scene_id, scene_path) in enumerate(valid_scenes, 1):
+    for i, (scene_id, ply_path, semseg_path) in enumerate(valid_scenes, 1):
         print(f"[{i}/{len(valid_scenes)}] Processing: {scene_id}")
         
         success, message = process_scene(
             scene_id,
-            scene_path,
+            ply_path,
+            semseg_path,
             out_dir,
-            objects_json,
+            script_path,
             skip_existing
         )
         
@@ -173,6 +201,7 @@ def batch_process_scenes(
                 success_count += 1
         else:
             error_count += 1
+            errors.append((scene_id, message))
     
     # Summary
     elapsed = time.time() - start_time
@@ -185,6 +214,14 @@ def batch_process_scenes(
     print(f"  ⊙ Skipped (existing):   {skip_count}")
     print(f"  ✗ Errors:               {error_count}")
     print(f"Time elapsed: {elapsed:.1f}s ({elapsed/len(valid_scenes):.1f}s per scene)")
+    
+    if errors:
+        print(f"\nErrors encountered:")
+        for scene_id, msg in errors[:10]:  # Show first 10 errors
+            print(f"  - {scene_id}: {msg}")
+        if len(errors) > 10:
+            print(f"  ... and {len(errors) - 10} more")
+    
     print(f"\nOutput directory: {out_dir}")
     print("="*70)
 
@@ -213,10 +250,10 @@ def main():
     )
     
     parser.add_argument(
-        "--objects_json",
+        "--script_path",
         type=str,
-        default=DEFAULT_CONFIG["objects_json"],
-        help="Path to objects.json metadata file"
+        default=DEFAULT_CONFIG["script_path"],
+        help="Path to build_scene_graph_from_raw.py"
     )
     
     parser.add_argument(
@@ -229,20 +266,20 @@ def main():
     parser.add_argument(
         "--skip_existing",
         action="store_true",
-        default=DEFAULT_CONFIG["skip_existing"],
-        help="Skip scenes that already have output files"
+        default=True,
+        help="Skip scenes that already have output files (default: True)"
     )
     
     parser.add_argument(
         "--overwrite",
         action="store_true",
-        help="Overwrite existing output files (opposite of --skip_existing)"
+        help="Overwrite existing output files"
     )
     
     args = parser.parse_args()
     
     # Handle skip_existing vs overwrite
-    skip_existing = args.skip_existing and not args.overwrite
+    skip_existing = not args.overwrite
     
     # Print configuration
     print("\n" + "="*70)
@@ -250,28 +287,32 @@ def main():
     print("="*70)
     print(f"Root directory:    {args.root_dir}")
     print(f"Output directory:  {args.out_dir}")
-    print(f"Objects JSON:      {args.objects_json}")
+    print(f"Script path:       {args.script_path}")
     print(f"Max scenes:        {args.max_scenes}")
     print(f"Skip existing:     {skip_existing}")
-    print("="*70 + "\n")
+    print("="*70)
     
     # Check if paths exist
     if not os.path.exists(args.root_dir):
-        print(f"Error: Root directory not found: {args.root_dir}")
+        print(f"\n❌ Error: Root directory not found: {args.root_dir}")
         return
     
-    if not os.path.exists(args.objects_json):
-        print(f"Warning: objects.json not found: {args.objects_json}")
-        print("Scene graphs will have generic labels.")
-        response = input("Continue anyway? [y/N]: ")
+    if not os.path.exists(args.script_path):
+        print(f"\n❌ Error: Script not found: {args.script_path}")
+        return
+    
+    # Confirmation prompt
+    if args.overwrite:
+        response = input("\n⚠️  This will OVERWRITE existing scene graphs. Continue? [y/N]: ")
         if response.lower() != 'y':
+            print("Cancelled.")
             return
     
     # Run batch processing
     batch_process_scenes(
         args.root_dir,
         args.out_dir,
-        args.objects_json,
+        args.script_path,
         args.max_scenes,
         skip_existing
     )

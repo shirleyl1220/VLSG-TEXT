@@ -185,6 +185,9 @@ def build_scene_graph(ply_path, semseg_path, output_path):
     # ------------------------------------------
     # Build relations ONLY for K-nearest neighbors
     # ------------------------------------------
+   # ------------------------------------------
+    # Build relations ONLY for K-nearest neighbors
+    # ------------------------------------------
     for i, oi in enumerate(obj_ids):
         ci = np.array(nodes[oi]["centroid"])
         ri = nodes[oi]["radius"]
@@ -206,24 +209,37 @@ def build_scene_graph(ply_path, semseg_path, output_path):
 
             rels = dirs + dist
 
-            # forward edges
-            for r in rels:
-                key = (oi, oj, r)
-                if key not in seen:
-                    edges.append({"subject": oi, "object": oj, "relation": r})
-                    seen.add(key)
-
-                # symmetric
-                sym = symmetric_rel(oi, oj, r)
+            # ========================================
+            # FIX: Only keep PRIMARY relation per pair
+            # ========================================
+            if not rels:
+                rels = ["close_by"]  # Default if no specific relation
+            
+            # Take only the FIRST (most important) relation
+            primary_rel = rels[0]
+            
+            # Forward edge
+            key = (oi, oj, primary_rel)
+            if key not in seen:
+                edges.append({"subject": oi, "object": oj, "relation": primary_rel})
+                seen.add(key)
+            
+            # ========================================
+            # FIX: REMOVE symmetric edges for bidirectional relations
+            # ========================================
+            # Only add symmetric if it's actually asymmetric (e.g., above/below)
+            if primary_rel in ["above", "below", "left_of", "right_of", "in_front_of", "behind"]:
+                sym = symmetric_rel(oi, oj, primary_rel)
                 if sym:
                     sub, obj, rr = sym
                     skey = (sub, obj, rr)
                     if skey not in seen:
                         edges.append({"subject": sub, "object": obj, "relation": rr})
                         seen.add(skey)
+            # For "near" and "touching", don't add symmetric (they're already bidirectional)
 
     print(f"[RELATIONS] Final number of relations: {len(edges)}")
-
+    print(f"[RELATIONS] Expected: ~{N * K} to {N * K * 2} edges")
     # ------------------------------------------
     # Save output JSON
     # ------------------------------------------
