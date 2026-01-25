@@ -25,21 +25,21 @@ class EdgeGATLayer(nn.Module):
 
     def forward(self, x, edge_index, edge_attr):
 
-        print("\n=== EdgeGATLayer DEBUG ===")
-        print("Input x:", x.shape)
-        print("Edge index:", None if edge_index is None else edge_index.shape)
-        print("Edge attr:", None if edge_attr is None else edge_attr.shape)
+        # print("\n=== EdgeGATLayer DEBUG ===")
+        # print("Input x:", x.shape)
+        # print("Edge index:", None if edge_index is None else edge_index.shape)
+        # print("Edge attr:", None if edge_attr is None else edge_attr.shape)
 
         if edge_attr is not None:
             edge_attr = self.proj_edge(edge_attr)
             print("Projected edge attr:", edge_attr.shape)
 
         out = self.gat(x, edge_index, edge_attr)
-        print("GAT output:", out.shape)
+        # print("GAT output:", out.shape)
         out = out + self.res_proj(x)         # residual connection
         # out = self.norm(out)
         out = self.act(out)
-        print("Output after norm and activation:", out.shape)
+        # print("Output after norm and activation:", out.shape)
 
         return out
 class MultiGAT_Edge(nn.Module):
