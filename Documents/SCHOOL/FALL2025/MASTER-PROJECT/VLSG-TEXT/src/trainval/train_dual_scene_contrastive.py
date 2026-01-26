@@ -7,8 +7,11 @@ import os
 import sys
 import datetime
 import argparse
+import json
 
-from src.datasets.dual_scene_graph_dataset import DualSceneGraphDataset
+# from src.datasets.dual_scene_graph_dataset import DualSceneGraphDataset
+# from src.datasets.dual_scene_graph_dataset_v2 import DualSceneGraphDataset
+from src.datasets.dual_scene_graph_dataset_518 import DualSceneGraphDataset
 from src.models.sgaligner.src.aligner.dual_scene_aligner import DualSceneAligner
 import torch.nn as nn
 from torch.optim.lr_scheduler import LambdaLR
@@ -215,21 +218,26 @@ class VICRegLoss(nn.Module):
 def train(args):
     device = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
     print(f"Using device: {device}")
+    
 
     # ===== Dataset =====
     print("\n" + "="*70)
     print("Loading Dataset")
     print("="*70)
     
+    # dataset = DualSceneGraphDataset(
+    #     dataset_dir=args.dataset_dir,
+    #     metadata_path=args.metadata_path,
+    #     generate_text_edges=True,      # Generate missing text edges
+    #     use_pure_geometric=False,       # Use geometric features (not CLIP)
+    #     augment_ratio=0.01,
+    # )
     dataset = DualSceneGraphDataset(
-        dataset_dir=args.dataset_dir,
-        metadata_path=args.metadata_path,
-        generate_text_edges=True,      # Generate missing text edges
-        use_pure_geometric=True,       # Use geometric features (not CLIP)
-        augment_ratio=0.1
+        dataset_dir=args.dataset_dir,      # This uses your --dataset_dir argument
+        metadata_path=args.metadata_path,  # This uses your --metadata_path argument
+        augment_ratio=0.0                  # No augmentation
     )
-
-    batch_size = max(2, min(args.batch_size, len(dataset)))
+    batch_size = max(8, min(args.batch_size, len(dataset)))
     dataloader = DataLoader(
         dataset,
         batch_size=batch_size,
@@ -238,6 +246,40 @@ def train(args):
         num_workers=0,
         collate_fn=collate_graph_batch,
     )
+    dataset_dir = args.dataset_dir  # Use your actual dataset directory
+    scene_files = [f for f in os.listdir(dataset_dir) if f.endswith('.json')]
+
+    clip_means = []
+    clip_stds = []
+    labels = []
+
+    for scene_file in scene_files[:10]:  # Check first 10 scenes
+        with open(os.path.join(dataset_dir, scene_file)) as f:
+            data = json.load(f)
+        
+        for node in data['nodes'].values():
+            if 'clip_text_emb' in node:
+                clip_emb = np.array(node['clip_text_emb'])
+                clip_means.append(clip_emb.mean())
+                clip_stds.append(clip_emb.std())
+                labels.append(node.get('label', 'unknown'))
+
+    if clip_means:
+        print(f"Found {len(clip_means)} nodes with CLIP embeddings")
+        print(f"CLIP embedding means: {np.mean(clip_means):.4f} ± {np.std(clip_means):.4f}")
+        print(f"CLIP embedding stds:  {np.mean(clip_stds):.4f} ± {np.std(clip_stds):.4f}")
+        print(f"Sample labels: {labels[:5]}")
+        
+        if np.std(clip_means) < 0.01:
+            print("❌ CLIP embeddings are all the same!")
+        else:
+            print(f"✓ CLIP embeddings are diverse")
+    else:
+        print("❌ NO CLIP embeddings found in scene graphs!")
+
+    # print(f"Dataset using pure_geometric: {dataset.use_pure_geometric}")
+    print("="*50 + "\n")
+
 
     print(f"Dataset size: {len(dataset)}")
     print(f"Batch size: {batch_size}")
@@ -276,8 +318,8 @@ def train(args):
     loss_fn = VICRegLoss(
         temperature=0.05,
         lambda_inv=1.0,
-        lambda_var=100.0,  # Strong variance regularization
-        lambda_cov=10.0
+        lambda_var=25.0,  # Strong variance regularization
+        lambda_cov=1.0
     )
 
     optimizer = torch.optim.AdamW(
@@ -311,11 +353,12 @@ def train(args):
             return 0.5 * (1 + math.cos(math.pi * progress))
 
     scheduler = LambdaLR(optimizer, lr_lambda=lr_schedule)
-
-    # ===== Logging =====
+    
+     # ===== Logging =====
     os.makedirs(args.save_dir, exist_ok=True)
     logger = Logger(args.save_dir)
     sys.stdout = logger
+    
 
     print(f"Learning rate: {args.lr}")
     print(f"Epochs: {args.epochs}")
@@ -330,130 +373,236 @@ def train(args):
     best_loss = float("inf")
     global_step = 0
 
+
     for epoch in range(args.epochs):
-        model.train()
-        epoch_loss = 0.0
-        epoch_losses = {'total': 0, 'inv': 0, 'var': 0, 'cov': 0}
-        num_batches = 0
+            model.train()
+            epoch_loss = 0.0
+            epoch_losses = {'total': 0, 'inv': 0, 'var': 0, 'cov': 0}
+            num_batches = 0
 
-        for batch in dataloader:
-            # Move to device
-            for k, v in batch.items():
-                if isinstance(v, torch.Tensor):
-                    batch[k] = v.to(device)
+            for batch in dataloader:
+                # Move to device
+                for k, v in batch.items():
+                    if isinstance(v, torch.Tensor):
+                        batch[k] = v.to(device)
 
-            # Forward
-            out = model(batch)
-            src, ref = out["src_emb"], out["ref_emb"]
+                #  DEBUG: (ADD 4 MORE SPACES - should be 12 spaces total)
+                print("\n=== BATCH INSPECTION ===")
+                print(f"Node features shape: {batch['node_feats_src'].shape}")
+                print(f"src_batch shape: {batch['src_batch'].shape}")
+                print(f"Unique graphs in batch: {batch['src_batch'].unique()}")
+                print(f"Nodes per graph: {[(batch['src_batch']==i).sum().item() for i in range(batch['batch_size'])]}")
 
-            # Loss
-            total_loss, loss_dict = loss_fn(src, ref)
+                print(f"First node features (first 10 dims):")
+                print(batch['node_feats_src'][0, :10])
 
-            # Backward
-            optimizer.zero_grad()
-            total_loss.backward()
-            
-            # Gradient clipping
-            grad_norm = torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
-            
-            optimizer.step()
-            scheduler.step()
+                print("\n=== EMERGENCY DIAGNOSTIC ===")
+                sample = dataset[0]
+                node_0_raw = sample['node_feats_src'][0]
+                print(f"Raw node from dataset:")
+                print(f"  Dims 0-2 (centroid): {node_0_raw[:3]}")
+                print(f"  Dims 3-5 (color): {node_0_raw[3:6]}")
+                print(f"  Dims 6-10 (CLIP start): {node_0_raw[6:11]}")
+                print(f"  CLIP norm: {node_0_raw[6:].norm():.4f}")
 
-            # Accumulate
-            epoch_loss += total_loss.item()
+                if node_0_raw[6:].norm() < 0.01:
+                    print("❌❌❌ DATASET IS LOADING ZEROS FOR CLIP!")
+                    print("The problem is in dataset_clip_518.py")
+                else:
+                    print("✓ Dataset loads CLIP correctly")
+                    print("❌ Problem: batching is duplicating the same scene!")
+
+                # Check if different graphs actually have different nodes
+                if batch['src_batch'].max() > 0:
+                    # Get first node from graph 0
+                    graph_0_mask = batch['src_batch'] == 0
+                    graph_1_mask = batch['src_batch'] == 1
+                    
+                    node_0 = batch['node_feats_src'][graph_0_mask][0]
+                    node_1 = batch['node_feats_src'][graph_1_mask][0]
+                    
+                    print(f"\nGraph 0, first node (first 10): {node_0[:10]}")
+                    print(f"Graph 1, first node (first 10): {node_1[:10]}")
+                    
+                    # Check each component
+                    centroid_diff = (node_0[:3] - node_1[:3]).abs().mean().item()
+                    color_diff = (node_0[3:6] - node_1[3:6]).abs().mean().item()
+                    clip_diff = (node_0[6:] - node_1[6:]).abs().mean().item()
+                    
+                    print(f"\nCentroid diff: {centroid_diff:.4f}")
+                    print(f"Color diff: {color_diff:.4f}")
+                    print(f"CLIP diff: {clip_diff:.4f}")
+                    print(f"Total diff: {(node_0 - node_1).abs().mean().item():.4f}")
+                    
+                    if clip_diff < 0.01:
+                        print("❌ CLIP embeddings are too similar!")
+                    elif clip_diff > 0.05:
+                        print("✓ CLIP embeddings are diverse!")
+
+                # Forward (REMOVE 4 SPACES - should be 12 spaces total)
+                out = model(batch)
+                src, ref = out["src_emb"], out["ref_emb"]
+
+                if batch['batch_size'] >= 2:
+                    pos_sim, neg_sim, separation = debug_embedding_quality(
+                        src, ref, batch['batch_size']
+                    )
+
+                # Loss
+                total_loss, loss_dict = loss_fn(src, ref)
+
+                # Backward
+                optimizer.zero_grad()
+                total_loss.backward()
+
+                # Gradient clipping
+                grad_norm = torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
+
+                optimizer.step()
+                scheduler.step()
+
+                # Accumulate
+                epoch_loss += total_loss.item()
+                for k in epoch_losses:
+                    epoch_losses[k] += loss_dict[k]
+                num_batches += 1
+
+                # ===== Logging =====
+                print(f"  Batch size: {batch['batch_size']}")
+
+                if global_step % args.log_every == 0:
+                    with torch.no_grad():
+                        # Statistics
+                        src_var = src.var(dim=0).mean().item()
+                        ref_var = ref.var(dim=0).mean().item()
+                        
+                        src_std = src.std(dim=0).mean().item()
+                        ref_std = ref.std(dim=0).mean().item()
+                        
+                        src_norm = src.norm(dim=-1).mean().item()
+                        ref_norm = ref.norm(dim=-1).mean().item()
+                        
+                        cos_sim = F.cosine_similarity(src, ref, dim=-1).mean().item()
+                        
+                        # Covariance
+                        src_centered = src - src.mean(dim=0)
+                        ref_centered = ref - ref.mean(dim=0)
+                        src_cov = (src_centered.T @ src_centered).abs().mean().item()
+                        ref_cov = (ref_centered.T @ ref_centered).abs().mean().item()
+
+                    print(f"\n[Epoch {epoch}] Step {global_step}")
+                    print(f"  Total Loss       = {loss_dict['total']:.4f}")
+                    print(f"  InfoNCE          = {loss_dict['inv']:.4f}")
+                    print(f"  Variance Loss    = {loss_dict['var']:.4f}")
+                    print(f"  Covariance Loss  = {loss_dict['cov']:.4f}")
+                    print(f"  ---")
+                    print(f"  Var(src, ref)    = {src_var:.4f}, {ref_var:.4f}")
+                    print(f"  STD(src, ref)    = {src_std:.4f}, {ref_std:.4f}")
+                    print(f"  Norm(src, ref)   = {src_norm:.4f}, {ref_norm:.4f}")
+                    print(f"  Cov(src, ref)    = {src_cov:.4f}, {ref_cov:.4f}")
+                    print(f"  Cosine Sim       = {cos_sim:.4f}")
+                    print(f"  Grad Norm        = {grad_norm:.4f}")
+                    print(f"  LR               = {scheduler.get_last_lr()[0]:.6f}")
+
+                    if batch['batch_size'] >= 2:
+                        print(f"  ---")
+                        print(f"  🎯 EMBEDDING QUALITY (Key Metric):")
+                        print(f"    Positive pairs: {pos_sim:.3f} (want > 0.7)")
+                        print(f"    Negative pairs: {neg_sim:.3f} (want < 0.3)")
+                        print(f"    Separation:     {separation:.3f} (want > 0.4)")
+                        
+                        # Interpretation with clear action items
+                        if separation > 0.5:
+                            print(f"    ⭐⭐⭐ EXCELLENT! Model learning very well!")
+                        elif separation > 0.4:
+                            print(f"    ⭐⭐ VERY GOOD! Keep training!")
+                        elif separation > 0.3:
+                            print(f"    ⭐ GOOD! Model improving!")
+                        elif separation > 0.2:
+                            print(f"    ⚠️  MODERATE - Slow but learning")
+                        elif separation > 0.1:
+                            print(f"    ❌ POOR - Model struggling")
+                            print(f"       → Increase batch_size to 8+")
+                            print(f"       → Increase lr to 1e-3")
+                        else:
+                            print(f"    ❌ VERY POOR - NOT LEARNING!")
+                            print(f"       → STOP TRAINING - Fix hyperparameters!")
+                            print(f"       → batch_size >= 8, lr = 1e-3, lambda_var = 50")
+
+                    # Warnings
+                    if src_std < 0.1 or ref_std < 0.1:
+                        print("  ⚠️  Low STD → Collapse risk!")
+                    if src_var < 0.5 or ref_var < 0.5:
+                        print("  ⚠️  Low variance → Severe collapse!")
+                    if cos_sim > 0.93:
+                        print("  ⚠️  High similarity → Embeddings too aligned!")
+                    
+                    # Good signs
+                    if src_std > 0.2 and ref_std > 0.2 and 0.3 < cos_sim < 0.7:
+                        print("  ✓  Healthy training dynamics!")
+
+                # ===== Save Best =====
+                if total_loss.item() < best_loss and total_loss.item() > 1e-4:
+                    best_loss = total_loss.item()
+                    checkpoint = {
+                        "step": global_step,
+                        "epoch": epoch,
+                        "model": model.state_dict(),
+                        "optimizer": optimizer.state_dict(),
+                        "loss": best_loss
+                    }
+                    torch.save(checkpoint, f"{args.save_dir}/model_best.pth")
+                    print(f"  💾 Saved best model (loss={best_loss:.4f})")
+
+                global_step += 1
+            # ← END OF BATCH LOOP
+
+            # ===== Epoch Summary ===== (REMOVE 4 SPACES - should be 8 spaces total)
+            avg_loss = epoch_loss / num_batches
             for k in epoch_losses:
-                epoch_losses[k] += loss_dict[k]
-            num_batches += 1
+                epoch_losses[k] /= num_batches
 
-            # ===== Logging =====
-            if global_step % args.log_every == 0:
-                with torch.no_grad():
-                    # Statistics
-                    src_var = src.var(dim=0).mean().item()
-                    ref_var = ref.var(dim=0).mean().item()
-                    
-                    src_std = src.std(dim=0).mean().item()
-                    ref_std = ref.std(dim=0).mean().item()
-                    
-                    src_norm = src.norm(dim=-1).mean().item()
-                    ref_norm = ref.norm(dim=-1).mean().item()
-                    
-                    cos_sim = F.cosine_similarity(src, ref, dim=-1).mean().item()
-                    
-                    # Covariance
-                    src_centered = src - src.mean(dim=0)
-                    ref_centered = ref - ref.mean(dim=0)
-                    src_cov = (src_centered.T @ src_centered).abs().mean().item()
-                    ref_cov = (ref_centered.T @ ref_centered).abs().mean().item()
-
-                print(f"\n[Epoch {epoch}] Step {global_step}")
-                print(f"  Total Loss       = {loss_dict['total']:.4f}")
-                print(f"  InfoNCE          = {loss_dict['inv']:.4f}")
-                print(f"  Variance Loss    = {loss_dict['var']:.4f}")
-                print(f"  Covariance Loss  = {loss_dict['cov']:.4f}")
+            print(f"\n{'='*70}")
+            print(f"Epoch {epoch} Summary")
+            print(f"{'='*70}")
+            print(f"  Avg Total Loss = {epoch_losses['total']:.4f}")
+            print(f"  Avg InfoNCE    = {epoch_losses['inv']:.4f}")
+            print(f"  Avg Var Loss   = {epoch_losses['var']:.4f}")
+            print(f"  Avg Cov Loss   = {epoch_losses['cov']:.4f}")
+            
+            with torch.no_grad():
+                print(f"  Final SRC: mean={src.mean().item():.4f}, std={src.std().item():.4f}")
+                print(f"  Final REF: mean={ref.mean().item():.4f}, std={ref.std().item():.4f}")
+                # DEBUG: Show separation trend
                 print(f"  ---")
-                print(f"  Var(src, ref)    = {src_var:.4f}, {ref_var:.4f}")
-                print(f"  STD(src, ref)    = {src_std:.4f}, {ref_std:.4f}")
-                print(f"  Norm(src, ref)   = {src_norm:.4f}, {ref_norm:.4f}")
-                print(f"  Cov(src, ref)    = {src_cov:.4f}, {ref_cov:.4f}")
-                print(f"  Cosine Sim       = {cos_sim:.4f}")
-                print(f"  Grad Norm        = {grad_norm:.4f}")
-                print(f"  LR               = {scheduler.get_last_lr()[0]:.6f}")
+                if batch['batch_size'] >= 2:
+                    print(f"  📊 Final Separation: {separation:.3f}")
+                    if separation > 0.4:
+                        print(f"     ✓ Great progress this epoch!")
+                    elif separation < 0.1 and epoch > 10:
+                        print(f"     ⚠️  WARNING: No improvement after {epoch} epochs")
+                        print(f"        Consider stopping and adjusting hyperparameters")
 
-                # Warnings
-                if src_std < 0.1 or ref_std < 0.1:
-                    print("  ⚠️  Low STD → Collapse risk!")
-                if src_var < 0.5 or ref_var < 0.5:
-                    print("  ⚠️  Low variance → Severe collapse!")
-                if cos_sim > 0.93:
-                    print("  ⚠️  High similarity → Embeddings too aligned!")
-                
-                # Good signs
-                if src_std > 0.2 and ref_std > 0.2 and 0.3 < cos_sim < 0.7:
-                    print("  ✓  Healthy training dynamics!")
-
-            # ===== Save Best =====
-            if total_loss.item() < best_loss and total_loss.item() > 1e-4:
-                best_loss = total_loss.item()
-                checkpoint = {
-                    "step": global_step,
-                    "epoch": epoch,
-                    "model": model.state_dict(),
-                    "optimizer": optimizer.state_dict(),
-                    "loss": best_loss
-                }
-                torch.save(checkpoint, f"{args.save_dir}/model_best.pth")
-                print(f"  💾 Saved best model (loss={best_loss:.4f})")
-
-            global_step += 1
-
-        # ===== Epoch Summary =====
-        avg_loss = epoch_loss / num_batches
-        for k in epoch_losses:
-            epoch_losses[k] /= num_batches
-
-        print(f"\n{'='*70}")
-        print(f"Epoch {epoch} Summary")
-        print(f"{'='*70}")
-        print(f"  Avg Total Loss = {epoch_losses['total']:.4f}")
-        print(f"  Avg InfoNCE    = {epoch_losses['inv']:.4f}")
-        print(f"  Avg Var Loss   = {epoch_losses['var']:.4f}")
-        print(f"  Avg Cov Loss   = {epoch_losses['cov']:.4f}")
-        
-        with torch.no_grad():
-            print(f"  Final SRC: mean={src.mean().item():.4f}, std={src.std().item():.4f}")
-            print(f"  Final REF: mean={ref.mean().item():.4f}, std={ref.std().item():.4f}")
-        
-        print(f"{'='*70}\n")
+            print(f"{'='*70}\n")
+        # ← END OF EPOCH LOOP
 
     print("\n" + "="*70)
     print("Training Complete!")
     print("="*70)
     print(f"Best loss: {best_loss:.4f}")
-    print(f"Final checkpoint: {args.save_dir}/model_best.pth")
+    print(f"  Final checkpoint: {args.save_dir}/model_best.pth")
     
     logger.close()
-
+# for debugging
+def debug_embedding_quality(src_emb, ref_emb, batch_size):
+    with torch.no_grad():
+        src_norm = F.normalize(src_emb, dim=-1)
+        ref_norm = F.normalize(ref_emb, dim=-1)
+        sim_matrix = src_norm @ ref_norm.T
+        positive_sims = torch.diag(sim_matrix).mean().item()
+        mask = ~torch.eye(batch_size, dtype=torch.bool, device=sim_matrix.device)
+        negative_sims = sim_matrix[mask].mean().item()
+        return positive_sims, negative_sims, positive_sims - negative_sims
 
 # ============================================================
 # Main

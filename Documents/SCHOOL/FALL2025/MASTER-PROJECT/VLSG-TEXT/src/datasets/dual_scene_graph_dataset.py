@@ -66,7 +66,7 @@ def generate_text_edges_fallback(nodes, k_neighbors=3):
                 "object": str(nid2),
                 "relation": relation
             })
-            
+
     if len(text_edges) > len(node_ids) * k_neighbors * 2:
         print(f"⚠️  Truncating {len(text_edges)} to {len(node_ids) * k_neighbors}")
         text_edges = text_edges[:len(node_ids) * k_neighbors]
@@ -235,7 +235,8 @@ def mask_node_features(feats, ratio=0.1):
     if ratio <= 0:
         return feats
     N, D = feats.shape
-    mask = torch.rand((N, D), device=feats.device) < ratio
+    mask = torch.zeros((N, D), dtype=torch.bool, device=feats.device)
+    mask[:, :6] = torch.rand((N, 6), device=feats.device) < ratio    
     feats = feats.clone()
     feats[mask] = 0.0
     return feats
@@ -260,7 +261,7 @@ class DualSceneGraphDataset(Dataset):
         dataset_dir, 
         metadata_path,
         generate_text_edges=True,
-        use_pure_geometric=True,
+        use_pure_geometric=False,
         augment_ratio=0.1,
         fallback_generate_text_edges=True  # Only generate if missing
     ):
@@ -370,7 +371,13 @@ class DualSceneGraphDataset(Dataset):
             data = json.load(f)
         
         nodes = data["nodes"]
-        
+        if self.use_pure_geometric:
+            print("❌ WARNING: Using geometric (random) features!")
+            feat = build_geometric_node_features(n)
+        else:
+            print("✓ Using CLIP features")
+            # clip_vec = np.array(n.get("clip_text_emb", np.random.randn(512) * 0.1), dtype=np.float32)
+    # ... rest of code
         # TRY TO LOAD REAL TEXT EDGES FIRST
         text_relations = data.get("edges_text", [])
         

@@ -1,0 +1,352 @@
+Learning rate: 0.001
+Epochs: 20
+Log every: 10 steps
+Checkpoints: checkpoints/
+
+======================================================================
+Starting Training
+======================================================================
+
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([226, 518])
+src_batch shape: torch.Size([226])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [32, 14, 18, 17, 44, 33, 40, 28]
+First node features (first 10 dims):
+tensor([-3.1779, -0.3331, -0.7502,  0.0000,  0.0000,  0.0000,  0.0429, -0.0192,
+         0.0072,  0.0061], device='mps:0')
+
+Graph 0, first node (first 10): tensor([-3.1779, -0.3331, -0.7502,  0.0000,  0.0000,  0.0000,  0.0429, -0.0192,
+         0.0072,  0.0061], device='mps:0')
+Graph 1, first node (first 10): tensor([-2.6802,  2.0120, -0.7967,  0.0000,  0.0000,  0.0000,  0.0429, -0.0192,
+         0.0072,  0.0061], device='mps:0')
+Difference between graphs: 0.0056
+Projected edge attr: torch.Size([1116, 128])
+Projected edge attr: torch.Size([1116, 128])
+Projected edge attr: torch.Size([1361, 128])
+Projected edge attr: torch.Size([1361, 128])
+Projected edge attr: torch.Size([947, 128])
+Projected edge attr: torch.Size([947, 128])
+Projected edge attr: torch.Size([1180, 128])
+Projected edge attr: torch.Size([1180, 128])
+  Batch size: 8
+
+[Epoch 0] Step 0
+  Total Loss       = 23.6050
+  InfoNCE          = 2.1785
+  Variance Loss    = 0.8571
+  Covariance Loss  = 0.0001
+  ---
+  Var(src, ref)    = 0.0201, 0.0238
+  STD(src, ref)    = 0.1364, 0.1487
+  Norm(src, ref)   = 7.0779, 7.1267
+  Cov(src, ref)    = 0.0455, 0.0520
+  Cosine Sim       = 0.8920
+  Grad Norm        = 16.0200
+  LR               = 0.000042
+  ---
+  🎯 EMBEDDING QUALITY (Key Metric):
+    Positive pairs: 0.892 (want > 0.7)
+    Negative pairs: 0.889 (want < 0.3)
+    Separation:     0.003 (want > 0.4)
+    ❌ VERY POOR - NOT LEARNING!
+       → STOP TRAINING - Fix hyperparameters!
+       → batch_size >= 8, lr = 1e-3, lambda_var = 50
+  ⚠️  Low variance → Severe collapse!
+  💾 Saved best model (loss=23.6050)
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([220, 518])
+src_batch shape: torch.Size([220])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [11, 35, 13, 15, 29, 53, 33, 31]
+First node features (first 10 dims):
+tensor([ 0.1139,  1.1770, -1.0693,  0.0000,  0.0000,  0.0000,  0.0429, -0.0192,
+         0.0072,  0.0061], device='mps:0')
+
+Graph 0, first node (first 10): tensor([ 0.1139,  1.1770, -1.0693,  0.0000,  0.0000,  0.0000,  0.0429, -0.0192,
+         0.0072,  0.0061], device='mps:0')
+Graph 1, first node (first 10): tensor([-0.6052,  1.0574, -1.4230,  0.0000,  0.0000,  0.0000,  0.0429, -0.0192,
+         0.0072,  0.0061], device='mps:0')
+Difference between graphs: 0.0023
+Projected edge attr: torch.Size([1086, 128])
+Projected edge attr: torch.Size([1086, 128])
+Projected edge attr: torch.Size([1396, 128])
+Projected edge attr: torch.Size([1396, 128])
+Projected edge attr: torch.Size([719, 128])
+Projected edge attr: torch.Size([719, 128])
+Projected edge attr: torch.Size([906, 128])
+Projected edge attr: torch.Size([906, 128])
+  Batch size: 8
+  💾 Saved best model (loss=23.5903)
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([198, 518])
+src_batch shape: torch.Size([198])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [19, 28, 15, 25, 50, 30, 21, 10]
+First node features (first 10 dims):
+tensor([-0.0678,  1.6775, -0.7214,  0.0000,  0.0000,  0.0000,  0.0429, -0.0192,
+         0.0072,  0.0061], device='mps:0')
+
+Graph 0, first node (first 10): tensor([-0.0678,  1.6775, -0.7214,  0.0000,  0.0000,  0.0000,  0.0429, -0.0192,
+         0.0072,  0.0061], device='mps:0')
+Graph 1, first node (first 10): tensor([ 0.4775, -1.4476, -0.2244,  0.0000,  0.0000,  0.0000,  0.0429, -0.0192,
+         0.0072,  0.0061], device='mps:0')
+Difference between graphs: 0.0080
+Projected edge attr: torch.Size([976, 128])
+Projected edge attr: torch.Size([976, 128])
+Projected edge attr: torch.Size([1244, 128])
+Projected edge attr: torch.Size([1244, 128])
+Projected edge attr: torch.Size([998, 128])
+Projected edge attr: torch.Size([998, 128])
+Projected edge attr: torch.Size([1295, 128])
+Projected edge attr: torch.Size([1295, 128])
+  Batch size: 8
+  💾 Saved best model (loss=23.5459)
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([193, 518])
+src_batch shape: torch.Size([193])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [21, 33, 25, 16, 40, 15, 18, 25]
+First node features (first 10 dims):
+tensor([-1.8183,  0.5337, -0.9230,  0.0000,  0.0000,  0.0000,  0.0429, -0.0192,
+         0.0072,  0.0061], device='mps:0')
+
+Graph 0, first node (first 10): tensor([-1.8183,  0.5337, -0.9230,  0.0000,  0.0000,  0.0000,  0.0429, -0.0192,
+         0.0072,  0.0061], device='mps:0')
+Graph 1, first node (first 10): tensor([-1.1594, -0.2758, -0.2550,  0.0000,  0.0000,  0.0000,  0.0429, -0.0192,
+         0.0072,  0.0061], device='mps:0')
+Difference between graphs: 0.0041
+Projected edge attr: torch.Size([952, 128])
+Projected edge attr: torch.Size([952, 128])
+Projected edge attr: torch.Size([1190, 128])
+Projected edge attr: torch.Size([1190, 128])
+Projected edge attr: torch.Size([1046, 128])
+Projected edge attr: torch.Size([1046, 128])
+Projected edge attr: torch.Size([1315, 128])
+Projected edge attr: torch.Size([1315, 128])
+  Batch size: 8
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+✓ Using CLIP features
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([215, 518])
+src_batch shape: torch.Size([215])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [21, 9, 51, 37, 15, 19, 40, 23]
+First node features (first 10 dims):
+tensor([-1.9805,  1.4025,  0.0272,  0.0000,  0.0000,  0.0000,  0.0429, -0.0192,
+         0.0072,  0.0061], device='mps:0')
+
+Graph 0, first node (first 10): tensor([-1.9805,  1.4025,  0.0272,  0.0000,  0.0000,  0.0000,  0.0429, -0.0192,
+         0.0072,  0.0061], device='mps:0')
+Graph 1, first node (first 10): tensor([ 1.0044e-01,  1.0592e+00, -1.5026e+00,  3.1000e+01,  1.1900e+02,
+         1.8000e+02, -1.7792e-02, -2.6291e-02,  8.7967e-03,  1.9409e-02],
+       device='mps:0')
+Difference between graphs: 0.6659
+Projected edge attr: torch.Size([1061, 128])
+Projected edge attr: torch.Size([1061, 128])
+Projected edge attr: torch.Size([1332, 128])
+Projected edge attr: torch.Size([1332, 128])
+Projected edge attr: torch.Size([1128, 128])

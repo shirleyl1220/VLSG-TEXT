@@ -1,0 +1,1421 @@
+Learning rate: 0.001
+Epochs: 20
+Log every: 10 steps
+Checkpoints: checkpoints/
+
+======================================================================
+Starting Training
+======================================================================
+
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([194, 518])
+src_batch shape: torch.Size([194])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [53, 29, 14, 15, 25, 17, 21, 20]
+First node features (first 10 dims):
+tensor([-0.4766,  1.4990, -0.4636,  0.0000,  0.0000,  0.0000,  0.0132,  0.0157,
+        -0.0142, -0.0017], device='mps:0')
+
+=== EMERGENCY DIAGNOSTIC ===
+Raw node from dataset:
+  Dims 0-2 (centroid): tensor([ 0.2433, -0.0569, -0.5636])
+  Dims 3-5 (color): tensor([0., 0., 0.])
+  Dims 6-10 (CLIP start): tensor([ 0.0132,  0.0157, -0.0142, -0.0017,  0.0203])
+  CLIP norm: 0.9999
+✓ Dataset loads CLIP correctly
+❌ Problem: batching is duplicating the same scene!
+
+Graph 0, first node (first 10): tensor([-0.4766,  1.4990, -0.4636,  0.0000,  0.0000,  0.0000,  0.0132,  0.0157,
+        -0.0142, -0.0017], device='mps:0')
+Graph 1, first node (first 10): tensor([-4.5157e-01,  2.0296e+00,  8.2796e-02,  0.0000e+00,  0.0000e+00,
+         0.0000e+00,  1.3206e-02,  1.5656e-02, -1.4214e-02, -1.7385e-03],
+       device='mps:0')
+
+Centroid diff: 0.3673
+Color diff: 0.0000
+CLIP diff: 0.0000
+Total diff: 0.0021
+❌ CLIP embeddings are too similar!
+Projected edge attr: torch.Size([970, 128])
+Projected edge attr: torch.Size([970, 128])
+Projected edge attr: torch.Size([1224, 128])
+Projected edge attr: torch.Size([1224, 128])
+Projected edge attr: torch.Size([935, 128])
+Projected edge attr: torch.Size([935, 128])
+Projected edge attr: torch.Size([1176, 128])
+Projected edge attr: torch.Size([1176, 128])
+  Batch size: 8
+
+[Epoch 0] Step 0
+  Total Loss       = 23.9480
+  InfoNCE          = 4.5696
+  Variance Loss    = 0.7751
+  Covariance Loss  = 0.0010
+  ---
+  Var(src, ref)    = 0.0592, 0.0563
+  STD(src, ref)    = 0.2268, 0.2225
+  Norm(src, ref)   = 6.6580, 6.6836
+  Cov(src, ref)    = 0.1563, 0.1508
+  Cosine Sim       = 0.6431
+  Grad Norm        = 48.8294
+  LR               = 0.000042
+  ---
+  🎯 EMBEDDING QUALITY (Key Metric):
+    Positive pairs: 0.643 (want > 0.7)
+    Negative pairs: 0.681 (want < 0.3)
+    Separation:     -0.038 (want > 0.4)
+    ❌ VERY POOR - NOT LEARNING!
+       → STOP TRAINING - Fix hyperparameters!
+       → batch_size >= 8, lr = 1e-3, lambda_var = 50
+  ⚠️  Low variance → Severe collapse!
+  ✓  Healthy training dynamics!
+  💾 Saved best model (loss=23.9480)
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([238, 518])
+src_batch shape: torch.Size([238])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [28, 34, 26, 28, 29, 32, 40, 21]
+First node features (first 10 dims):
+tensor([ 0.1827,  0.6008, -0.4843,  0.0000,  0.0000,  0.0000,  0.0132,  0.0157,
+        -0.0142, -0.0017], device='mps:0')
+
+=== EMERGENCY DIAGNOSTIC ===
+Raw node from dataset:
+  Dims 0-2 (centroid): tensor([ 0.2433, -0.0569, -0.5636])
+  Dims 3-5 (color): tensor([0., 0., 0.])
+  Dims 6-10 (CLIP start): tensor([ 0.0132,  0.0157, -0.0142, -0.0017,  0.0203])
+  CLIP norm: 0.9999
+✓ Dataset loads CLIP correctly
+❌ Problem: batching is duplicating the same scene!
+
+Graph 0, first node (first 10): tensor([ 0.1827,  0.6008, -0.4843,  0.0000,  0.0000,  0.0000,  0.0132,  0.0157,
+        -0.0142, -0.0017], device='mps:0')
+Graph 1, first node (first 10): tensor([-0.3549,  2.9350, -0.5357,  0.0000,  0.0000,  0.0000,  0.0116,  0.0183,
+        -0.0074, -0.0074], device='mps:0')
+
+Centroid diff: 0.9744
+Color diff: 0.0000
+CLIP diff: 0.0131
+Total diff: 0.0186
+Projected edge attr: torch.Size([1190, 128])
+Projected edge attr: torch.Size([1190, 128])
+Projected edge attr: torch.Size([1496, 128])
+Projected edge attr: torch.Size([1496, 128])
+Projected edge attr: torch.Size([1065, 128])
+Projected edge attr: torch.Size([1065, 128])
+Projected edge attr: torch.Size([1314, 128])
+Projected edge attr: torch.Size([1314, 128])
+  Batch size: 8
+  💾 Saved best model (loss=22.6870)
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([222, 518])
+src_batch shape: torch.Size([222])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [19, 33, 20, 48, 40, 35, 13, 14]
+First node features (first 10 dims):
+tensor([-0.0678,  1.6775, -0.7214,  0.0000,  0.0000,  0.0000,  0.0132,  0.0157,
+        -0.0142, -0.0017], device='mps:0')
+
+=== EMERGENCY DIAGNOSTIC ===
+Raw node from dataset:
+  Dims 0-2 (centroid): tensor([ 0.2433, -0.0569, -0.5636])
+  Dims 3-5 (color): tensor([0., 0., 0.])
+  Dims 6-10 (CLIP start): tensor([ 0.0132,  0.0157, -0.0142, -0.0017,  0.0203])
+  CLIP norm: 0.9999
+✓ Dataset loads CLIP correctly
+❌ Problem: batching is duplicating the same scene!
+
+Graph 0, first node (first 10): tensor([-0.0678,  1.6775, -0.7214,  0.0000,  0.0000,  0.0000,  0.0132,  0.0157,
+        -0.0142, -0.0017], device='mps:0')
+Graph 1, first node (first 10): tensor([-1.1594, -0.2758, -0.2550,  0.0000,  0.0000,  0.0000,  0.0094,  0.0103,
+        -0.0278,  0.0063], device='mps:0')
+
+Centroid diff: 1.1705
+Color diff: 0.0000
+CLIP diff: 0.0065
+Total diff: 0.0133
+❌ CLIP embeddings are too similar!
+Projected edge attr: torch.Size([1110, 128])
+Projected edge attr: torch.Size([1110, 128])
+Projected edge attr: torch.Size([1378, 128])
+Projected edge attr: torch.Size([1378, 128])
+Projected edge attr: torch.Size([1095, 128])
+Projected edge attr: torch.Size([1095, 128])
+Projected edge attr: torch.Size([1370, 128])
+Projected edge attr: torch.Size([1370, 128])
+  Batch size: 8
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([243, 518])
+src_batch shape: torch.Size([243])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [51, 15, 13, 37, 13, 63, 15, 36]
+First node features (first 10 dims):
+tensor([-0.1863, -0.4609,  1.1447,  0.0000,  0.0000,  0.0000,  0.0132,  0.0157,
+        -0.0142, -0.0017], device='mps:0')
+
+=== EMERGENCY DIAGNOSTIC ===
+Raw node from dataset:
+  Dims 0-2 (centroid): tensor([ 0.2433, -0.0569, -0.5636])
+  Dims 3-5 (color): tensor([0., 0., 0.])
+  Dims 6-10 (CLIP start): tensor([ 0.0132,  0.0157, -0.0142, -0.0017,  0.0203])
+  CLIP norm: 0.9999
+✓ Dataset loads CLIP correctly
+❌ Problem: batching is duplicating the same scene!
+
+Graph 0, first node (first 10): tensor([-0.1863, -0.4609,  1.1447,  0.0000,  0.0000,  0.0000,  0.0132,  0.0157,
+        -0.0142, -0.0017], device='mps:0')
+Graph 1, first node (first 10): tensor([-0.9239,  0.6912, -1.1368,  0.0000,  0.0000,  0.0000,  0.0132,  0.0157,
+        -0.0142, -0.0017], device='mps:0')
+
+Centroid diff: 1.3904
+Color diff: 0.0000
+CLIP diff: 0.0000
+Total diff: 0.0081
+❌ CLIP embeddings are too similar!
+Projected edge attr: torch.Size([1215, 128])
+Projected edge attr: torch.Size([1215, 128])
+Projected edge attr: torch.Size([1530, 128])
+Projected edge attr: torch.Size([1530, 128])
+Projected edge attr: torch.Size([910, 128])
+Projected edge attr: torch.Size([910, 128])
+Projected edge attr: torch.Size([1120, 128])
+Projected edge attr: torch.Size([1120, 128])
+  Batch size: 8
+  💾 Saved best model (loss=22.4419)
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([190, 518])
+src_batch shape: torch.Size([190])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [15, 28, 51, 38, 12, 15, 18, 13]
+First node features (first 10 dims):
+tensor([-2.2504,  1.2789, -1.0077,  0.6824,  0.7804,  0.9098,  0.0087, -0.0182,
+         0.0046,  0.0072], device='mps:0')
+
+=== EMERGENCY DIAGNOSTIC ===
+Raw node from dataset:
+  Dims 0-2 (centroid): tensor([ 0.2433, -0.0569, -0.5636])
+  Dims 3-5 (color): tensor([0., 0., 0.])
+  Dims 6-10 (CLIP start): tensor([ 0.0132,  0.0157, -0.0142, -0.0017,  0.0203])
+  CLIP norm: 0.9999
+✓ Dataset loads CLIP correctly
+❌ Problem: batching is duplicating the same scene!
+
+Graph 0, first node (first 10): tensor([-2.2504,  1.2789, -1.0077,  0.6824,  0.7804,  0.9098,  0.0087, -0.0182,
+         0.0046,  0.0072], device='mps:0')
+Graph 1, first node (first 10): tensor([ 1.0157,  0.3105, -0.5897,  0.0000,  0.0000,  0.0000,  0.0132,  0.0157,
+        -0.0142, -0.0017], device='mps:0')
+
+Centroid diff: 1.5508
+Color diff: 0.7908
+CLIP diff: 0.0174
+Total diff: 0.0308
+Projected edge attr: torch.Size([950, 128])
+Projected edge attr: torch.Size([950, 128])
+Projected edge attr: torch.Size([1158, 128])
+Projected edge attr: torch.Size([1158, 128])
+Projected edge attr: torch.Size([885, 128])
+Projected edge attr: torch.Size([885, 128])
+Projected edge attr: torch.Size([1100, 128])
+Projected edge attr: torch.Size([1100, 128])
+  Batch size: 8
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([210, 518])
+src_batch shape: torch.Size([210])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [33, 11, 30, 18, 31, 21, 35, 31]
+First node features (first 10 dims):
+tensor([-5.6469e-01,  2.2873e+00,  2.3323e-01,  0.0000e+00,  0.0000e+00,
+         0.0000e+00,  1.2337e-02,  8.5373e-03, -3.3020e-02,  1.4601e-03],
+       device='mps:0')
+
+=== EMERGENCY DIAGNOSTIC ===
+Raw node from dataset:
+  Dims 0-2 (centroid): tensor([ 0.2433, -0.0569, -0.5636])
+  Dims 3-5 (color): tensor([0., 0., 0.])
+  Dims 6-10 (CLIP start): tensor([ 0.0132,  0.0157, -0.0142, -0.0017,  0.0203])
+  CLIP norm: 0.9999
+✓ Dataset loads CLIP correctly
+❌ Problem: batching is duplicating the same scene!
+
+Graph 0, first node (first 10): tensor([-5.6469e-01,  2.2873e+00,  2.3323e-01,  0.0000e+00,  0.0000e+00,
+         0.0000e+00,  1.2337e-02,  8.5373e-03, -3.3020e-02,  1.4601e-03],
+       device='mps:0')
+Graph 1, first node (first 10): tensor([ 0.1139,  1.1770, -1.0693,  0.0000,  0.0000,  0.0000,  0.0123,  0.0085,
+        -0.0330,  0.0015], device='mps:0')
+
+Centroid diff: 1.0305
+Color diff: 0.0000
+CLIP diff: 0.0000
+Total diff: 0.0060
+❌ CLIP embeddings are too similar!
+Projected edge attr: torch.Size([1050, 128])
+Projected edge attr: torch.Size([1050, 128])
+Projected edge attr: torch.Size([1346, 128])
+Projected edge attr: torch.Size([1346, 128])
+Projected edge attr: torch.Size([1100, 128])
+Projected edge attr: torch.Size([1100, 128])
+Projected edge attr: torch.Size([1401, 128])
+Projected edge attr: torch.Size([1401, 128])
+  Batch size: 8
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([242, 518])
+src_batch shape: torch.Size([242])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [21, 34, 26, 44, 16, 30, 29, 42]
+First node features (first 10 dims):
+tensor([-1.9805e+00,  1.4025e+00,  2.7200e-02,  0.0000e+00,  0.0000e+00,
+         0.0000e+00,  1.3206e-02,  1.5656e-02, -1.4214e-02, -1.7385e-03],
+       device='mps:0')
+
+=== EMERGENCY DIAGNOSTIC ===
+Raw node from dataset:
+  Dims 0-2 (centroid): tensor([ 0.2433, -0.0569, -0.5636])
+  Dims 3-5 (color): tensor([0., 0., 0.])
+  Dims 6-10 (CLIP start): tensor([ 0.0132,  0.0157, -0.0142, -0.0017,  0.0203])
+  CLIP norm: 0.9999
+✓ Dataset loads CLIP correctly
+❌ Problem: batching is duplicating the same scene!
+
+Graph 0, first node (first 10): tensor([-1.9805e+00,  1.4025e+00,  2.7200e-02,  0.0000e+00,  0.0000e+00,
+         0.0000e+00,  1.3206e-02,  1.5656e-02, -1.4214e-02, -1.7385e-03],
+       device='mps:0')
+Graph 1, first node (first 10): tensor([-2.0376e+00,  2.2971e+00, -2.0615e-01,  0.0000e+00,  0.0000e+00,
+         0.0000e+00,  1.2337e-02,  8.5373e-03, -3.3020e-02,  1.4601e-03],
+       device='mps:0')
+
+Centroid diff: 0.3951
+Color diff: 0.0000
+CLIP diff: 0.0072
+Total diff: 0.0094
+❌ CLIP embeddings are too similar!
+Projected edge attr: torch.Size([1210, 128])
+Projected edge attr: torch.Size([1210, 128])
+Projected edge attr: torch.Size([1492, 128])
+Projected edge attr: torch.Size([1492, 128])
+Projected edge attr: torch.Size([1150, 128])
+Projected edge attr: torch.Size([1150, 128])
+Projected edge attr: torch.Size([1422, 128])
+Projected edge attr: torch.Size([1422, 128])
+  Batch size: 8
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([249, 518])
+src_batch shape: torch.Size([249])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [50, 41, 25, 40, 28, 19, 20, 26]
+First node features (first 10 dims):
+tensor([-1.1383e+00,  2.9570e+00,  2.2340e-01,  0.0000e+00,  0.0000e+00,
+         0.0000e+00,  1.2337e-02,  8.5373e-03, -3.3020e-02,  1.4601e-03],
+       device='mps:0')
+
+=== EMERGENCY DIAGNOSTIC ===
+Raw node from dataset:
+  Dims 0-2 (centroid): tensor([ 0.2433, -0.0569, -0.5636])
+  Dims 3-5 (color): tensor([0., 0., 0.])
+  Dims 6-10 (CLIP start): tensor([ 0.0132,  0.0157, -0.0142, -0.0017,  0.0203])
+  CLIP norm: 0.9999
+✓ Dataset loads CLIP correctly
+❌ Problem: batching is duplicating the same scene!
+
+Graph 0, first node (first 10): tensor([-1.1383e+00,  2.9570e+00,  2.2340e-01,  0.0000e+00,  0.0000e+00,
+         0.0000e+00,  1.2337e-02,  8.5373e-03, -3.3020e-02,  1.4601e-03],
+       device='mps:0')
+Graph 1, first node (first 10): tensor([-1.1204e-03,  2.4876e+00,  1.2374e+00,  0.0000e+00,  0.0000e+00,
+         0.0000e+00,  1.3206e-02,  1.5656e-02, -1.4214e-02, -1.7385e-03],
+       device='mps:0')
+
+Centroid diff: 0.8735
+Color diff: 0.0000
+CLIP diff: 0.0072
+Total diff: 0.0122
+❌ CLIP embeddings are too similar!
+Projected edge attr: torch.Size([1245, 128])
+Projected edge attr: torch.Size([1245, 128])
+Projected edge attr: torch.Size([1528, 128])
+Projected edge attr: torch.Size([1528, 128])
+Projected edge attr: torch.Size([1180, 128])
+Projected edge attr: torch.Size([1180, 128])
+Projected edge attr: torch.Size([1460, 128])
+Projected edge attr: torch.Size([1460, 128])
+  Batch size: 8
+  💾 Saved best model (loss=22.3989)
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([231, 518])
+src_batch shape: torch.Size([231])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [34, 50, 24, 25, 12, 43, 33, 10]
+First node features (first 10 dims):
+tensor([-0.9795,  3.0230, -0.9595,  0.0000,  0.0000,  0.0000,  0.0116,  0.0183,
+        -0.0074, -0.0074], device='mps:0')
+
+=== EMERGENCY DIAGNOSTIC ===
+Raw node from dataset:
+  Dims 0-2 (centroid): tensor([ 0.2433, -0.0569, -0.5636])
+  Dims 3-5 (color): tensor([0., 0., 0.])
+  Dims 6-10 (CLIP start): tensor([ 0.0132,  0.0157, -0.0142, -0.0017,  0.0203])
+  CLIP norm: 0.9999
+✓ Dataset loads CLIP correctly
+❌ Problem: batching is duplicating the same scene!
+
+Graph 0, first node (first 10): tensor([-0.9795,  3.0230, -0.9595,  0.0000,  0.0000,  0.0000,  0.0116,  0.0183,
+        -0.0074, -0.0074], device='mps:0')
+Graph 1, first node (first 10): tensor([-1.8137e+00,  2.9964e-01, -1.6486e-01,  0.0000e+00,  0.0000e+00,
+         0.0000e+00,  1.3206e-02,  1.5656e-02, -1.4214e-02, -1.7385e-03],
+       device='mps:0')
+
+Centroid diff: 1.4507
+Color diff: 0.0000
+CLIP diff: 0.0131
+Total diff: 0.0213
+Projected edge attr: torch.Size([1155, 128])
+Projected edge attr: torch.Size([1155, 128])
+Projected edge attr: torch.Size([1450, 128])
+Projected edge attr: torch.Size([1450, 128])
+Projected edge attr: torch.Size([920, 128])
+Projected edge attr: torch.Size([920, 128])
+Projected edge attr: torch.Size([1166, 128])
+Projected edge attr: torch.Size([1166, 128])
+  Batch size: 8
+  💾 Saved best model (loss=21.6241)
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([199, 518])
+src_batch shape: torch.Size([199])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [38, 23, 17, 51, 17, 29, 15, 9]
+First node features (first 10 dims):
+tensor([ 0.2021, -1.2766, -0.8858,  0.0000,  0.0000,  0.0000,  0.0094,  0.0103,
+        -0.0278,  0.0063], device='mps:0')
+
+=== EMERGENCY DIAGNOSTIC ===
+Raw node from dataset:
+  Dims 0-2 (centroid): tensor([ 0.2433, -0.0569, -0.5636])
+  Dims 3-5 (color): tensor([0., 0., 0.])
+  Dims 6-10 (CLIP start): tensor([ 0.0132,  0.0157, -0.0142, -0.0017,  0.0203])
+  CLIP norm: 0.9999
+✓ Dataset loads CLIP correctly
+❌ Problem: batching is duplicating the same scene!
+
+Graph 0, first node (first 10): tensor([ 0.2021, -1.2766, -0.8858,  0.0000,  0.0000,  0.0000,  0.0094,  0.0103,
+        -0.0278,  0.0063], device='mps:0')
+Graph 1, first node (first 10): tensor([-0.8681, -0.4606, -0.0495,  0.0000,  0.0000,  0.0000,  0.0094,  0.0103,
+        -0.0278,  0.0063], device='mps:0')
+
+Centroid diff: 0.9075
+Color diff: 0.0000
+CLIP diff: 0.0000
+Total diff: 0.0053
+❌ CLIP embeddings are too similar!
+Projected edge attr: torch.Size([995, 128])
+Projected edge attr: torch.Size([995, 128])
+Projected edge attr: torch.Size([1210, 128])
+Projected edge attr: torch.Size([1210, 128])
+Projected edge attr: torch.Size([1265, 128])
+Projected edge attr: torch.Size([1265, 128])
+Projected edge attr: torch.Size([1587, 128])
+Projected edge attr: torch.Size([1587, 128])
+  Batch size: 8
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([171, 518])
+src_batch shape: torch.Size([171])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [14, 29, 17, 16, 32, 21, 30, 12]
+First node features (first 10 dims):
+tensor([-1.3966,  1.6768, -0.8813,  0.0000,  0.0000,  0.0000,  0.0116,  0.0183,
+        -0.0074, -0.0074], device='mps:0')
+
+=== EMERGENCY DIAGNOSTIC ===
+Raw node from dataset:
+  Dims 0-2 (centroid): tensor([ 0.2433, -0.0569, -0.5636])
+  Dims 3-5 (color): tensor([0., 0., 0.])
+  Dims 6-10 (CLIP start): tensor([ 0.0132,  0.0157, -0.0142, -0.0017,  0.0203])
+  CLIP norm: 0.9999
+✓ Dataset loads CLIP correctly
+❌ Problem: batching is duplicating the same scene!
+
+Graph 0, first node (first 10): tensor([-1.3966,  1.6768, -0.8813,  0.0000,  0.0000,  0.0000,  0.0116,  0.0183,
+        -0.0074, -0.0074], device='mps:0')
+Graph 1, first node (first 10): tensor([ 0.0837,  0.5652, -1.0181,  0.0000,  0.0000,  0.0000,  0.0065,  0.0323,
+        -0.0258, -0.0036], device='mps:0')
+
+Centroid diff: 0.9096
+Color diff: 0.0000
+CLIP diff: 0.0093
+Total diff: 0.0144
+❌ CLIP embeddings are too similar!
+Projected edge attr: torch.Size([855, 128])
+Projected edge attr: torch.Size([855, 128])
+Projected edge attr: torch.Size([1068, 128])
+Projected edge attr: torch.Size([1068, 128])
+Projected edge attr: torch.Size([780, 128])
+Projected edge attr: torch.Size([780, 128])
+Projected edge attr: torch.Size([954, 128])
+Projected edge attr: torch.Size([954, 128])
+  Batch size: 8
+
+[Epoch 0] Step 10
+  Total Loss       = 20.2152
+  InfoNCE          = 1.8258
+  Variance Loss    = 0.7355
+  Covariance Loss  = 0.0015
+  ---
+  Var(src, ref)    = 0.0777, 0.0763
+  STD(src, ref)    = 0.2658, 0.2627
+  Norm(src, ref)   = 8.5637, 8.4299
+  Cov(src, ref)    = 0.2014, 0.1980
+  Cosine Sim       = 0.8094
+  Grad Norm        = 35.3210
+  LR               = 0.000458
+  ---
+  🎯 EMBEDDING QUALITY (Key Metric):
+    Positive pairs: 0.809 (want > 0.7)
+    Negative pairs: 0.730 (want < 0.3)
+    Separation:     0.079 (want > 0.4)
+    ❌ VERY POOR - NOT LEARNING!
+       → STOP TRAINING - Fix hyperparameters!
+       → batch_size >= 8, lr = 1e-3, lambda_var = 50
+  ⚠️  Low variance → Severe collapse!
+  💾 Saved best model (loss=20.2152)
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([190, 518])
+src_batch shape: torch.Size([190])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [21, 9, 24, 50, 26, 12, 30, 18]
+First node features (first 10 dims):
+tensor([-0.2599, -0.6549, -0.6336,  0.0000,  0.0000,  0.0000,  0.0132,  0.0157,
+        -0.0142, -0.0017], device='mps:0')
+
+=== EMERGENCY DIAGNOSTIC ===
+Raw node from dataset:
+  Dims 0-2 (centroid): tensor([ 0.2433, -0.0569, -0.5636])
+  Dims 3-5 (color): tensor([0., 0., 0.])
+  Dims 6-10 (CLIP start): tensor([ 0.0132,  0.0157, -0.0142, -0.0017,  0.0203])
+  CLIP norm: 0.9999
+✓ Dataset loads CLIP correctly
+❌ Problem: batching is duplicating the same scene!
+
+Graph 0, first node (first 10): tensor([-0.2599, -0.6549, -0.6336,  0.0000,  0.0000,  0.0000,  0.0132,  0.0157,
+        -0.0142, -0.0017], device='mps:0')
+Graph 1, first node (first 10): tensor([-0.0262,  0.1350, -0.9751,  0.0000,  0.0000,  0.0000, -0.0150, -0.0100,
+        -0.0349, -0.0021], device='mps:0')
+
+Centroid diff: 0.4550
+Color diff: 0.0000
+CLIP diff: 0.0103
+Total diff: 0.0129
+Projected edge attr: torch.Size([950, 128])
+Projected edge attr: torch.Size([950, 128])
+Projected edge attr: torch.Size([1186, 128])
+Projected edge attr: torch.Size([1186, 128])
+Projected edge attr: torch.Size([655, 128])
+Projected edge attr: torch.Size([655, 128])
+Projected edge attr: torch.Size([790, 128])
+Projected edge attr: torch.Size([790, 128])
+  Batch size: 8
+
+======================================================================
+Epoch 0 Summary
+======================================================================
+  Avg Total Loss = 22.4423
+  Avg InfoNCE    = 3.1667
+  Avg Var Loss   = 0.7710
+  Avg Cov Loss   = 0.0010
+  Final SRC: mean=0.0181, std=0.5414
+  Final REF: mean=0.0218, std=0.5244
+  ---
+  📊 Final Separation: 0.052
+======================================================================
+
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([184, 518])
+src_batch shape: torch.Size([184])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [30, 32, 34, 15, 31, 18, 12, 12]
+First node features (first 10 dims):
+tensor([ 3.6785e-01,  2.5380e+00,  1.2065e-01,  0.0000e+00,  0.0000e+00,
+         0.0000e+00,  1.3206e-02,  1.5656e-02, -1.4214e-02, -1.7385e-03],
+       device='mps:0')
+
+=== EMERGENCY DIAGNOSTIC ===
+Raw node from dataset:
+  Dims 0-2 (centroid): tensor([ 0.2433, -0.0569, -0.5636])
+  Dims 3-5 (color): tensor([0., 0., 0.])
+  Dims 6-10 (CLIP start): tensor([ 0.0132,  0.0157, -0.0142, -0.0017,  0.0203])
+  CLIP norm: 0.9999
+✓ Dataset loads CLIP correctly
+❌ Problem: batching is duplicating the same scene!
+
+Graph 0, first node (first 10): tensor([ 3.6785e-01,  2.5380e+00,  1.2065e-01,  0.0000e+00,  0.0000e+00,
+         0.0000e+00,  1.3206e-02,  1.5656e-02, -1.4214e-02, -1.7385e-03],
+       device='mps:0')
+Graph 1, first node (first 10): tensor([ 3.2533e+00,  1.0753e+00,  4.8472e-02,  0.0000e+00,  0.0000e+00,
+         0.0000e+00,  1.3206e-02,  1.5656e-02, -1.4214e-02, -1.7385e-03],
+       device='mps:0')
+
+Centroid diff: 1.4735
+Color diff: 0.0000
+CLIP diff: 0.0000
+Total diff: 0.0085
+❌ CLIP embeddings are too similar!
+Projected edge attr: torch.Size([920, 128])
+Projected edge attr: torch.Size([920, 128])
+Projected edge attr: torch.Size([1150, 128])
+Projected edge attr: torch.Size([1150, 128])
+Projected edge attr: torch.Size([870, 128])
+Projected edge attr: torch.Size([870, 128])
+Projected edge attr: torch.Size([1108, 128])
+Projected edge attr: torch.Size([1108, 128])
+  Batch size: 8
+  💾 Saved best model (loss=19.6573)
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([218, 518])
+src_batch shape: torch.Size([218])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [26, 18, 16, 29, 24, 29, 34, 42]
+First node features (first 10 dims):
+tensor([ 1.0275e+00,  2.6878e+00,  2.0739e-01,  0.0000e+00,  0.0000e+00,
+         0.0000e+00,  1.3206e-02,  1.5656e-02, -1.4214e-02, -1.7385e-03],
+       device='mps:0')
+
+=== EMERGENCY DIAGNOSTIC ===
+Raw node from dataset:
+  Dims 0-2 (centroid): tensor([ 0.2433, -0.0569, -0.5636])
+  Dims 3-5 (color): tensor([0., 0., 0.])
+  Dims 6-10 (CLIP start): tensor([ 0.0132,  0.0157, -0.0142, -0.0017,  0.0203])
+  CLIP norm: 0.9999
+✓ Dataset loads CLIP correctly
+❌ Problem: batching is duplicating the same scene!
+
+Graph 0, first node (first 10): tensor([ 1.0275e+00,  2.6878e+00,  2.0739e-01,  0.0000e+00,  0.0000e+00,
+         0.0000e+00,  1.3206e-02,  1.5656e-02, -1.4214e-02, -1.7385e-03],
+       device='mps:0')
+Graph 1, first node (first 10): tensor([-0.3791,  2.8240, -1.1590,  0.0000,  0.0000,  0.0000,  0.0085, -0.0146,
+        -0.0040, -0.0150], device='mps:0')
+
+Centroid diff: 0.9697
+Color diff: 0.0000
+CLIP diff: 0.0109
+Total diff: 0.0164
+Projected edge attr: torch.Size([1090, 128])
+Projected edge attr: torch.Size([1090, 128])
+Projected edge attr: torch.Size([1344, 128])
+Projected edge attr: torch.Size([1344, 128])
+Projected edge attr: torch.Size([1215, 128])
+Projected edge attr: torch.Size([1215, 128])
+Projected edge attr: torch.Size([1507, 128])
+Projected edge attr: torch.Size([1507, 128])
+  Batch size: 8
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([166, 518])
+src_batch shape: torch.Size([166])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [28, 13, 14, 12, 40, 24, 21, 14]
+First node features (first 10 dims):
+tensor([ 0.4775, -1.4476, -0.2244,  0.0000,  0.0000,  0.0000,  0.0132,  0.0157,
+        -0.0142, -0.0017], device='mps:0')
+
+=== EMERGENCY DIAGNOSTIC ===
+Raw node from dataset:
+  Dims 0-2 (centroid): tensor([ 0.2433, -0.0569, -0.5636])
+  Dims 3-5 (color): tensor([0., 0., 0.])
+  Dims 6-10 (CLIP start): tensor([ 0.0132,  0.0157, -0.0142, -0.0017,  0.0203])
+  CLIP norm: 0.9999
+✓ Dataset loads CLIP correctly
+❌ Problem: batching is duplicating the same scene!
+
+Graph 0, first node (first 10): tensor([ 0.4775, -1.4476, -0.2244,  0.0000,  0.0000,  0.0000,  0.0132,  0.0157,
+        -0.0142, -0.0017], device='mps:0')
+Graph 1, first node (first 10): tensor([-1.1000e+00,  9.2958e-01, -1.0662e+00,  0.0000e+00,  0.0000e+00,
+         0.0000e+00, -1.1208e-02,  4.8561e-03,  6.7472e-04, -9.3002e-03],
+       device='mps:0')
+
+Centroid diff: 1.5988
+Color diff: 0.0000
+CLIP diff: 0.0140
+Total diff: 0.0231
+Projected edge attr: torch.Size([830, 128])
+Projected edge attr: torch.Size([830, 128])
+Projected edge attr: torch.Size([1022, 128])
+Projected edge attr: torch.Size([1022, 128])
+Projected edge attr: torch.Size([640, 128])
+Projected edge attr: torch.Size([640, 128])
+Projected edge attr: torch.Size([786, 128])
+Projected edge attr: torch.Size([786, 128])
+  Batch size: 8
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([186, 518])
+src_batch shape: torch.Size([186])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [17, 40, 12, 21, 16, 37, 13, 30]
+First node features (first 10 dims):
+tensor([-2.2312e+00,  1.5442e+00, -5.7271e-01,  0.0000e+00,  0.0000e+00,
+         0.0000e+00,  1.2337e-02,  8.5373e-03, -3.3020e-02,  1.4601e-03],
+       device='mps:0')
+
+=== EMERGENCY DIAGNOSTIC ===
+Raw node from dataset:
+  Dims 0-2 (centroid): tensor([ 0.2433, -0.0569, -0.5636])
+  Dims 3-5 (color): tensor([0., 0., 0.])
+  Dims 6-10 (CLIP start): tensor([ 0.0132,  0.0157, -0.0142, -0.0017,  0.0203])
+  CLIP norm: 0.9999
+✓ Dataset loads CLIP correctly
+❌ Problem: batching is duplicating the same scene!
+
+Graph 0, first node (first 10): tensor([-2.2312e+00,  1.5442e+00, -5.7271e-01,  0.0000e+00,  0.0000e+00,
+         0.0000e+00,  1.2337e-02,  8.5373e-03, -3.3020e-02,  1.4601e-03],
+       device='mps:0')
+Graph 1, first node (first 10): tensor([-1.3450, -0.0129, -0.9521,  0.0000,  0.0000,  0.0000,  0.0132,  0.0157,
+        -0.0142, -0.0017], device='mps:0')
+
+Centroid diff: 0.9409
+Color diff: 0.0000
+CLIP diff: 0.0072
+Total diff: 0.0126
+❌ CLIP embeddings are too similar!
+Projected edge attr: torch.Size([930, 128])
+Projected edge attr: torch.Size([930, 128])
+Projected edge attr: torch.Size([1162, 128])
+Projected edge attr: torch.Size([1162, 128])
+Projected edge attr: torch.Size([745, 128])
+Projected edge attr: torch.Size([745, 128])
+Projected edge attr: torch.Size([914, 128])
+Projected edge attr: torch.Size([914, 128])
+  Batch size: 8
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([192, 518])
+src_batch shape: torch.Size([192])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [15, 15, 18, 23, 28, 50, 30, 13]
+First node features (first 10 dims):
+tensor([-1.8645, -1.4494, -1.1524,  0.0000,  0.0000,  0.0000,  0.0094,  0.0103,
+        -0.0278,  0.0063], device='mps:0')
+
+=== EMERGENCY DIAGNOSTIC ===
+Raw node from dataset:
+  Dims 0-2 (centroid): tensor([ 0.2433, -0.0569, -0.5636])
+  Dims 3-5 (color): tensor([0., 0., 0.])
+  Dims 6-10 (CLIP start): tensor([ 0.0132,  0.0157, -0.0142, -0.0017,  0.0203])
+  CLIP norm: 0.9999
+✓ Dataset loads CLIP correctly
+❌ Problem: batching is duplicating the same scene!
+
+Graph 0, first node (first 10): tensor([-1.8645, -1.4494, -1.1524,  0.0000,  0.0000,  0.0000,  0.0094,  0.0103,
+        -0.0278,  0.0063], device='mps:0')
+Graph 1, first node (first 10): tensor([-2.2504,  1.2789, -1.0077,  0.6824,  0.7804,  0.9098,  0.0087, -0.0182,
+         0.0046,  0.0072], device='mps:0')
+
+Centroid diff: 1.0863
+Color diff: 0.7908
+CLIP diff: 0.0187
+Total diff: 0.0294
+Projected edge attr: torch.Size([960, 128])
+Projected edge attr: torch.Size([960, 128])
+Projected edge attr: torch.Size([1174, 128])
+Projected edge attr: torch.Size([1174, 128])
+Projected edge attr: torch.Size([935, 128])
+Projected edge attr: torch.Size([935, 128])
+Projected edge attr: torch.Size([1152, 128])
+Projected edge attr: torch.Size([1152, 128])
+  Batch size: 8
+  💾 Saved best model (loss=18.7123)
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([229, 518])
+src_batch shape: torch.Size([229])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [25, 19, 35, 25, 14, 29, 38, 44]
+First node features (first 10 dims):
+tensor([-0.7381,  1.2076, -0.7973,  0.0000,  0.0000,  0.0000,  0.0132,  0.0157,
+        -0.0142, -0.0017], device='mps:0')
+
+=== EMERGENCY DIAGNOSTIC ===
+Raw node from dataset:
+  Dims 0-2 (centroid): tensor([ 0.2433, -0.0569, -0.5636])
+  Dims 3-5 (color): tensor([0., 0., 0.])
+  Dims 6-10 (CLIP start): tensor([ 0.0132,  0.0157, -0.0142, -0.0017,  0.0203])
+  CLIP norm: 0.9999
+✓ Dataset loads CLIP correctly
+❌ Problem: batching is duplicating the same scene!
+
+Graph 0, first node (first 10): tensor([-0.7381,  1.2076, -0.7973,  0.0000,  0.0000,  0.0000,  0.0132,  0.0157,
+        -0.0142, -0.0017], device='mps:0')
+Graph 1, first node (first 10): tensor([-0.0678,  1.6775, -0.7214,  0.0000,  0.0000,  0.0000,  0.0132,  0.0157,
+        -0.0142, -0.0017], device='mps:0')
+
+Centroid diff: 0.4054
+Color diff: 0.0000
+CLIP diff: 0.0000
+Total diff: 0.0023
+❌ CLIP embeddings are too similar!
+Projected edge attr: torch.Size([1145, 128])
+Projected edge attr: torch.Size([1145, 128])
+Projected edge attr: torch.Size([1420, 128])
+Projected edge attr: torch.Size([1420, 128])
+Projected edge attr: torch.Size([1265, 128])
+Projected edge attr: torch.Size([1265, 128])
+Projected edge attr: torch.Size([1622, 128])
+Projected edge attr: torch.Size([1622, 128])
+  Batch size: 8
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([162, 518])
+src_batch shape: torch.Size([162])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [20, 33, 20, 9, 17, 9, 33, 21]
+First node features (first 10 dims):
+tensor([ 3.6849,  0.6265, -0.8523,  0.0000,  0.0000,  0.0000,  0.0050,  0.0258,
+        -0.0217, -0.0059], device='mps:0')
+
+=== EMERGENCY DIAGNOSTIC ===
+Raw node from dataset:
+  Dims 0-2 (centroid): tensor([ 0.2433, -0.0569, -0.5636])
+  Dims 3-5 (color): tensor([0., 0., 0.])
+  Dims 6-10 (CLIP start): tensor([ 0.0132,  0.0157, -0.0142, -0.0017,  0.0203])
+  CLIP norm: 0.9999
+✓ Dataset loads CLIP correctly
+❌ Problem: batching is duplicating the same scene!
+
+Graph 0, first node (first 10): tensor([ 3.6849,  0.6265, -0.8523,  0.0000,  0.0000,  0.0000,  0.0050,  0.0258,
+        -0.0217, -0.0059], device='mps:0')
+Graph 1, first node (first 10): tensor([-5.6469e-01,  2.2873e+00,  2.3323e-01,  0.0000e+00,  0.0000e+00,
+         0.0000e+00,  1.2337e-02,  8.5373e-03, -3.3020e-02,  1.4601e-03],
+       device='mps:0')
+
+Centroid diff: 2.3320
+Color diff: 0.0000
+CLIP diff: 0.0099
+Total diff: 0.0233
+❌ CLIP embeddings are too similar!
+Projected edge attr: torch.Size([810, 128])
+Projected edge attr: torch.Size([810, 128])
+Projected edge attr: torch.Size([1030, 128])
+Projected edge attr: torch.Size([1030, 128])
+Projected edge attr: torch.Size([845, 128])
+Projected edge attr: torch.Size([845, 128])
+Projected edge attr: torch.Size([1090, 128])
+Projected edge attr: torch.Size([1090, 128])
+  Batch size: 8
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([252, 518])
+src_batch shape: torch.Size([252])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [51, 21, 18, 51, 15, 35, 50, 11]
+First node features (first 10 dims):
+tensor([-0.7269, -0.3934, -0.5401,  0.0000,  0.0000,  0.0000,  0.0132,  0.0157,
+        -0.0142, -0.0017], device='mps:0')
+
+=== EMERGENCY DIAGNOSTIC ===
+Raw node from dataset:
+  Dims 0-2 (centroid): tensor([ 0.2433, -0.0569, -0.5636])
+  Dims 3-5 (color): tensor([0., 0., 0.])
+  Dims 6-10 (CLIP start): tensor([ 0.0132,  0.0157, -0.0142, -0.0017,  0.0203])
+  CLIP norm: 0.9999
+✓ Dataset loads CLIP correctly
+❌ Problem: batching is duplicating the same scene!
+
+Graph 0, first node (first 10): tensor([-0.7269, -0.3934, -0.5401,  0.0000,  0.0000,  0.0000,  0.0132,  0.0157,
+        -0.0142, -0.0017], device='mps:0')
+Graph 1, first node (first 10): tensor([ 0.2433, -0.0569, -0.5636,  0.0000,  0.0000,  0.0000,  0.0132,  0.0157,
+        -0.0142, -0.0017], device='mps:0')
+
+Centroid diff: 0.4434
+Color diff: 0.0000
+CLIP diff: 0.0000
+Total diff: 0.0026
+❌ CLIP embeddings are too similar!
+Projected edge attr: torch.Size([1260, 128])
+Projected edge attr: torch.Size([1260, 128])
+Projected edge attr: torch.Size([1580, 128])
+Projected edge attr: torch.Size([1580, 128])
+Projected edge attr: torch.Size([920, 128])
+Projected edge attr: torch.Size([920, 128])
+Projected edge attr: torch.Size([1128, 128])
+Projected edge attr: torch.Size([1128, 128])
+  Batch size: 8
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([246, 518])
+src_batch shape: torch.Size([246])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [31, 10, 48, 38, 25, 41, 32, 21]
+First node features (first 10 dims):
+tensor([ 3.2575e-01,  3.1839e+00, -9.1054e-01,  0.0000e+00,  0.0000e+00,
+         0.0000e+00,  1.2337e-02,  8.5373e-03, -3.3020e-02,  1.4601e-03],
+       device='mps:0')
+
+=== EMERGENCY DIAGNOSTIC ===
+Raw node from dataset:
+  Dims 0-2 (centroid): tensor([ 0.2433, -0.0569, -0.5636])
+  Dims 3-5 (color): tensor([0., 0., 0.])
+  Dims 6-10 (CLIP start): tensor([ 0.0132,  0.0157, -0.0142, -0.0017,  0.0203])
+  CLIP norm: 0.9999
+✓ Dataset loads CLIP correctly
+❌ Problem: batching is duplicating the same scene!
+
+Graph 0, first node (first 10): tensor([ 3.2575e-01,  3.1839e+00, -9.1054e-01,  0.0000e+00,  0.0000e+00,
+         0.0000e+00,  1.2337e-02,  8.5373e-03, -3.3020e-02,  1.4601e-03],
+       device='mps:0')
+Graph 1, first node (first 10): tensor([-0.2950,  1.4533, -1.4885,  0.0000,  0.0000,  0.0000, -0.0158,  0.0094,
+        -0.0097, -0.0127], device='mps:0')
+
+Centroid diff: 0.9765
+Color diff: 0.0000
+CLIP diff: 0.0147
+Total diff: 0.0202
+Projected edge attr: torch.Size([1230, 128])
+Projected edge attr: torch.Size([1230, 128])
+Projected edge attr: torch.Size([1522, 128])
+Projected edge attr: torch.Size([1522, 128])
+Projected edge attr: torch.Size([980, 128])
+Projected edge attr: torch.Size([980, 128])
+Projected edge attr: torch.Size([1240, 128])
+Projected edge attr: torch.Size([1240, 128])
+  Batch size: 8
+
+[Epoch 1] Step 20
+  Total Loss       = 18.4428
+  InfoNCE          = 2.6338
+  Variance Loss    = 0.6321
+  Covariance Loss  = 0.0070
+  ---
+  Var(src, ref)    = 0.1428, 0.1595
+  STD(src, ref)    = 0.3579, 0.3777
+  Norm(src, ref)   = 12.6912, 12.5426
+  Cov(src, ref)    = 0.3916, 0.4732
+  Cosine Sim       = 0.8422
+  Grad Norm        = 41.4963
+  LR               = 0.000875
+  ---
+  🎯 EMBEDDING QUALITY (Key Metric):
+    Positive pairs: 0.842 (want > 0.7)
+    Negative pairs: 0.774 (want < 0.3)
+    Separation:     0.068 (want > 0.4)
+    ❌ VERY POOR - NOT LEARNING!
+       → STOP TRAINING - Fix hyperparameters!
+       → batch_size >= 8, lr = 1e-3, lambda_var = 50
+  ⚠️  Low variance → Severe collapse!
+  💾 Saved best model (loss=18.4428)
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([173, 518])
+src_batch shape: torch.Size([173])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [28, 36, 13, 28, 19, 15, 17, 17]
+First node features (first 10 dims):
+tensor([-0.7370, -0.5161, -1.5285,  0.0000,  0.0000,  0.0000, -0.0181,  0.0067,
+        -0.0268, -0.0039], device='mps:0')
+
+=== EMERGENCY DIAGNOSTIC ===
+Raw node from dataset:
+  Dims 0-2 (centroid): tensor([ 0.2433, -0.0569, -0.5636])
+  Dims 3-5 (color): tensor([0., 0., 0.])
+  Dims 6-10 (CLIP start): tensor([ 0.0132,  0.0157, -0.0142, -0.0017,  0.0203])
+  CLIP norm: 0.9999
+✓ Dataset loads CLIP correctly
+❌ Problem: batching is duplicating the same scene!
+
+Graph 0, first node (first 10): tensor([-0.7370, -0.5161, -1.5285,  0.0000,  0.0000,  0.0000, -0.0181,  0.0067,
+        -0.0268, -0.0039], device='mps:0')
+Graph 1, first node (first 10): tensor([-0.4367,  1.1931, -0.7858,  0.0000,  0.0000,  0.0000,  0.0132,  0.0157,
+        -0.0142, -0.0017], device='mps:0')
+
+Centroid diff: 0.9174
+Color diff: 0.0000
+CLIP diff: 0.0143
+Total diff: 0.0195
+Projected edge attr: torch.Size([865, 128])
+Projected edge attr: torch.Size([865, 128])
+Projected edge attr: torch.Size([1071, 128])
+Projected edge attr: torch.Size([1071, 128])
+Projected edge attr: torch.Size([890, 128])
+Projected edge attr: torch.Size([890, 128])
+Projected edge attr: torch.Size([1088, 128])
+Projected edge attr: torch.Size([1088, 128])
+  Batch size: 8
+  💾 Saved best model (loss=16.4316)
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([290, 518])
+src_batch shape: torch.Size([290])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [50, 26, 26, 33, 29, 63, 43, 20]
+First node features (first 10 dims):
+tensor([-1.1383e+00,  2.9570e+00,  2.2340e-01,  0.0000e+00,  0.0000e+00,
+         0.0000e+00,  1.2337e-02,  8.5373e-03, -3.3020e-02,  1.4601e-03],
+       device='mps:0')
+
+=== EMERGENCY DIAGNOSTIC ===
+Raw node from dataset:
+  Dims 0-2 (centroid): tensor([ 0.2433, -0.0569, -0.5636])
+  Dims 3-5 (color): tensor([0., 0., 0.])
+  Dims 6-10 (CLIP start): tensor([ 0.0132,  0.0157, -0.0142, -0.0017,  0.0203])
+  CLIP norm: 0.9999
+✓ Dataset loads CLIP correctly
+❌ Problem: batching is duplicating the same scene!
+
+Graph 0, first node (first 10): tensor([-1.1383e+00,  2.9570e+00,  2.2340e-01,  0.0000e+00,  0.0000e+00,
+         0.0000e+00,  1.2337e-02,  8.5373e-03, -3.3020e-02,  1.4601e-03],
+       device='mps:0')
+Graph 1, first node (first 10): tensor([ 1.1738e+00,  1.9041e+00, -8.6045e-01,  0.0000e+00,  0.0000e+00,
+         0.0000e+00,  1.3206e-02,  1.5656e-02, -1.4214e-02, -1.7385e-03],
+       device='mps:0')
+
+Centroid diff: 1.4829
+Color diff: 0.0000
+CLIP diff: 0.0072
+Total diff: 0.0157
+❌ CLIP embeddings are too similar!
+Projected edge attr: torch.Size([1450, 128])
+Projected edge attr: torch.Size([1450, 128])
+Projected edge attr: torch.Size([1802, 128])
+Projected edge attr: torch.Size([1802, 128])
+Projected edge attr: torch.Size([795, 128])
+Projected edge attr: torch.Size([795, 128])
+Projected edge attr: torch.Size([976, 128])
+Projected edge attr: torch.Size([976, 128])
+  Batch size: 8
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([229, 518])
+src_batch shape: torch.Size([229])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [26, 21, 23, 15, 29, 51, 53, 11]
+First node features (first 10 dims):
+tensor([-1.6046e+00,  3.1408e+00, -1.2467e+00,  0.0000e+00,  0.0000e+00,
+         0.0000e+00,  1.2337e-02,  8.5373e-03, -3.3020e-02,  1.4601e-03],
+       device='mps:0')
+
+=== EMERGENCY DIAGNOSTIC ===
+Raw node from dataset:
+  Dims 0-2 (centroid): tensor([ 0.2433, -0.0569, -0.5636])
+  Dims 3-5 (color): tensor([0., 0., 0.])
+  Dims 6-10 (CLIP start): tensor([ 0.0132,  0.0157, -0.0142, -0.0017,  0.0203])
+  CLIP norm: 0.9999
+✓ Dataset loads CLIP correctly
+❌ Problem: batching is duplicating the same scene!
+
+Graph 0, first node (first 10): tensor([-1.6046e+00,  3.1408e+00, -1.2467e+00,  0.0000e+00,  0.0000e+00,
+         0.0000e+00,  1.2337e-02,  8.5373e-03, -3.3020e-02,  1.4601e-03],
+       device='mps:0')
+Graph 1, first node (first 10): tensor([-0.2599, -0.6549, -0.6336,  0.0000,  0.0000,  0.0000,  0.0132,  0.0157,
+        -0.0142, -0.0017], device='mps:0')
+
+Centroid diff: 1.9178
+Color diff: 0.0000
+CLIP diff: 0.0072
+Total diff: 0.0183
+❌ CLIP embeddings are too similar!
+Projected edge attr: torch.Size([1145, 128])
+Projected edge attr: torch.Size([1145, 128])
+Projected edge attr: torch.Size([1431, 128])
+Projected edge attr: torch.Size([1431, 128])
+Projected edge attr: torch.Size([925, 128])
+Projected edge attr: torch.Size([925, 128])
+Projected edge attr: torch.Size([1158, 128])
+Projected edge attr: torch.Size([1158, 128])
+  Batch size: 8
+  💾 Saved best model (loss=15.1416)
+
+======================================================================
+Epoch 1 Summary
+======================================================================
+  Avg Total Loss = 19.1161
+  Avg InfoNCE    = 3.3173
+  Avg Var Loss   = 0.6315
+  Avg Cov Loss   = 0.0116
+  Final SRC: mean=0.0553, std=0.8250
+  Final REF: mean=0.0479, std=0.7941
+  ---
+  📊 Final Separation: 0.225
+======================================================================
+
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([147, 518])
+src_batch shape: torch.Size([147])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [20, 16, 12, 29, 23, 14, 18, 15]
+First node features (first 10 dims):
+tensor([ 3.6849,  0.6265, -0.8523,  0.0000,  0.0000,  0.0000,  0.0050,  0.0258,
+        -0.0217, -0.0059], device='mps:0')
+
+=== EMERGENCY DIAGNOSTIC ===
+Raw node from dataset:
+  Dims 0-2 (centroid): tensor([ 0.2433, -0.0569, -0.5636])
+  Dims 3-5 (color): tensor([0., 0., 0.])
+  Dims 6-10 (CLIP start): tensor([ 0.0132,  0.0157, -0.0142, -0.0017,  0.0203])
+  CLIP norm: 0.9999
+✓ Dataset loads CLIP correctly
+❌ Problem: batching is duplicating the same scene!
+
+Graph 0, first node (first 10): tensor([ 3.6849,  0.6265, -0.8523,  0.0000,  0.0000,  0.0000,  0.0050,  0.0258,
+        -0.0217, -0.0059], device='mps:0')
+Graph 1, first node (first 10): tensor([-7.6293e-01,  3.4426e+00,  9.2288e-02,  0.0000e+00,  0.0000e+00,
+         0.0000e+00,  1.3206e-02,  1.5656e-02, -1.4214e-02, -1.7385e-03],
+       device='mps:0')
+
+Centroid diff: 2.7362
+Color diff: 0.0000
+CLIP diff: 0.0131
+Total diff: 0.0288
+Projected edge attr: torch.Size([735, 128])
+Projected edge attr: torch.Size([735, 128])
+Projected edge attr: torch.Size([908, 128])
+Projected edge attr: torch.Size([908, 128])
+Projected edge attr: torch.Size([845, 128])
+Projected edge attr: torch.Size([845, 128])
+Projected edge attr: torch.Size([1056, 128])
+Projected edge attr: torch.Size([1056, 128])
+  Batch size: 8
+  💾 Saved best model (loss=14.4118)
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([141, 518])
+src_batch shape: torch.Size([141])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [15, 9, 15, 19, 26, 36, 9, 12]
+First node features (first 10 dims):
+tensor([-5.5461e-01,  2.4417e+00, -1.3427e+00,  0.0000e+00,  0.0000e+00,
+         0.0000e+00, -2.9922e-04, -5.0659e-03,  2.0428e-03, -1.6678e-02],
+       device='mps:0')
+
+=== EMERGENCY DIAGNOSTIC ===
+Raw node from dataset:
+  Dims 0-2 (centroid): tensor([ 0.2433, -0.0569, -0.5636])
+  Dims 3-5 (color): tensor([0., 0., 0.])
+  Dims 6-10 (CLIP start): tensor([ 0.0132,  0.0157, -0.0142, -0.0017,  0.0203])
+  CLIP norm: 0.9999
+✓ Dataset loads CLIP correctly
+❌ Problem: batching is duplicating the same scene!
+
+Graph 0, first node (first 10): tensor([-5.5461e-01,  2.4417e+00, -1.3427e+00,  0.0000e+00,  0.0000e+00,
+         0.0000e+00, -2.9922e-04, -5.0659e-03,  2.0428e-03, -1.6678e-02],
+       device='mps:0')
+Graph 1, first node (first 10): tensor([-0.0262,  0.1350, -0.9751,  0.0000,  0.0000,  0.0000, -0.0150, -0.0100,
+        -0.0349, -0.0021], device='mps:0')
+
+Centroid diff: 1.0676
+Color diff: 0.0000
+CLIP diff: 0.0149
+Total diff: 0.0209
+Projected edge attr: torch.Size([705, 128])
+Projected edge attr: torch.Size([705, 128])
+Projected edge attr: torch.Size([869, 128])
+Projected edge attr: torch.Size([869, 128])
+Projected edge attr: torch.Size([690, 128])
+Projected edge attr: torch.Size([690, 128])
+Projected edge attr: torch.Size([838, 128])
+Projected edge attr: torch.Size([838, 128])
+  Batch size: 8
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([219, 518])
+src_batch shape: torch.Size([219])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [34, 30, 18, 30, 50, 11, 12, 34]
+First node features (first 10 dims):
+tensor([-0.3549,  2.9350, -0.5357,  0.0000,  0.0000,  0.0000,  0.0116,  0.0183,
+        -0.0074, -0.0074], device='mps:0')
+
+=== EMERGENCY DIAGNOSTIC ===
+Raw node from dataset:
+  Dims 0-2 (centroid): tensor([ 0.2433, -0.0569, -0.5636])
+  Dims 3-5 (color): tensor([0., 0., 0.])
+  Dims 6-10 (CLIP start): tensor([ 0.0132,  0.0157, -0.0142, -0.0017,  0.0203])
+  CLIP norm: 0.9999
+✓ Dataset loads CLIP correctly
+❌ Problem: batching is duplicating the same scene!
+
+Graph 0, first node (first 10): tensor([-0.3549,  2.9350, -0.5357,  0.0000,  0.0000,  0.0000,  0.0116,  0.0183,
+        -0.0074, -0.0074], device='mps:0')
+Graph 1, first node (first 10): tensor([-0.8898, -0.2121, -1.2380,  0.0000,  0.0000,  0.0000,  0.0065,  0.0323,
+        -0.0258, -0.0036], device='mps:0')
+
+Centroid diff: 1.4615
+Color diff: 0.0000
+CLIP diff: 0.0093
+Total diff: 0.0176
+❌ CLIP embeddings are too similar!
+Projected edge attr: torch.Size([1095, 128])
+Projected edge attr: torch.Size([1095, 128])
+Projected edge attr: torch.Size([1376, 128])
+Projected edge attr: torch.Size([1376, 128])
+Projected edge attr: torch.Size([920, 128])
+Projected edge attr: torch.Size([920, 128])
+Projected edge attr: torch.Size([1168, 128])
+Projected edge attr: torch.Size([1168, 128])
+  Batch size: 8
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([185, 518])
+src_batch shape: torch.Size([185])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [28, 17, 28, 20, 38, 17, 21, 16]
+First node features (first 10 dims):
+tensor([ 1.0157,  0.3105, -0.5897,  0.0000,  0.0000,  0.0000,  0.0132,  0.0157,
+        -0.0142, -0.0017], device='mps:0')
+
+=== EMERGENCY DIAGNOSTIC ===
+Raw node from dataset:
+  Dims 0-2 (centroid): tensor([ 0.2433, -0.0569, -0.5636])
+  Dims 3-5 (color): tensor([0., 0., 0.])
+  Dims 6-10 (CLIP start): tensor([ 0.0132,  0.0157, -0.0142, -0.0017,  0.0203])
+  CLIP norm: 0.9999
+✓ Dataset loads CLIP correctly
+❌ Problem: batching is duplicating the same scene!
+
+Graph 0, first node (first 10): tensor([ 1.0157,  0.3105, -0.5897,  0.0000,  0.0000,  0.0000,  0.0132,  0.0157,
+        -0.0142, -0.0017], device='mps:0')
+Graph 1, first node (first 10): tensor([-2.2312e+00,  1.5442e+00, -5.7271e-01,  0.0000e+00,  0.0000e+00,
+         0.0000e+00,  1.2337e-02,  8.5373e-03, -3.3020e-02,  1.4601e-03],
+       device='mps:0')
+
+Centroid diff: 1.4992
+Color diff: 0.0000
+CLIP diff: 0.0072
+Total diff: 0.0158
+❌ CLIP embeddings are too similar!
+Projected edge attr: torch.Size([925, 128])
+Projected edge attr: torch.Size([925, 128])
+Projected edge attr: torch.Size([1136, 128])
+Projected edge attr: torch.Size([1136, 128])
+Projected edge attr: torch.Size([1015, 128])
+Projected edge attr: torch.Size([1015, 128])
+Projected edge attr: torch.Size([1252, 128])
+Projected edge attr: torch.Size([1252, 128])
+  Batch size: 8
+  💾 Saved best model (loss=12.3645)
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([186, 518])
+src_batch shape: torch.Size([186])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [25, 11, 13, 40, 37, 21, 18, 21]
+First node features (first 10 dims):
+tensor([-2.7659e-01,  2.1135e+00,  7.5274e-02,  0.0000e+00,  0.0000e+00,
+         0.0000e+00,  1.3206e-02,  1.5656e-02, -1.4214e-02, -1.7385e-03],
+       device='mps:0')
+
+=== EMERGENCY DIAGNOSTIC ===
+Raw node from dataset:
+  Dims 0-2 (centroid): tensor([ 0.2433, -0.0569, -0.5636])
+  Dims 3-5 (color): tensor([0., 0., 0.])
+  Dims 6-10 (CLIP start): tensor([ 0.0132,  0.0157, -0.0142, -0.0017,  0.0203])
+  CLIP norm: 0.9999
+✓ Dataset loads CLIP correctly
+❌ Problem: batching is duplicating the same scene!
+
+Graph 0, first node (first 10): tensor([-2.7659e-01,  2.1135e+00,  7.5274e-02,  0.0000e+00,  0.0000e+00,
+         0.0000e+00,  1.3206e-02,  1.5656e-02, -1.4214e-02, -1.7385e-03],
+       device='mps:0')
+Graph 1, first node (first 10): tensor([-0.1808,  1.8064, -1.2820,  0.0000,  0.0000,  0.0000, -0.0169, -0.0029,
+        -0.0307, -0.0101], device='mps:0')
+
+Centroid diff: 0.5867
+Color diff: 0.0000
+CLIP diff: 0.0150
+Total diff: 0.0182
+Projected edge attr: torch.Size([930, 128])
+Projected edge attr: torch.Size([930, 128])
+Projected edge attr: torch.Size([1192, 128])
+Projected edge attr: torch.Size([1192, 128])
+Projected edge attr: torch.Size([1050, 128])
+Projected edge attr: torch.Size([1050, 128])
+Projected edge attr: torch.Size([1330, 128])
+Projected edge attr: torch.Size([1330, 128])
+  Batch size: 8
+  💾 Saved best model (loss=9.3678)
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([253, 518])
+src_batch shape: torch.Size([253])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [42, 33, 41, 44, 40, 20, 21, 12]
+First node features (first 10 dims):
+tensor([ 0.2869,  0.3078,  0.2603,  0.0000,  0.0000,  0.0000,  0.0094,  0.0103,
+        -0.0278,  0.0063], device='mps:0')
+
+=== EMERGENCY DIAGNOSTIC ===
+Raw node from dataset:
+  Dims 0-2 (centroid): tensor([ 0.2433, -0.0569, -0.5636])
+  Dims 3-5 (color): tensor([0., 0., 0.])
+  Dims 6-10 (CLIP start): tensor([ 0.0132,  0.0157, -0.0142, -0.0017,  0.0203])
+  CLIP norm: 0.9999
+✓ Dataset loads CLIP correctly
+❌ Problem: batching is duplicating the same scene!
+
+Graph 0, first node (first 10): tensor([ 0.2869,  0.3078,  0.2603,  0.0000,  0.0000,  0.0000,  0.0094,  0.0103,
+        -0.0278,  0.0063], device='mps:0')
+Graph 1, first node (first 10): tensor([-1.1594, -0.2758, -0.2550,  0.0000,  0.0000,  0.0000,  0.0094,  0.0103,
+        -0.0278,  0.0063], device='mps:0')
+
+Centroid diff: 0.8484
+Color diff: 0.0000
+CLIP diff: 0.0000
+Total diff: 0.0049
+❌ CLIP embeddings are too similar!
+Projected edge attr: torch.Size([1265, 128])
+Projected edge attr: torch.Size([1265, 128])
+Projected edge attr: torch.Size([1568, 128])
+Projected edge attr: torch.Size([1568, 128])
+Projected edge attr: torch.Size([1345, 128])
+Projected edge attr: torch.Size([1345, 128])
+Projected edge attr: torch.Size([1691, 128])
+Projected edge attr: torch.Size([1691, 128])
+  Batch size: 8
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([199, 518])
+src_batch shape: torch.Size([199])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [24, 26, 53, 14, 10, 29, 19, 24]
+First node features (first 10 dims):
+tensor([ 0.7486,  1.4785, -0.9972,  0.0000,  0.0000,  0.0000,  0.0132,  0.0157,
+        -0.0142, -0.0017], device='mps:0')
+
+=== EMERGENCY DIAGNOSTIC ===
+Raw node from dataset:
+  Dims 0-2 (centroid): tensor([ 0.2433, -0.0569, -0.5636])
+  Dims 3-5 (color): tensor([0., 0., 0.])
+  Dims 6-10 (CLIP start): tensor([ 0.0132,  0.0157, -0.0142, -0.0017,  0.0203])
+  CLIP norm: 0.9999
+✓ Dataset loads CLIP correctly
+❌ Problem: batching is duplicating the same scene!
+
+Graph 0, first node (first 10): tensor([ 0.7486,  1.4785, -0.9972,  0.0000,  0.0000,  0.0000,  0.0132,  0.0157,
+        -0.0142, -0.0017], device='mps:0')
+Graph 1, first node (first 10): tensor([ 1.1738e+00,  1.9041e+00, -8.6045e-01,  0.0000e+00,  0.0000e+00,
+         0.0000e+00,  1.3206e-02,  1.5656e-02, -1.4214e-02, -1.7385e-03],
+       device='mps:0')
+
+Centroid diff: 0.3292
+Color diff: 0.0000
+CLIP diff: 0.0000
+Total diff: 0.0019
+❌ CLIP embeddings are too similar!
+Projected edge attr: torch.Size([995, 128])
+Projected edge attr: torch.Size([995, 128])
+Projected edge attr: torch.Size([1244, 128])
+Projected edge attr: torch.Size([1244, 128])
+Projected edge attr: torch.Size([895, 128])
+Projected edge attr: torch.Size([895, 128])
+Projected edge attr: torch.Size([1104, 128])
+Projected edge attr: torch.Size([1104, 128])
+  Batch size: 8
+
+[Epoch 2] Step 30
+  Total Loss       = 15.0297
+  InfoNCE          = 8.3173
+  Variance Loss    = 0.2613
+  Covariance Loss  = 0.1808
+  ---
+  Var(src, ref)    = 0.6035, 0.6141
+  STD(src, ref)    = 0.7467, 0.7539
+  Norm(src, ref)   = 18.4067, 18.2987
+  Cov(src, ref)    = 2.4262, 2.3652
+  Cosine Sim       = 0.5605
+  Grad Norm        = 85.6253
+  LR               = 0.000997
+  ---
+  🎯 EMBEDDING QUALITY (Key Metric):
+    Positive pairs: 0.561 (want > 0.7)
+    Negative pairs: 0.589 (want < 0.3)
+    Separation:     -0.029 (want > 0.4)
+    ❌ VERY POOR - NOT LEARNING!
+       → STOP TRAINING - Fix hyperparameters!
+       → batch_size >= 8, lr = 1e-3, lambda_var = 50
+  ✓  Healthy training dynamics!
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([262, 518])
+src_batch shape: torch.Size([262])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [50, 40, 21, 48, 35, 18, 17, 33]
+First node features (first 10 dims):
+tensor([-2.2694e+00,  4.4813e-01, -4.3703e-01,  0.0000e+00,  0.0000e+00,
+         0.0000e+00,  1.3206e-02,  1.5656e-02, -1.4214e-02, -1.7385e-03],
+       device='mps:0')
+
+=== EMERGENCY DIAGNOSTIC ===
+Raw node from dataset:
+  Dims 0-2 (centroid): tensor([ 0.2433, -0.0569, -0.5636])
+  Dims 3-5 (color): tensor([0., 0., 0.])
+  Dims 6-10 (CLIP start): tensor([ 0.0132,  0.0157, -0.0142, -0.0017,  0.0203])
+  CLIP norm: 0.9999
+✓ Dataset loads CLIP correctly
+❌ Problem: batching is duplicating the same scene!
+
+Graph 0, first node (first 10): tensor([-2.2694e+00,  4.4813e-01, -4.3703e-01,  0.0000e+00,  0.0000e+00,
+         0.0000e+00,  1.3206e-02,  1.5656e-02, -1.4214e-02, -1.7385e-03],
+       device='mps:0')
+Graph 1, first node (first 10): tensor([-1.3450, -0.0129, -0.9521,  0.0000,  0.0000,  0.0000,  0.0132,  0.0157,
+        -0.0142, -0.0017], device='mps:0')
+
+Centroid diff: 0.6335
+Color diff: 0.0000
+CLIP diff: 0.0000
+Total diff: 0.0037
+❌ CLIP embeddings are too similar!
+Projected edge attr: torch.Size([1310, 128])
+Projected edge attr: torch.Size([1310, 128])
+Projected edge attr: torch.Size([1660, 128])
+Projected edge attr: torch.Size([1660, 128])
+Projected edge attr: torch.Size([980, 128])
+Projected edge attr: torch.Size([980, 128])
+Projected edge attr: torch.Size([1242, 128])
+Projected edge attr: torch.Size([1242, 128])
+  Batch size: 8
+  💾 Saved best model (loss=8.3974)
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([267, 518])
+src_batch shape: torch.Size([267])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [26, 51, 26, 31, 63, 28, 13, 29]
+First node features (first 10 dims):
+tensor([-1.0308,  1.2274, -0.2323,  0.0000,  0.0000,  0.0000,  0.0123,  0.0085,
+        -0.0330,  0.0015], device='mps:0')
+
+=== EMERGENCY DIAGNOSTIC ===
+Raw node from dataset:
+  Dims 0-2 (centroid): tensor([ 0.2433, -0.0569, -0.5636])
+  Dims 3-5 (color): tensor([0., 0., 0.])
+  Dims 6-10 (CLIP start): tensor([ 0.0132,  0.0157, -0.0142, -0.0017,  0.0203])
+  CLIP norm: 0.9999
+✓ Dataset loads CLIP correctly
+❌ Problem: batching is duplicating the same scene!
+
+Graph 0, first node (first 10): tensor([-1.0308,  1.2274, -0.2323,  0.0000,  0.0000,  0.0000,  0.0123,  0.0085,
+        -0.0330,  0.0015], device='mps:0')
+Graph 1, first node (first 10): tensor([ 0.4984, -1.6999, -0.2719,  0.0000,  0.0000,  0.0000,  0.0094,  0.0103,
+        -0.0278,  0.0063], device='mps:0')
+
+Centroid diff: 1.4987
+Color diff: 0.0000
+CLIP diff: 0.0055
+Total diff: 0.0142
+❌ CLIP embeddings are too similar!
+Projected edge attr: torch.Size([1335, 128])
+Projected edge attr: torch.Size([1335, 128])
+Projected edge attr: torch.Size([1650, 128])
+Projected edge attr: torch.Size([1650, 128])
+Projected edge attr: torch.Size([1010, 128])
+Projected edge attr: torch.Size([1010, 128])
+Projected edge attr: torch.Size([1242, 128])
+Projected edge attr: torch.Size([1242, 128])

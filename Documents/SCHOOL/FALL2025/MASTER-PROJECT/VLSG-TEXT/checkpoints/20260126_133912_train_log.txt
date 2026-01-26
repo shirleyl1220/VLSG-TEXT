@@ -1,0 +1,204 @@
+Learning rate: 0.001
+Epochs: 20
+Log every: 10 steps
+Checkpoints: checkpoints/
+
+======================================================================
+Starting Training
+======================================================================
+
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([226, 534])
+src_batch shape: torch.Size([226])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7])
+Nodes per graph: [12, 35, 19, 34, 28, 51, 21, 26]
+First node features (first 10 dims):
+tensor([-0.1944,  0.7913, -0.9469,  0.0000,  0.0000,  0.0000,  0.4000,  0.0000,
+         0.0000,  0.0000], device='mps:0')
+
+Graph 0, first node (first 10): tensor([-0.1944,  0.7913, -0.9469,  0.0000,  0.0000,  0.0000,  0.4000,  0.0000,
+         0.0000,  0.0000], device='mps:0')
+Graph 1, first node (first 10): tensor([ 1.0958,  2.2779, -0.7042,  0.0000,  0.0000,  0.0000,  0.4000,  0.0000,
+         0.0000,  0.0000], device='mps:0')
+Difference between graphs: 0.0057
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([226, 534])
+src_batch shape: torch.Size([226])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7])
+Nodes per graph: [12, 35, 19, 34, 28, 51, 21, 26]
+First node features (first 10 dims):
+tensor([-0.1944,  0.7913, -0.9469,  0.0000,  0.0000,  0.0000,  0.4000,  0.0000,
+         0.0000,  0.0000], device='mps:0')
+
+Graph 0, first node (first 10): tensor([-0.1944,  0.7913, -0.9469,  0.0000,  0.0000,  0.0000,  0.4000,  0.0000,
+         0.0000,  0.0000], device='mps:0')
+Graph 1, first node (first 10): tensor([ 1.0958,  2.2779, -0.7042,  0.0000,  0.0000,  0.0000,  0.4000,  0.0000,
+         0.0000,  0.0000], device='mps:0')
+Difference between graphs: 0.0057
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([226, 534])
+src_batch shape: torch.Size([226])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7])
+Nodes per graph: [12, 35, 19, 34, 28, 51, 21, 26]
+First node features (first 10 dims):
+tensor([-0.1944,  0.7913, -0.9469,  0.0000,  0.0000,  0.0000,  0.4000,  0.0000,
+         0.0000,  0.0000], device='mps:0')
+
+Graph 0, first node (first 10): tensor([-0.1944,  0.7913, -0.9469,  0.0000,  0.0000,  0.0000,  0.4000,  0.0000,
+         0.0000,  0.0000], device='mps:0')
+Graph 1, first node (first 10): tensor([ 1.0958,  2.2779, -0.7042,  0.0000,  0.0000,  0.0000,  0.4000,  0.0000,
+         0.0000,  0.0000], device='mps:0')
+Difference between graphs: 0.0057
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([226, 534])
+src_batch shape: torch.Size([226])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7])
+Nodes per graph: [12, 35, 19, 34, 28, 51, 21, 26]
+First node features (first 10 dims):
+tensor([-0.1944,  0.7913, -0.9469,  0.0000,  0.0000,  0.0000,  0.4000,  0.0000,
+         0.0000,  0.0000], device='mps:0')
+
+Graph 0, first node (first 10): tensor([-0.1944,  0.7913, -0.9469,  0.0000,  0.0000,  0.0000,  0.4000,  0.0000,
+         0.0000,  0.0000], device='mps:0')
+Graph 1, first node (first 10): tensor([ 1.0958,  2.2779, -0.7042,  0.0000,  0.0000,  0.0000,  0.4000,  0.0000,
+         0.0000,  0.0000], device='mps:0')
+Difference between graphs: 0.0057
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([226, 534])
+src_batch shape: torch.Size([226])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7])
+Nodes per graph: [12, 35, 19, 34, 28, 51, 21, 26]
+First node features (first 10 dims):
+tensor([-0.1944,  0.7913, -0.9469,  0.0000,  0.0000,  0.0000,  0.4000,  0.0000,
+         0.0000,  0.0000], device='mps:0')
+
+Graph 0, first node (first 10): tensor([-0.1944,  0.7913, -0.9469,  0.0000,  0.0000,  0.0000,  0.4000,  0.0000,
+         0.0000,  0.0000], device='mps:0')
+Graph 1, first node (first 10): tensor([ 1.0958,  2.2779, -0.7042,  0.0000,  0.0000,  0.0000,  0.4000,  0.0000,
+         0.0000,  0.0000], device='mps:0')
+Difference between graphs: 0.0057
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([226, 534])
+src_batch shape: torch.Size([226])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7])
+Nodes per graph: [12, 35, 19, 34, 28, 51, 21, 26]
+First node features (first 10 dims):
+tensor([-0.1944,  0.7913, -0.9469,  0.0000,  0.0000,  0.0000,  0.4000,  0.0000,
+         0.0000,  0.0000], device='mps:0')
+
+Graph 0, first node (first 10): tensor([-0.1944,  0.7913, -0.9469,  0.0000,  0.0000,  0.0000,  0.4000,  0.0000,
+         0.0000,  0.0000], device='mps:0')
+Graph 1, first node (first 10): tensor([ 1.0958,  2.2779, -0.7042,  0.0000,  0.0000,  0.0000,  0.4000,  0.0000,
+         0.0000,  0.0000], device='mps:0')
+Difference between graphs: 0.0057
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([226, 534])
+src_batch shape: torch.Size([226])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7])
+Nodes per graph: [12, 35, 19, 34, 28, 51, 21, 26]
+First node features (first 10 dims):
+tensor([-0.1944,  0.7913, -0.9469,  0.0000,  0.0000,  0.0000,  0.4000,  0.0000,
+         0.0000,  0.0000], device='mps:0')
+
+Graph 0, first node (first 10): tensor([-0.1944,  0.7913, -0.9469,  0.0000,  0.0000,  0.0000,  0.4000,  0.0000,
+         0.0000,  0.0000], device='mps:0')
+Graph 1, first node (first 10): tensor([ 1.0958,  2.2779, -0.7042,  0.0000,  0.0000,  0.0000,  0.4000,  0.0000,
+         0.0000,  0.0000], device='mps:0')
+Difference between graphs: 0.0057
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([226, 534])
+src_batch shape: torch.Size([226])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7])
+Nodes per graph: [12, 35, 19, 34, 28, 51, 21, 26]
+First node features (first 10 dims):
+tensor([-0.1944,  0.7913, -0.9469,  0.0000,  0.0000,  0.0000,  0.4000,  0.0000,
+         0.0000,  0.0000], device='mps:0')
+
+Graph 0, first node (first 10): tensor([-0.1944,  0.7913, -0.9469,  0.0000,  0.0000,  0.0000,  0.4000,  0.0000,
+         0.0000,  0.0000], device='mps:0')
+Graph 1, first node (first 10): tensor([ 1.0958,  2.2779, -0.7042,  0.0000,  0.0000,  0.0000,  0.4000,  0.0000,
+         0.0000,  0.0000], device='mps:0')
+Difference between graphs: 0.0057
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([226, 534])
+src_batch shape: torch.Size([226])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7])
+Nodes per graph: [12, 35, 19, 34, 28, 51, 21, 26]
+First node features (first 10 dims):
+tensor([-0.1944,  0.7913, -0.9469,  0.0000,  0.0000,  0.0000,  0.4000,  0.0000,
+         0.0000,  0.0000], device='mps:0')
+
+Graph 0, first node (first 10): tensor([-0.1944,  0.7913, -0.9469,  0.0000,  0.0000,  0.0000,  0.4000,  0.0000,
+         0.0000,  0.0000], device='mps:0')
+Graph 1, first node (first 10): tensor([ 1.0958,  2.2779, -0.7042,  0.0000,  0.0000,  0.0000,  0.4000,  0.0000,
+         0.0000,  0.0000], device='mps:0')
+Difference between graphs: 0.0057
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([226, 534])
+src_batch shape: torch.Size([226])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7])
+Nodes per graph: [12, 35, 19, 34, 28, 51, 21, 26]
+First node features (first 10 dims):
+tensor([-0.1944,  0.7913, -0.9469,  0.0000,  0.0000,  0.0000,  0.4000,  0.0000,
+         0.0000,  0.0000], device='mps:0')
+
+Graph 0, first node (first 10): tensor([-0.1944,  0.7913, -0.9469,  0.0000,  0.0000,  0.0000,  0.4000,  0.0000,
+         0.0000,  0.0000], device='mps:0')
+Graph 1, first node (first 10): tensor([ 1.0958,  2.2779, -0.7042,  0.0000,  0.0000,  0.0000,  0.4000,  0.0000,
+         0.0000,  0.0000], device='mps:0')
+Difference between graphs: 0.0057
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([226, 534])
+src_batch shape: torch.Size([226])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [12, 35, 19, 34, 28, 51, 21, 26]
+First node features (first 10 dims):
+tensor([-0.1944,  0.7913, -0.9469,  0.0000,  0.0000,  0.0000,  0.4000,  0.0000,
+         0.0000,  0.0000], device='mps:0')
+
+Graph 0, first node (first 10): tensor([-0.1944,  0.7913, -0.9469,  0.0000,  0.0000,  0.0000,  0.4000,  0.0000,
+         0.0000,  0.0000], device='mps:0')
+Graph 1, first node (first 10): tensor([ 1.0958,  2.2779, -0.7042,  0.0000,  0.0000,  0.0000,  0.4000,  0.0000,
+         0.0000,  0.0000], device='mps:0')
+Difference between graphs: 0.0057
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([226, 534])
+src_batch shape: torch.Size([226])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [12, 35, 19, 34, 28, 51, 21, 26]
+First node features (first 10 dims):
+tensor([-0.1944,  0.7913, -0.9469,  0.0000,  0.0000,  0.0000,  0.4000,  0.0000,
+         0.0000,  0.0000], device='mps:0')
+
+Graph 0, first node (first 10): tensor([-0.1944,  0.7913, -0.9469,  0.0000,  0.0000,  0.0000,  0.4000,  0.0000,
+         0.0000,  0.0000], device='mps:0')
+Graph 1, first node (first 10): tensor([ 1.0958,  2.2779, -0.7042,  0.0000,  0.0000,  0.0000,  0.4000,  0.0000,
+         0.0000,  0.0000], device='mps:0')
+Difference between graphs: 0.0057
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([226, 534])
+src_batch shape: torch.Size([226])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [12, 35, 19, 34, 28, 51, 21, 26]
+First node features (first 10 dims):
+tensor([-0.1944,  0.7913, -0.9469,  0.0000,  0.0000,  0.0000,  0.4000,  0.0000,
+         0.0000,  0.0000], device='mps:0')
+
+Graph 0, first node (first 10): tensor([-0.1944,  0.7913, -0.9469,  0.0000,  0.0000,  0.0000,  0.4000,  0.0000,
+         0.0000,  0.0000], device='mps:0')
+Graph 1, first node (first 10): tensor([ 1.0958,  2.2779, -0.7042,  0.0000,  0.0000,  0.0000,  0.4000,  0.0000,
+         0.0000,  0.0000], device='mps:0')
+Difference between graphs: 0.0057

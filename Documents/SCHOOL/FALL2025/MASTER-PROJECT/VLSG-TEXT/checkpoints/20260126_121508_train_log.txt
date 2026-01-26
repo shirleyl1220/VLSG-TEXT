@@ -1,0 +1,10 @@
+Learning rate: 0.001
+Epochs: 10
+Log every: 10 steps
+Checkpoints: checkpoints/
+
+======================================================================
+Starting Training
+======================================================================
+
+✓ Using CLIP features

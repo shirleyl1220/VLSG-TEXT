@@ -1,7 +1,5 @@
 """
-Evaluation script for DualSceneAligner using the EXACT same methodology as BigGNN.
-
-This ensures fair comparison between the two models.
+Evaluation script for DualSceneAligner using the same methodology as BigGNN.
 """
 
 import time
@@ -16,11 +14,12 @@ import random
 sys.path.append('../data_processing')
 sys.path.append('../../../')
 from scene_graph import SceneGraph
-from data_distribution_analysis.helper import get_matching_subgraph
+from helper import get_matching_subgraph
 
 # Import wrapper
 sys.path.append('../../../../')
-from dual_scene_aligner_with_matching import load_model_with_matching
+from src.models.sgaligner.src.aligner.dual_scene_aligner import DualSceneAligner
+from src.models.sgaligner.src.aligner.dual_scene_aligner_wrapper import load_model_with_matching
 
 torch.cuda.empty_cache()
 device = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
@@ -60,20 +59,33 @@ def convert_scene_graph_to_batch(query_graph, db_graph, device):
         if len(edge_idx) > 0 and len(edge_idx[0]) > 0:
             edges = torch.tensor(edge_idx, dtype=torch.long)
             
-            if edge_feats is not None and len(edge_feats) > 0:
-                geom_attr = torch.tensor(np.array(edge_feats), dtype=torch.float32)
-                if geom_attr.dim() == 1:
-                    geom_attr = geom_attr.unsqueeze(-1)
-                if geom_attr.size(-1) < 6:
-                    geom_attr = F.pad(geom_attr, (0, 6 - geom_attr.size(-1)))
-            else:
-                geom_attr = torch.zeros(edges.size(1), 6)
+            # CRITICAL FIX: Edge attributes must be 8-dimensional to match training
+            # During training, DualSceneGraphDataset creates 8-dim geometric features
+            # We need to extract/create 8-dim features here
             
+            num_edges = edges.size(1)
+            
+            # Create 8-dimensional geometric attributes
+            # These should ideally be: [dx, dy, dz, dist, cos_x, cos_y, cos_z, relation_type]
+            # For now, create dummy 8-dim features (you may need to compute actual geometric features)
+            geom_attr = torch.zeros(num_edges, 8, dtype=torch.float32)
+            
+            # If you have edge features, try to extract geometric info
+            if edge_feats is not None and len(edge_feats) > 0:
+                edge_feats_tensor = torch.tensor(np.array(edge_feats), dtype=torch.float32)
+                if edge_feats_tensor.dim() == 1:
+                    edge_feats_tensor = edge_feats_tensor.unsqueeze(-1)
+                
+                # Take first 8 dimensions if available, otherwise use zeros
+                feat_dim = min(8, edge_feats_tensor.size(-1))
+                geom_attr[:, :feat_dim] = edge_feats_tensor[:, :feat_dim]
+            
+            # Text edges: use relation IDs (1-dimensional)
             text_edges = edges.clone()
-            text_attr = torch.ones(edges.size(1), 1)
+            text_attr = torch.ones(num_edges, 1, dtype=torch.float32)
         else:
             edges = torch.zeros(2, 0, dtype=torch.long)
-            geom_attr = torch.zeros(0, 6)
+            geom_attr = torch.zeros(0, 8)  # Changed from 6 to 8
             text_edges = torch.zeros(2, 0, dtype=torch.long)
             text_attr = torch.zeros(0, 1)
         
@@ -106,6 +118,7 @@ def convert_scene_graph_to_batch(query_graph, db_graph, device):
     }
     
     return batch
+
 
 
 def eval_acc_dual_aligner(model, database_3dssg, dataset, mode='scanscribe', 
@@ -221,14 +234,14 @@ if __name__ == '__main__':
     
     # Load data
     print("Loading data...")
-    _3dssg_scenes = torch.load('../data_checkpoints/processed_data/3dssg/3dssg_graphs_processed_edgelists_relationembed.pt', 
+    _3dssg_scenes = torch.load('/Users/shirley/Documents/SCHOOL/SPRING25/masterproject/attempt2/whereami-text2sgm/playground/graph_models/data_checkpoints/processed_data/3dssg/3dssg_graphs_processed_edgelists_relationembed.pt', 
                                weights_only=False, map_location='cpu')
     _3dssg_graphs = {}
     for sid in tqdm(_3dssg_scenes, desc="3DSSG"):
         _3dssg_graphs[sid] = SceneGraph(sid, graph_type='3dssg', graph=_3dssg_scenes[sid],
                                        max_dist=1.0, embedding_type='word2vec', use_attributes=True)
     
-    scanscribe_test = torch.load('../data_checkpoints/processed_data/testing/scanscribe_graphs_test_final_no_graph_min.pt',
+    scanscribe_test = torch.load('/Users/shirley/Documents/SCHOOL/SPRING25/masterproject/attempt2/whereami-text2sgm/playground/graph_models/data_checkpoints/processed_data/testing/scanscribe_graphs_test_final_no_graph_min.pt',
                                  weights_only=False, map_location='cpu')
     scanscribe_graphs = {}
     for sid in tqdm(scanscribe_test, desc="ScanScribe"):
@@ -240,7 +253,7 @@ if __name__ == '__main__':
     
     scanscribe_graphs = {k: v for k, v in scanscribe_graphs.items() if len(v.edge_idx[0]) >= 1}
     
-    human_test = torch.load('../data_checkpoints/processed_data/human/human_graphs_processed.pt',
+    human_test = torch.load('/Users/shirley/Documents/SCHOOL/SPRING25/masterproject/attempt2/whereami-text2sgm/playground/graph_models/data_checkpoints/processed_data/human/human_graphs_processed.pt',
                            weights_only=False, map_location='cpu')
     human_graphs = {k: SceneGraph(k.split('_')[0], graph_type='human', graph=human_test[k],
                                  embedding_type='word2vec', use_attributes=True)

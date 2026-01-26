@@ -1,0 +1,1410 @@
+Learning rate: 0.001
+Epochs: 10
+Log every: 10 steps
+Checkpoints: checkpoints/
+
+======================================================================
+Starting Training
+======================================================================
+
+Projected edge attr: torch.Size([920, 128])
+Projected edge attr: torch.Size([920, 128])
+Projected edge attr: torch.Size([1149, 128])
+Projected edge attr: torch.Size([1149, 128])
+Projected edge attr: torch.Size([1088, 128])
+Projected edge attr: torch.Size([1088, 128])
+Projected edge attr: torch.Size([1352, 128])
+Projected edge attr: torch.Size([1352, 128])
+
+[Epoch 0] Step 0
+  Total Loss       = 21.9894
+  InfoNCE          = 2.4004
+  Variance Loss    = 0.7835
+  Covariance Loss  = 0.0005
+  ---
+  Var(src, ref)    = 0.0475, 0.0544
+  STD(src, ref)    = 0.2097, 0.2227
+  Norm(src, ref)   = 6.5854, 6.4246
+  Cov(src, ref)    = 0.1081, 0.1288
+  Cosine Sim       = 0.7249
+  Grad Norm        = 32.2100
+  LR               = 0.000083
+  ---
+  🎯 EMBEDDING QUALITY (Key Metric):
+    Positive pairs: 0.725 (want > 0.7)
+    Negative pairs: 0.695 (want < 0.3)
+    Separation:     0.029 (want > 0.4)
+    ❌ VERY POOR - NOT LEARNING!
+       → STOP TRAINING - Fix hyperparameters!
+       → batch_size >= 8, lr = 1e-3, lambda_var = 50
+  ⚠️  Low variance → Severe collapse!
+  💾 Saved best model (loss=21.9894)
+Projected edge attr: torch.Size([885, 128])
+Projected edge attr: torch.Size([885, 128])
+Projected edge attr: torch.Size([1114, 128])
+Projected edge attr: torch.Size([1114, 128])
+Projected edge attr: torch.Size([813, 128])
+Projected edge attr: torch.Size([813, 128])
+Projected edge attr: torch.Size([1010, 128])
+Projected edge attr: torch.Size([1010, 128])
+Projected edge attr: torch.Size([989, 128])
+Projected edge attr: torch.Size([989, 128])
+Projected edge attr: torch.Size([1255, 128])
+Projected edge attr: torch.Size([1255, 128])
+Projected edge attr: torch.Size([812, 128])
+Projected edge attr: torch.Size([812, 128])
+Projected edge attr: torch.Size([1017, 128])
+Projected edge attr: torch.Size([1017, 128])
+Projected edge attr: torch.Size([718, 128])
+Projected edge attr: torch.Size([718, 128])
+Projected edge attr: torch.Size([900, 128])
+Projected edge attr: torch.Size([900, 128])
+Projected edge attr: torch.Size([987, 128])
+Projected edge attr: torch.Size([987, 128])
+Projected edge attr: torch.Size([1233, 128])
+Projected edge attr: torch.Size([1233, 128])
+Projected edge attr: torch.Size([1033, 128])
+Projected edge attr: torch.Size([1033, 128])
+Projected edge attr: torch.Size([1254, 128])
+Projected edge attr: torch.Size([1254, 128])
+Projected edge attr: torch.Size([840, 128])
+Projected edge attr: torch.Size([840, 128])
+Projected edge attr: torch.Size([1046, 128])
+Projected edge attr: torch.Size([1046, 128])
+  💾 Saved best model (loss=21.6958)
+Projected edge attr: torch.Size([865, 128])
+Projected edge attr: torch.Size([865, 128])
+Projected edge attr: torch.Size([1076, 128])
+Projected edge attr: torch.Size([1076, 128])
+Projected edge attr: torch.Size([1024, 128])
+Projected edge attr: torch.Size([1024, 128])
+Projected edge attr: torch.Size([1290, 128])
+Projected edge attr: torch.Size([1290, 128])
+Projected edge attr: torch.Size([1313, 128])
+Projected edge attr: torch.Size([1313, 128])
+Projected edge attr: torch.Size([1657, 128])
+Projected edge attr: torch.Size([1657, 128])
+Projected edge attr: torch.Size([880, 128])
+Projected edge attr: torch.Size([880, 128])
+Projected edge attr: torch.Size([1111, 128])
+Projected edge attr: torch.Size([1111, 128])
+  💾 Saved best model (loss=21.6043)
+Projected edge attr: torch.Size([1083, 128])
+Projected edge attr: torch.Size([1083, 128])
+Projected edge attr: torch.Size([1347, 128])
+Projected edge attr: torch.Size([1347, 128])
+Projected edge attr: torch.Size([676, 128])
+Projected edge attr: torch.Size([676, 128])
+Projected edge attr: torch.Size([823, 128])
+Projected edge attr: torch.Size([823, 128])
+  💾 Saved best model (loss=20.8527)
+Projected edge attr: torch.Size([1407, 128])
+Projected edge attr: torch.Size([1407, 128])
+Projected edge attr: torch.Size([1767, 128])
+Projected edge attr: torch.Size([1767, 128])
+Projected edge attr: torch.Size([833, 128])
+Projected edge attr: torch.Size([833, 128])
+Projected edge attr: torch.Size([1027, 128])
+Projected edge attr: torch.Size([1027, 128])
+Projected edge attr: torch.Size([655, 128])
+Projected edge attr: torch.Size([655, 128])
+Projected edge attr: torch.Size([790, 128])
+Projected edge attr: torch.Size([790, 128])
+Projected edge attr: torch.Size([528, 128])
+Projected edge attr: torch.Size([528, 128])
+Projected edge attr: torch.Size([649, 128])
+Projected edge attr: torch.Size([649, 128])
+  💾 Saved best model (loss=20.4229)
+Projected edge attr: torch.Size([928, 128])
+Projected edge attr: torch.Size([928, 128])
+Projected edge attr: torch.Size([1152, 128])
+Projected edge attr: torch.Size([1152, 128])
+Projected edge attr: torch.Size([1020, 128])
+Projected edge attr: torch.Size([1020, 128])
+Projected edge attr: torch.Size([1282, 128])
+Projected edge attr: torch.Size([1282, 128])
+
+[Epoch 0] Step 10
+  Total Loss       = 19.9578
+  InfoNCE          = 2.6045
+  Variance Loss    = 0.6940
+  Covariance Loss  = 0.0023
+  ---
+  Var(src, ref)    = 0.0958, 0.1082
+  STD(src, ref)    = 0.2958, 0.3157
+  Norm(src, ref)   = 8.0918, 8.2494
+  Cov(src, ref)    = 0.2278, 0.2718
+  Cosine Sim       = 0.6742
+  Grad Norm        = 44.0503
+  LR               = 0.000917
+  ---
+  🎯 EMBEDDING QUALITY (Key Metric):
+    Positive pairs: 0.674 (want > 0.7)
+    Negative pairs: 0.614 (want < 0.3)
+    Separation:     0.060 (want > 0.4)
+    ❌ VERY POOR - NOT LEARNING!
+       → STOP TRAINING - Fix hyperparameters!
+       → batch_size >= 8, lr = 1e-3, lambda_var = 50
+  ⚠️  Low variance → Severe collapse!
+  ✓  Healthy training dynamics!
+  💾 Saved best model (loss=19.9578)
+Projected edge attr: torch.Size([740, 128])
+Projected edge attr: torch.Size([740, 128])
+Projected edge attr: torch.Size([897, 128])
+Projected edge attr: torch.Size([897, 128])
+Projected edge attr: torch.Size([704, 128])
+Projected edge attr: torch.Size([704, 128])
+Projected edge attr: torch.Size([845, 128])
+Projected edge attr: torch.Size([845, 128])
+
+======================================================================
+Epoch 0 Summary
+======================================================================
+  Avg Total Loss = 21.5392
+  Avg InfoNCE    = 3.0264
+  Avg Var Loss   = 0.7405
+  Avg Cov Loss   = 0.0012
+  Final SRC: mean=0.0683, std=0.5424
+  Final REF: mean=0.0810, std=0.5188
+  ---
+  📊 Final Separation: 0.060
+======================================================================
+
+Projected edge attr: torch.Size([938, 128])
+Projected edge attr: torch.Size([938, 128])
+Projected edge attr: torch.Size([1156, 128])
+Projected edge attr: torch.Size([1156, 128])
+Projected edge attr: torch.Size([816, 128])
+Projected edge attr: torch.Size([816, 128])
+Projected edge attr: torch.Size([1032, 128])
+Projected edge attr: torch.Size([1032, 128])
+Projected edge attr: torch.Size([848, 128])
+Projected edge attr: torch.Size([848, 128])
+Projected edge attr: torch.Size([1058, 128])
+Projected edge attr: torch.Size([1058, 128])
+Projected edge attr: torch.Size([885, 128])
+Projected edge attr: torch.Size([885, 128])
+Projected edge attr: torch.Size([1100, 128])
+Projected edge attr: torch.Size([1100, 128])
+Projected edge attr: torch.Size([939, 128])
+Projected edge attr: torch.Size([939, 128])
+Projected edge attr: torch.Size([1174, 128])
+Projected edge attr: torch.Size([1174, 128])
+Projected edge attr: torch.Size([627, 128])
+Projected edge attr: torch.Size([627, 128])
+Projected edge attr: torch.Size([767, 128])
+Projected edge attr: torch.Size([767, 128])
+Projected edge attr: torch.Size([943, 128])
+Projected edge attr: torch.Size([943, 128])
+Projected edge attr: torch.Size([1188, 128])
+Projected edge attr: torch.Size([1188, 128])
+Projected edge attr: torch.Size([871, 128])
+Projected edge attr: torch.Size([871, 128])
+Projected edge attr: torch.Size([1083, 128])
+Projected edge attr: torch.Size([1083, 128])
+Projected edge attr: torch.Size([924, 128])
+Projected edge attr: torch.Size([924, 128])
+Projected edge attr: torch.Size([1161, 128])
+Projected edge attr: torch.Size([1161, 128])
+Projected edge attr: torch.Size([695, 128])
+Projected edge attr: torch.Size([695, 128])
+Projected edge attr: torch.Size([879, 128])
+Projected edge attr: torch.Size([879, 128])
+  💾 Saved best model (loss=18.8442)
+Projected edge attr: torch.Size([939, 128])
+Projected edge attr: torch.Size([939, 128])
+Projected edge attr: torch.Size([1155, 128])
+Projected edge attr: torch.Size([1155, 128])
+Projected edge attr: torch.Size([966, 128])
+Projected edge attr: torch.Size([966, 128])
+Projected edge attr: torch.Size([1197, 128])
+Projected edge attr: torch.Size([1197, 128])
+  💾 Saved best model (loss=18.1223)
+Projected edge attr: torch.Size([731, 128])
+Projected edge attr: torch.Size([731, 128])
+Projected edge attr: torch.Size([918, 128])
+Projected edge attr: torch.Size([918, 128])
+Projected edge attr: torch.Size([728, 128])
+Projected edge attr: torch.Size([728, 128])
+Projected edge attr: torch.Size([900, 128])
+Projected edge attr: torch.Size([900, 128])
+  💾 Saved best model (loss=18.1148)
+Projected edge attr: torch.Size([916, 128])
+Projected edge attr: torch.Size([916, 128])
+Projected edge attr: torch.Size([1142, 128])
+Projected edge attr: torch.Size([1142, 128])
+Projected edge attr: torch.Size([803, 128])
+Projected edge attr: torch.Size([803, 128])
+Projected edge attr: torch.Size([996, 128])
+Projected edge attr: torch.Size([996, 128])
+Projected edge attr: torch.Size([1286, 128])
+Projected edge attr: torch.Size([1286, 128])
+Projected edge attr: torch.Size([1602, 128])
+Projected edge attr: torch.Size([1602, 128])
+Projected edge attr: torch.Size([854, 128])
+Projected edge attr: torch.Size([854, 128])
+Projected edge attr: torch.Size([1062, 128])
+Projected edge attr: torch.Size([1062, 128])
+
+[Epoch 1] Step 20
+  Total Loss       = 19.6324
+  InfoNCE          = 4.8580
+  Variance Loss    = 0.5905
+  Covariance Loss  = 0.0106
+  ---
+  Var(src, ref)    = 0.1803, 0.1909
+  STD(src, ref)    = 0.4044, 0.4142
+  Norm(src, ref)   = 11.5962, 11.2357
+  Cov(src, ref)    = 0.4902, 0.5764
+  Cosine Sim       = 0.6331
+  Grad Norm        = 52.4060
+  LR               = 0.000983
+  ---
+  🎯 EMBEDDING QUALITY (Key Metric):
+    Positive pairs: 0.633 (want > 0.7)
+    Negative pairs: 0.656 (want < 0.3)
+    Separation:     -0.023 (want > 0.4)
+    ❌ VERY POOR - NOT LEARNING!
+       → STOP TRAINING - Fix hyperparameters!
+       → batch_size >= 8, lr = 1e-3, lambda_var = 50
+  ⚠️  Low variance → Severe collapse!
+  ✓  Healthy training dynamics!
+Projected edge attr: torch.Size([1028, 128])
+Projected edge attr: torch.Size([1028, 128])
+Projected edge attr: torch.Size([1273, 128])
+Projected edge attr: torch.Size([1273, 128])
+Projected edge attr: torch.Size([1010, 128])
+Projected edge attr: torch.Size([1010, 128])
+Projected edge attr: torch.Size([1290, 128])
+Projected edge attr: torch.Size([1290, 128])
+Projected edge attr: torch.Size([966, 128])
+Projected edge attr: torch.Size([966, 128])
+Projected edge attr: torch.Size([1197, 128])
+Projected edge attr: torch.Size([1197, 128])
+Projected edge attr: torch.Size([919, 128])
+Projected edge attr: torch.Size([919, 128])
+Projected edge attr: torch.Size([1145, 128])
+Projected edge attr: torch.Size([1145, 128])
+  💾 Saved best model (loss=17.1449)
+Projected edge attr: torch.Size([849, 128])
+Projected edge attr: torch.Size([849, 128])
+Projected edge attr: torch.Size([1043, 128])
+Projected edge attr: torch.Size([1043, 128])
+Projected edge attr: torch.Size([853, 128])
+Projected edge attr: torch.Size([853, 128])
+Projected edge attr: torch.Size([1064, 128])
+Projected edge attr: torch.Size([1064, 128])
+
+======================================================================
+Epoch 1 Summary
+======================================================================
+  Avg Total Loss = 19.1150
+  Avg InfoNCE    = 3.1272
+  Avg Var Loss   = 0.6393
+  Avg Cov Loss   = 0.0056
+  Final SRC: mean=0.0990, std=0.8427
+  Final REF: mean=0.1176, std=0.8526
+  ---
+  📊 Final Separation: 0.013
+======================================================================
+
+Projected edge attr: torch.Size([948, 128])
+Projected edge attr: torch.Size([948, 128])
+Projected edge attr: torch.Size([1180, 128])
+Projected edge attr: torch.Size([1180, 128])
+Projected edge attr: torch.Size([781, 128])
+Projected edge attr: torch.Size([781, 128])
+Projected edge attr: torch.Size([974, 128])
+Projected edge attr: torch.Size([974, 128])
+  💾 Saved best model (loss=17.1312)
+Projected edge attr: torch.Size([961, 128])
+Projected edge attr: torch.Size([961, 128])
+Projected edge attr: torch.Size([1172, 128])
+Projected edge attr: torch.Size([1172, 128])
+Projected edge attr: torch.Size([825, 128])
+Projected edge attr: torch.Size([825, 128])
+Projected edge attr: torch.Size([1023, 128])
+Projected edge attr: torch.Size([1023, 128])
+Projected edge attr: torch.Size([866, 128])
+Projected edge attr: torch.Size([866, 128])
+Projected edge attr: torch.Size([1078, 128])
+Projected edge attr: torch.Size([1078, 128])
+Projected edge attr: torch.Size([853, 128])
+Projected edge attr: torch.Size([853, 128])
+Projected edge attr: torch.Size([1042, 128])
+Projected edge attr: torch.Size([1042, 128])
+  💾 Saved best model (loss=15.6844)
+Projected edge attr: torch.Size([578, 128])
+Projected edge attr: torch.Size([578, 128])
+Projected edge attr: torch.Size([732, 128])
+Projected edge attr: torch.Size([732, 128])
+Projected edge attr: torch.Size([829, 128])
+Projected edge attr: torch.Size([829, 128])
+Projected edge attr: torch.Size([1041, 128])
+Projected edge attr: torch.Size([1041, 128])
+  💾 Saved best model (loss=13.7614)
+Projected edge attr: torch.Size([1051, 128])
+Projected edge attr: torch.Size([1051, 128])
+Projected edge attr: torch.Size([1319, 128])
+Projected edge attr: torch.Size([1319, 128])
+Projected edge attr: torch.Size([1128, 128])
+Projected edge attr: torch.Size([1128, 128])
+Projected edge attr: torch.Size([1401, 128])
+Projected edge attr: torch.Size([1401, 128])
+  💾 Saved best model (loss=13.7206)
+Projected edge attr: torch.Size([1195, 128])
+Projected edge attr: torch.Size([1195, 128])
+Projected edge attr: torch.Size([1470, 128])
+Projected edge attr: torch.Size([1470, 128])
+Projected edge attr: torch.Size([852, 128])
+Projected edge attr: torch.Size([852, 128])
+Projected edge attr: torch.Size([1102, 128])
+Projected edge attr: torch.Size([1102, 128])
+Projected edge attr: torch.Size([1200, 128])
+Projected edge attr: torch.Size([1200, 128])
+Projected edge attr: torch.Size([1488, 128])
+Projected edge attr: torch.Size([1488, 128])
+Projected edge attr: torch.Size([1191, 128])
+Projected edge attr: torch.Size([1191, 128])
+Projected edge attr: torch.Size([1471, 128])
+Projected edge attr: torch.Size([1471, 128])
+
+[Epoch 2] Step 30
+  Total Loss       = 15.0307
+  InfoNCE          = 2.6485
+  Variance Loss    = 0.4939
+  Covariance Loss  = 0.0339
+  ---
+  Var(src, ref)    = 0.2004, 0.3821
+  STD(src, ref)    = 0.4182, 0.5941
+  Norm(src, ref)   = 19.3387, 18.6026
+  Cov(src, ref)    = 0.6268, 1.2690
+  Cosine Sim       = 0.8243
+  Grad Norm        = 51.8999
+  LR               = 0.000926
+  ---
+  🎯 EMBEDDING QUALITY (Key Metric):
+    Positive pairs: 0.824 (want > 0.7)
+    Negative pairs: 0.760 (want < 0.3)
+    Separation:     0.064 (want > 0.4)
+    ❌ VERY POOR - NOT LEARNING!
+       → STOP TRAINING - Fix hyperparameters!
+       → batch_size >= 8, lr = 1e-3, lambda_var = 50
+  ⚠️  Low variance → Severe collapse!
+Projected edge attr: torch.Size([930, 128])
+Projected edge attr: torch.Size([930, 128])
+Projected edge attr: torch.Size([1174, 128])
+Projected edge attr: torch.Size([1174, 128])
+Projected edge attr: torch.Size([1046, 128])
+Projected edge attr: torch.Size([1046, 128])
+Projected edge attr: torch.Size([1317, 128])
+Projected edge attr: torch.Size([1317, 128])
+Projected edge attr: torch.Size([924, 128])
+Projected edge attr: torch.Size([924, 128])
+Projected edge attr: torch.Size([1152, 128])
+Projected edge attr: torch.Size([1152, 128])
+Projected edge attr: torch.Size([687, 128])
+Projected edge attr: torch.Size([687, 128])
+Projected edge attr: torch.Size([855, 128])
+Projected edge attr: torch.Size([855, 128])
+  💾 Saved best model (loss=12.3998)
+Projected edge attr: torch.Size([920, 128])
+Projected edge attr: torch.Size([920, 128])
+Projected edge attr: torch.Size([1145, 128])
+Projected edge attr: torch.Size([1145, 128])
+Projected edge attr: torch.Size([845, 128])
+Projected edge attr: torch.Size([845, 128])
+Projected edge attr: torch.Size([1067, 128])
+Projected edge attr: torch.Size([1067, 128])
+  💾 Saved best model (loss=11.6648)
+Projected edge attr: torch.Size([920, 128])
+Projected edge attr: torch.Size([920, 128])
+Projected edge attr: torch.Size([1161, 128])
+Projected edge attr: torch.Size([1161, 128])
+Projected edge attr: torch.Size([772, 128])
+Projected edge attr: torch.Size([772, 128])
+Projected edge attr: torch.Size([983, 128])
+Projected edge attr: torch.Size([983, 128])
+Projected edge attr: torch.Size([894, 128])
+Projected edge attr: torch.Size([894, 128])
+Projected edge attr: torch.Size([1105, 128])
+Projected edge attr: torch.Size([1105, 128])
+Projected edge attr: torch.Size([785, 128])
+Projected edge attr: torch.Size([785, 128])
+Projected edge attr: torch.Size([963, 128])
+Projected edge attr: torch.Size([963, 128])
+  💾 Saved best model (loss=10.5988)
+
+======================================================================
+Epoch 2 Summary
+======================================================================
+  Avg Total Loss = 14.4006
+  Avg InfoNCE    = 3.9570
+  Avg Var Loss   = 0.4142
+  Avg Cov Loss   = 0.0893
+  Final SRC: mean=0.2169, std=1.3561
+  Final REF: mean=0.1857, std=1.2021
+  ---
+  📊 Final Separation: 0.159
+======================================================================
+
+Projected edge attr: torch.Size([917, 128])
+Projected edge attr: torch.Size([917, 128])
+Projected edge attr: torch.Size([1156, 128])
+Projected edge attr: torch.Size([1156, 128])
+Projected edge attr: torch.Size([948, 128])
+Projected edge attr: torch.Size([948, 128])
+Projected edge attr: torch.Size([1189, 128])
+Projected edge attr: torch.Size([1189, 128])
+  💾 Saved best model (loss=8.6047)
+Projected edge attr: torch.Size([1011, 128])
+Projected edge attr: torch.Size([1011, 128])
+Projected edge attr: torch.Size([1231, 128])
+Projected edge attr: torch.Size([1231, 128])
+Projected edge attr: torch.Size([970, 128])
+Projected edge attr: torch.Size([970, 128])
+Projected edge attr: torch.Size([1210, 128])
+Projected edge attr: torch.Size([1210, 128])
+Projected edge attr: torch.Size([907, 128])
+Projected edge attr: torch.Size([907, 128])
+Projected edge attr: torch.Size([1097, 128])
+Projected edge attr: torch.Size([1097, 128])
+Projected edge attr: torch.Size([915, 128])
+Projected edge attr: torch.Size([915, 128])
+Projected edge attr: torch.Size([1118, 128])
+Projected edge attr: torch.Size([1118, 128])
+  💾 Saved best model (loss=6.4945)
+Projected edge attr: torch.Size([912, 128])
+Projected edge attr: torch.Size([912, 128])
+Projected edge attr: torch.Size([1123, 128])
+Projected edge attr: torch.Size([1123, 128])
+Projected edge attr: torch.Size([812, 128])
+Projected edge attr: torch.Size([812, 128])
+Projected edge attr: torch.Size([1006, 128])
+Projected edge attr: torch.Size([1006, 128])
+Projected edge attr: torch.Size([1110, 128])
+Projected edge attr: torch.Size([1110, 128])
+Projected edge attr: torch.Size([1357, 128])
+Projected edge attr: torch.Size([1357, 128])
+Projected edge attr: torch.Size([723, 128])
+Projected edge attr: torch.Size([723, 128])
+Projected edge attr: torch.Size([893, 128])
+Projected edge attr: torch.Size([893, 128])
+
+[Epoch 3] Step 40
+  Total Loss       = 12.7077
+  InfoNCE          = 7.2077
+  Variance Loss    = 0.2078
+  Covariance Loss  = 0.3046
+  ---
+  Var(src, ref)    = 0.7304, 0.7747
+  STD(src, ref)    = 0.8127, 0.8496
+  Norm(src, ref)   = 22.8693, 19.0428
+  Cov(src, ref)    = 2.7812, 3.3778
+  Cosine Sim       = 0.4124
+  Grad Norm        = 93.9233
+  LR               = 0.000832
+  ---
+  🎯 EMBEDDING QUALITY (Key Metric):
+    Positive pairs: 0.412 (want > 0.7)
+    Negative pairs: 0.396 (want < 0.3)
+    Separation:     0.017 (want > 0.4)
+    ❌ VERY POOR - NOT LEARNING!
+       → STOP TRAINING - Fix hyperparameters!
+       → batch_size >= 8, lr = 1e-3, lambda_var = 50
+  ✓  Healthy training dynamics!
+Projected edge attr: torch.Size([772, 128])
+Projected edge attr: torch.Size([772, 128])
+Projected edge attr: torch.Size([959, 128])
+Projected edge attr: torch.Size([959, 128])
+Projected edge attr: torch.Size([799, 128])
+Projected edge attr: torch.Size([799, 128])
+Projected edge attr: torch.Size([988, 128])
+Projected edge attr: torch.Size([988, 128])
+Projected edge attr: torch.Size([799, 128])
+Projected edge attr: torch.Size([799, 128])
+Projected edge attr: torch.Size([1020, 128])
+Projected edge attr: torch.Size([1020, 128])
+Projected edge attr: torch.Size([699, 128])
+Projected edge attr: torch.Size([699, 128])
+Projected edge attr: torch.Size([873, 128])
+Projected edge attr: torch.Size([873, 128])
+Projected edge attr: torch.Size([1207, 128])
+Projected edge attr: torch.Size([1207, 128])
+Projected edge attr: torch.Size([1527, 128])
+Projected edge attr: torch.Size([1527, 128])
+Projected edge attr: torch.Size([852, 128])
+Projected edge attr: torch.Size([852, 128])
+Projected edge attr: torch.Size([1046, 128])
+Projected edge attr: torch.Size([1046, 128])
+Projected edge attr: torch.Size([1078, 128])
+Projected edge attr: torch.Size([1078, 128])
+Projected edge attr: torch.Size([1347, 128])
+Projected edge attr: torch.Size([1347, 128])
+Projected edge attr: torch.Size([974, 128])
+Projected edge attr: torch.Size([974, 128])
+Projected edge attr: torch.Size([1236, 128])
+Projected edge attr: torch.Size([1236, 128])
+Projected edge attr: torch.Size([1024, 128])
+Projected edge attr: torch.Size([1024, 128])
+Projected edge attr: torch.Size([1287, 128])
+Projected edge attr: torch.Size([1287, 128])
+Projected edge attr: torch.Size([705, 128])
+Projected edge attr: torch.Size([705, 128])
+Projected edge attr: torch.Size([852, 128])
+Projected edge attr: torch.Size([852, 128])
+  💾 Saved best model (loss=5.7960)
+Projected edge attr: torch.Size([866, 128])
+Projected edge attr: torch.Size([866, 128])
+Projected edge attr: torch.Size([1076, 128])
+Projected edge attr: torch.Size([1076, 128])
+Projected edge attr: torch.Size([984, 128])
+Projected edge attr: torch.Size([984, 128])
+Projected edge attr: torch.Size([1250, 128])
+Projected edge attr: torch.Size([1250, 128])
+Projected edge attr: torch.Size([947, 128])
+Projected edge attr: torch.Size([947, 128])
+Projected edge attr: torch.Size([1193, 128])
+Projected edge attr: torch.Size([1193, 128])
+Projected edge attr: torch.Size([893, 128])
+Projected edge attr: torch.Size([893, 128])
+Projected edge attr: torch.Size([1134, 128])
+Projected edge attr: torch.Size([1134, 128])
+
+======================================================================
+Epoch 3 Summary
+======================================================================
+  Avg Total Loss = 9.1856
+  Avg InfoNCE    = 4.5116
+  Avg Var Loss   = 0.1707
+  Avg Cov Loss   = 0.4065
+  Final SRC: mean=0.2854, std=1.8188
+  Final REF: mean=0.2431, std=1.5864
+  ---
+  📊 Final Separation: 0.089
+======================================================================
+
+Projected edge attr: torch.Size([1119, 128])
+Projected edge attr: torch.Size([1119, 128])
+Projected edge attr: torch.Size([1372, 128])
+Projected edge attr: torch.Size([1372, 128])
+Projected edge attr: torch.Size([947, 128])
+Projected edge attr: torch.Size([947, 128])
+Projected edge attr: torch.Size([1166, 128])
+Projected edge attr: torch.Size([1166, 128])
+Projected edge attr: torch.Size([650, 128])
+Projected edge attr: torch.Size([650, 128])
+Projected edge attr: torch.Size([796, 128])
+Projected edge attr: torch.Size([796, 128])
+Projected edge attr: torch.Size([471, 128])
+Projected edge attr: torch.Size([471, 128])
+Projected edge attr: torch.Size([578, 128])
+Projected edge attr: torch.Size([578, 128])
+Projected edge attr: torch.Size([1131, 128])
+Projected edge attr: torch.Size([1131, 128])
+Projected edge attr: torch.Size([1417, 128])
+Projected edge attr: torch.Size([1417, 128])
+Projected edge attr: torch.Size([966, 128])
+Projected edge attr: torch.Size([966, 128])
+Projected edge attr: torch.Size([1231, 128])
+Projected edge attr: torch.Size([1231, 128])
+
+[Epoch 4] Step 50
+  Total Loss       = 8.7660
+  InfoNCE          = 3.8591
+  Variance Loss    = 0.1826
+  Covariance Loss  = 0.3421
+  ---
+  Var(src, ref)    = 0.6642, 0.9512
+  STD(src, ref)    = 0.7685, 0.9562
+  Norm(src, ref)   = 31.2654, 30.2234
+  Cov(src, ref)    = 2.8494, 3.7674
+  Cosine Sim       = 0.7909
+  Grad Norm        = 37.7549
+  LR               = 0.000711
+  ---
+  🎯 EMBEDDING QUALITY (Key Metric):
+    Positive pairs: 0.791 (want > 0.7)
+    Negative pairs: 0.790 (want < 0.3)
+    Separation:     0.000 (want > 0.4)
+    ❌ VERY POOR - NOT LEARNING!
+       → STOP TRAINING - Fix hyperparameters!
+       → batch_size >= 8, lr = 1e-3, lambda_var = 50
+Projected edge attr: torch.Size([529, 128])
+Projected edge attr: torch.Size([529, 128])
+Projected edge attr: torch.Size([654, 128])
+Projected edge attr: torch.Size([654, 128])
+Projected edge attr: torch.Size([569, 128])
+Projected edge attr: torch.Size([569, 128])
+Projected edge attr: torch.Size([692, 128])
+Projected edge attr: torch.Size([692, 128])
+Projected edge attr: torch.Size([799, 128])
+Projected edge attr: torch.Size([799, 128])
+Projected edge attr: torch.Size([997, 128])
+Projected edge attr: torch.Size([997, 128])
+Projected edge attr: torch.Size([726, 128])
+Projected edge attr: torch.Size([726, 128])
+Projected edge attr: torch.Size([915, 128])
+Projected edge attr: torch.Size([915, 128])
+  💾 Saved best model (loss=5.3374)
+Projected edge attr: torch.Size([831, 128])
+Projected edge attr: torch.Size([831, 128])
+Projected edge attr: torch.Size([1019, 128])
+Projected edge attr: torch.Size([1019, 128])
+Projected edge attr: torch.Size([885, 128])
+Projected edge attr: torch.Size([885, 128])
+Projected edge attr: torch.Size([1090, 128])
+Projected edge attr: torch.Size([1090, 128])
+  💾 Saved best model (loss=4.0504)
+Projected edge attr: torch.Size([1371, 128])
+Projected edge attr: torch.Size([1371, 128])
+Projected edge attr: torch.Size([1708, 128])
+Projected edge attr: torch.Size([1708, 128])
+Projected edge attr: torch.Size([654, 128])
+Projected edge attr: torch.Size([654, 128])
+Projected edge attr: torch.Size([817, 128])
+Projected edge attr: torch.Size([817, 128])
+Projected edge attr: torch.Size([989, 128])
+Projected edge attr: torch.Size([989, 128])
+Projected edge attr: torch.Size([1222, 128])
+Projected edge attr: torch.Size([1222, 128])
+Projected edge attr: torch.Size([1023, 128])
+Projected edge attr: torch.Size([1023, 128])
+Projected edge attr: torch.Size([1258, 128])
+Projected edge attr: torch.Size([1258, 128])
+Projected edge attr: torch.Size([937, 128])
+Projected edge attr: torch.Size([937, 128])
+Projected edge attr: torch.Size([1171, 128])
+Projected edge attr: torch.Size([1171, 128])
+Projected edge attr: torch.Size([962, 128])
+Projected edge attr: torch.Size([962, 128])
+Projected edge attr: torch.Size([1222, 128])
+Projected edge attr: torch.Size([1222, 128])
+Projected edge attr: torch.Size([1209, 128])
+Projected edge attr: torch.Size([1209, 128])
+Projected edge attr: torch.Size([1549, 128])
+Projected edge attr: torch.Size([1549, 128])
+Projected edge attr: torch.Size([1011, 128])
+Projected edge attr: torch.Size([1011, 128])
+Projected edge attr: torch.Size([1233, 128])
+Projected edge attr: torch.Size([1233, 128])
+Projected edge attr: torch.Size([816, 128])
+Projected edge attr: torch.Size([816, 128])
+Projected edge attr: torch.Size([1006, 128])
+Projected edge attr: torch.Size([1006, 128])
+Projected edge attr: torch.Size([636, 128])
+Projected edge attr: torch.Size([636, 128])
+Projected edge attr: torch.Size([798, 128])
+Projected edge attr: torch.Size([798, 128])
+Projected edge attr: torch.Size([885, 128])
+Projected edge attr: torch.Size([885, 128])
+Projected edge attr: torch.Size([1092, 128])
+Projected edge attr: torch.Size([1092, 128])
+Projected edge attr: torch.Size([808, 128])
+Projected edge attr: torch.Size([808, 128])
+Projected edge attr: torch.Size([1003, 128])
+Projected edge attr: torch.Size([1003, 128])
+
+======================================================================
+Epoch 4 Summary
+======================================================================
+  Avg Total Loss = 6.8769
+  Avg InfoNCE    = 3.3061
+  Avg Var Loss   = 0.1206
+  Avg Cov Loss   = 0.5552
+  Final SRC: mean=0.3389, std=2.2888
+  Final REF: mean=0.2721, std=1.9409
+  ---
+  📊 Final Separation: 0.044
+======================================================================
+
+Projected edge attr: torch.Size([946, 128])
+Projected edge attr: torch.Size([946, 128])
+Projected edge attr: torch.Size([1204, 128])
+Projected edge attr: torch.Size([1204, 128])
+Projected edge attr: torch.Size([916, 128])
+Projected edge attr: torch.Size([916, 128])
+Projected edge attr: torch.Size([1149, 128])
+Projected edge attr: torch.Size([1149, 128])
+
+[Epoch 5] Step 60
+  Total Loss       = 4.9328
+  InfoNCE          = 3.2128
+  Variance Loss    = 0.0246
+  Covariance Loss  = 1.1047
+  ---
+  Var(src, ref)    = 1.6843, 1.3892
+  STD(src, ref)    = 1.2679, 1.1616
+  Norm(src, ref)   = 33.1149, 36.9818
+  Cov(src, ref)    = 6.8706, 5.7039
+  Cosine Sim       = 0.8397
+  Grad Norm        = 34.9019
+  LR               = 0.000572
+  ---
+  🎯 EMBEDDING QUALITY (Key Metric):
+    Positive pairs: 0.840 (want > 0.7)
+    Negative pairs: 0.679 (want < 0.3)
+    Separation:     0.160 (want > 0.4)
+    ❌ POOR - Model struggling
+       → Increase batch_size to 8+
+       → Increase lr to 1e-3
+Projected edge attr: torch.Size([1068, 128])
+Projected edge attr: torch.Size([1068, 128])
+Projected edge attr: torch.Size([1315, 128])
+Projected edge attr: torch.Size([1315, 128])
+Projected edge attr: torch.Size([952, 128])
+Projected edge attr: torch.Size([952, 128])
+Projected edge attr: torch.Size([1179, 128])
+Projected edge attr: torch.Size([1179, 128])
+  💾 Saved best model (loss=3.3445)
+Projected edge attr: torch.Size([1006, 128])
+Projected edge attr: torch.Size([1006, 128])
+Projected edge attr: torch.Size([1289, 128])
+Projected edge attr: torch.Size([1289, 128])
+Projected edge attr: torch.Size([871, 128])
+Projected edge attr: torch.Size([871, 128])
+Projected edge attr: torch.Size([1061, 128])
+Projected edge attr: torch.Size([1061, 128])
+Projected edge attr: torch.Size([894, 128])
+Projected edge attr: torch.Size([894, 128])
+Projected edge attr: torch.Size([1154, 128])
+Projected edge attr: torch.Size([1154, 128])
+Projected edge attr: torch.Size([825, 128])
+Projected edge attr: torch.Size([825, 128])
+Projected edge attr: torch.Size([1044, 128])
+Projected edge attr: torch.Size([1044, 128])
+Projected edge attr: torch.Size([849, 128])
+Projected edge attr: torch.Size([849, 128])
+Projected edge attr: torch.Size([1050, 128])
+Projected edge attr: torch.Size([1050, 128])
+Projected edge attr: torch.Size([768, 128])
+Projected edge attr: torch.Size([768, 128])
+Projected edge attr: torch.Size([938, 128])
+Projected edge attr: torch.Size([938, 128])
+Projected edge attr: torch.Size([885, 128])
+Projected edge attr: torch.Size([885, 128])
+Projected edge attr: torch.Size([1096, 128])
+Projected edge attr: torch.Size([1096, 128])
+Projected edge attr: torch.Size([691, 128])
+Projected edge attr: torch.Size([691, 128])
+Projected edge attr: torch.Size([857, 128])
+Projected edge attr: torch.Size([857, 128])
+Projected edge attr: torch.Size([808, 128])
+Projected edge attr: torch.Size([808, 128])
+Projected edge attr: torch.Size([1007, 128])
+Projected edge attr: torch.Size([1007, 128])
+Projected edge attr: torch.Size([624, 128])
+Projected edge attr: torch.Size([624, 128])
+Projected edge attr: torch.Size([789, 128])
+Projected edge attr: torch.Size([789, 128])
+Projected edge attr: torch.Size([1303, 128])
+Projected edge attr: torch.Size([1303, 128])
+Projected edge attr: torch.Size([1590, 128])
+Projected edge attr: torch.Size([1590, 128])
+Projected edge attr: torch.Size([1187, 128])
+Projected edge attr: torch.Size([1187, 128])
+Projected edge attr: torch.Size([1488, 128])
+Projected edge attr: torch.Size([1488, 128])
+Projected edge attr: torch.Size([947, 128])
+Projected edge attr: torch.Size([947, 128])
+Projected edge attr: torch.Size([1166, 128])
+Projected edge attr: torch.Size([1166, 128])
+Projected edge attr: torch.Size([718, 128])
+Projected edge attr: torch.Size([718, 128])
+Projected edge attr: torch.Size([866, 128])
+Projected edge attr: torch.Size([866, 128])
+Projected edge attr: torch.Size([915, 128])
+Projected edge attr: torch.Size([915, 128])
+Projected edge attr: torch.Size([1142, 128])
+Projected edge attr: torch.Size([1142, 128])
+Projected edge attr: torch.Size([1137, 128])
+Projected edge attr: torch.Size([1137, 128])
+Projected edge attr: torch.Size([1440, 128])
+Projected edge attr: torch.Size([1440, 128])
+Projected edge attr: torch.Size([872, 128])
+Projected edge attr: torch.Size([872, 128])
+Projected edge attr: torch.Size([1075, 128])
+Projected edge attr: torch.Size([1075, 128])
+Projected edge attr: torch.Size([835, 128])
+Projected edge attr: torch.Size([835, 128])
+Projected edge attr: torch.Size([1041, 128])
+Projected edge attr: torch.Size([1041, 128])
+
+[Epoch 5] Step 70
+  Total Loss       = 4.0661
+  InfoNCE          = 2.0474
+  Variance Loss    = 0.0383
+  Covariance Loss  = 1.0615
+  ---
+  Var(src, ref)    = 1.3287, 1.4574
+  STD(src, ref)    = 1.1244, 1.1918
+  Norm(src, ref)   = 35.1836, 32.1554
+  Cov(src, ref)    = 6.7287, 5.8873
+  Cosine Sim       = 0.8593
+  Grad Norm        = 30.1541
+  LR               = 0.000428
+  ---
+  🎯 EMBEDDING QUALITY (Key Metric):
+    Positive pairs: 0.859 (want > 0.7)
+    Negative pairs: 0.709 (want < 0.3)
+    Separation:     0.150 (want > 0.4)
+    ❌ POOR - Model struggling
+       → Increase batch_size to 8+
+       → Increase lr to 1e-3
+Projected edge attr: torch.Size([916, 128])
+Projected edge attr: torch.Size([916, 128])
+Projected edge attr: torch.Size([1121, 128])
+Projected edge attr: torch.Size([1121, 128])
+Projected edge attr: torch.Size([713, 128])
+Projected edge attr: torch.Size([713, 128])
+Projected edge attr: torch.Size([860, 128])
+Projected edge attr: torch.Size([860, 128])
+
+======================================================================
+Epoch 5 Summary
+======================================================================
+  Avg Total Loss = 5.9713
+  Avg InfoNCE    = 3.3588
+  Avg Var Loss   = 0.0646
+  Avg Cov Loss   = 0.9980
+  Final SRC: mean=0.3326, std=2.2000
+  Final REF: mean=0.3563, std=2.1054
+  ---
+  📊 Final Separation: 0.154
+======================================================================
+
+Projected edge attr: torch.Size([821, 128])
+Projected edge attr: torch.Size([821, 128])
+Projected edge attr: torch.Size([1045, 128])
+Projected edge attr: torch.Size([1045, 128])
+Projected edge attr: torch.Size([601, 128])
+Projected edge attr: torch.Size([601, 128])
+Projected edge attr: torch.Size([765, 128])
+Projected edge attr: torch.Size([765, 128])
+Projected edge attr: torch.Size([759, 128])
+Projected edge attr: torch.Size([759, 128])
+Projected edge attr: torch.Size([940, 128])
+Projected edge attr: torch.Size([940, 128])
+Projected edge attr: torch.Size([687, 128])
+Projected edge attr: torch.Size([687, 128])
+Projected edge attr: torch.Size([841, 128])
+Projected edge attr: torch.Size([841, 128])
+Projected edge attr: torch.Size([821, 128])
+Projected edge attr: torch.Size([821, 128])
+Projected edge attr: torch.Size([1005, 128])
+Projected edge attr: torch.Size([1005, 128])
+Projected edge attr: torch.Size([1060, 128])
+Projected edge attr: torch.Size([1060, 128])
+Projected edge attr: torch.Size([1321, 128])
+Projected edge attr: torch.Size([1321, 128])
+Projected edge attr: torch.Size([1222, 128])
+Projected edge attr: torch.Size([1222, 128])
+Projected edge attr: torch.Size([1522, 128])
+Projected edge attr: torch.Size([1522, 128])
+Projected edge attr: torch.Size([951, 128])
+Projected edge attr: torch.Size([951, 128])
+Projected edge attr: torch.Size([1190, 128])
+Projected edge attr: torch.Size([1190, 128])
+Projected edge attr: torch.Size([1294, 128])
+Projected edge attr: torch.Size([1294, 128])
+Projected edge attr: torch.Size([1601, 128])
+Projected edge attr: torch.Size([1601, 128])
+Projected edge attr: torch.Size([1159, 128])
+Projected edge attr: torch.Size([1159, 128])
+Projected edge attr: torch.Size([1435, 128])
+Projected edge attr: torch.Size([1435, 128])
+Projected edge attr: torch.Size([960, 128])
+Projected edge attr: torch.Size([960, 128])
+Projected edge attr: torch.Size([1191, 128])
+Projected edge attr: torch.Size([1191, 128])
+Projected edge attr: torch.Size([776, 128])
+Projected edge attr: torch.Size([776, 128])
+Projected edge attr: torch.Size([969, 128])
+Projected edge attr: torch.Size([969, 128])
+Projected edge attr: torch.Size([925, 128])
+Projected edge attr: torch.Size([925, 128])
+Projected edge attr: torch.Size([1162, 128])
+Projected edge attr: torch.Size([1162, 128])
+Projected edge attr: torch.Size([975, 128])
+Projected edge attr: torch.Size([975, 128])
+Projected edge attr: torch.Size([1222, 128])
+Projected edge attr: torch.Size([1222, 128])
+Projected edge attr: torch.Size([885, 128])
+Projected edge attr: torch.Size([885, 128])
+Projected edge attr: torch.Size([1119, 128])
+Projected edge attr: torch.Size([1119, 128])
+Projected edge attr: torch.Size([943, 128])
+Projected edge attr: torch.Size([943, 128])
+Projected edge attr: torch.Size([1154, 128])
+Projected edge attr: torch.Size([1154, 128])
+Projected edge attr: torch.Size([956, 128])
+Projected edge attr: torch.Size([956, 128])
+Projected edge attr: torch.Size([1169, 128])
+Projected edge attr: torch.Size([1169, 128])
+Projected edge attr: torch.Size([1046, 128])
+Projected edge attr: torch.Size([1046, 128])
+Projected edge attr: torch.Size([1310, 128])
+Projected edge attr: torch.Size([1310, 128])
+
+[Epoch 6] Step 80
+  Total Loss       = 4.3842
+  InfoNCE          = 2.4597
+  Variance Loss    = 0.0407
+  Covariance Loss  = 0.9074
+  ---
+  Var(src, ref)    = 1.2494, 1.4656
+  STD(src, ref)    = 1.0844, 1.1979
+  Norm(src, ref)   = 36.0882, 36.0137
+  Cov(src, ref)    = 4.8110, 6.3798
+  Cosine Sim       = 0.8736
+  Grad Norm        = 23.2542
+  LR               = 0.000289
+  ---
+  🎯 EMBEDDING QUALITY (Key Metric):
+    Positive pairs: 0.874 (want > 0.7)
+    Negative pairs: 0.767 (want < 0.3)
+    Separation:     0.106 (want > 0.4)
+    ❌ POOR - Model struggling
+       → Increase batch_size to 8+
+       → Increase lr to 1e-3
+Projected edge attr: torch.Size([1042, 128])
+Projected edge attr: torch.Size([1042, 128])
+Projected edge attr: torch.Size([1291, 128])
+Projected edge attr: torch.Size([1291, 128])
+Projected edge attr: torch.Size([1003, 128])
+Projected edge attr: torch.Size([1003, 128])
+Projected edge attr: torch.Size([1279, 128])
+Projected edge attr: torch.Size([1279, 128])
+Projected edge attr: torch.Size([777, 128])
+Projected edge attr: torch.Size([777, 128])
+Projected edge attr: torch.Size([985, 128])
+Projected edge attr: torch.Size([985, 128])
+Projected edge attr: torch.Size([749, 128])
+Projected edge attr: torch.Size([749, 128])
+Projected edge attr: torch.Size([938, 128])
+Projected edge attr: torch.Size([938, 128])
+Projected edge attr: torch.Size([903, 128])
+Projected edge attr: torch.Size([903, 128])
+Projected edge attr: torch.Size([1104, 128])
+Projected edge attr: torch.Size([1104, 128])
+Projected edge attr: torch.Size([938, 128])
+Projected edge attr: torch.Size([938, 128])
+Projected edge attr: torch.Size([1195, 128])
+Projected edge attr: torch.Size([1195, 128])
+
+======================================================================
+Epoch 6 Summary
+======================================================================
+  Avg Total Loss = 5.1622
+  Avg InfoNCE    = 2.4062
+  Avg Var Loss   = 0.0829
+  Avg Cov Loss   = 0.6829
+  Final SRC: mean=0.4064, std=2.2628
+  Final REF: mean=0.3304, std=1.8834
+  ---
+  📊 Final Separation: 0.128
+======================================================================
+
+Projected edge attr: torch.Size([1109, 128])
+Projected edge attr: torch.Size([1109, 128])
+Projected edge attr: torch.Size([1412, 128])
+Projected edge attr: torch.Size([1412, 128])
+Projected edge attr: torch.Size([884, 128])
+Projected edge attr: torch.Size([884, 128])
+Projected edge attr: torch.Size([1123, 128])
+Projected edge attr: torch.Size([1123, 128])
+Projected edge attr: torch.Size([754, 128])
+Projected edge attr: torch.Size([754, 128])
+Projected edge attr: torch.Size([959, 128])
+Projected edge attr: torch.Size([959, 128])
+Projected edge attr: torch.Size([717, 128])
+Projected edge attr: torch.Size([717, 128])
+Projected edge attr: torch.Size([882, 128])
+Projected edge attr: torch.Size([882, 128])
+Projected edge attr: torch.Size([889, 128])
+Projected edge attr: torch.Size([889, 128])
+Projected edge attr: torch.Size([1103, 128])
+Projected edge attr: torch.Size([1103, 128])
+Projected edge attr: torch.Size([1087, 128])
+Projected edge attr: torch.Size([1087, 128])
+Projected edge attr: torch.Size([1345, 128])
+Projected edge attr: torch.Size([1345, 128])
+Projected edge attr: torch.Size([867, 128])
+Projected edge attr: torch.Size([867, 128])
+Projected edge attr: torch.Size([1068, 128])
+Projected edge attr: torch.Size([1068, 128])
+Projected edge attr: torch.Size([1006, 128])
+Projected edge attr: torch.Size([1006, 128])
+Projected edge attr: torch.Size([1246, 128])
+Projected edge attr: torch.Size([1246, 128])
+Projected edge attr: torch.Size([1007, 128])
+Projected edge attr: torch.Size([1007, 128])
+Projected edge attr: torch.Size([1224, 128])
+Projected edge attr: torch.Size([1224, 128])
+Projected edge attr: torch.Size([916, 128])
+Projected edge attr: torch.Size([916, 128])
+Projected edge attr: torch.Size([1098, 128])
+Projected edge attr: torch.Size([1098, 128])
+Projected edge attr: torch.Size([1015, 128])
+Projected edge attr: torch.Size([1015, 128])
+Projected edge attr: torch.Size([1236, 128])
+Projected edge attr: torch.Size([1236, 128])
+Projected edge attr: torch.Size([795, 128])
+Projected edge attr: torch.Size([795, 128])
+Projected edge attr: torch.Size([974, 128])
+Projected edge attr: torch.Size([974, 128])
+Projected edge attr: torch.Size([908, 128])
+Projected edge attr: torch.Size([908, 128])
+Projected edge attr: torch.Size([1119, 128])
+Projected edge attr: torch.Size([1119, 128])
+Projected edge attr: torch.Size([1082, 128])
+Projected edge attr: torch.Size([1082, 128])
+Projected edge attr: torch.Size([1344, 128])
+Projected edge attr: torch.Size([1344, 128])
+
+[Epoch 7] Step 90
+  Total Loss       = 3.2211
+  InfoNCE          = 1.8042
+  Variance Loss    = 0.0223
+  Covariance Loss  = 0.8588
+  ---
+  Var(src, ref)    = 1.4698, 1.1651
+  STD(src, ref)    = 1.1903, 1.0724
+  Norm(src, ref)   = 35.7758, 38.6121
+  Cov(src, ref)    = 6.5160, 4.5411
+  Cosine Sim       = 0.9077
+  Grad Norm        = 22.6157
+  LR               = 0.000168
+  ---
+  🎯 EMBEDDING QUALITY (Key Metric):
+    Positive pairs: 0.908 (want > 0.7)
+    Negative pairs: 0.792 (want < 0.3)
+    Separation:     0.116 (want > 0.4)
+    ❌ POOR - Model struggling
+       → Increase batch_size to 8+
+       → Increase lr to 1e-3
+  💾 Saved best model (loss=3.2211)
+Projected edge attr: torch.Size([964, 128])
+Projected edge attr: torch.Size([964, 128])
+Projected edge attr: torch.Size([1211, 128])
+Projected edge attr: torch.Size([1211, 128])
+Projected edge attr: torch.Size([944, 128])
+Projected edge attr: torch.Size([944, 128])
+Projected edge attr: torch.Size([1198, 128])
+Projected edge attr: torch.Size([1198, 128])
+Projected edge attr: torch.Size([1020, 128])
+Projected edge attr: torch.Size([1020, 128])
+Projected edge attr: torch.Size([1296, 128])
+Projected edge attr: torch.Size([1296, 128])
+Projected edge attr: torch.Size([934, 128])
+Projected edge attr: torch.Size([934, 128])
+Projected edge attr: torch.Size([1163, 128])
+Projected edge attr: torch.Size([1163, 128])
+Projected edge attr: torch.Size([906, 128])
+Projected edge attr: torch.Size([906, 128])
+Projected edge attr: torch.Size([1124, 128])
+Projected edge attr: torch.Size([1124, 128])
+Projected edge attr: torch.Size([758, 128])
+Projected edge attr: torch.Size([758, 128])
+Projected edge attr: torch.Size([936, 128])
+Projected edge attr: torch.Size([936, 128])
+Projected edge attr: torch.Size([1037, 128])
+Projected edge attr: torch.Size([1037, 128])
+Projected edge attr: torch.Size([1287, 128])
+Projected edge attr: torch.Size([1287, 128])
+Projected edge attr: torch.Size([709, 128])
+Projected edge attr: torch.Size([709, 128])
+Projected edge attr: torch.Size([878, 128])
+Projected edge attr: torch.Size([878, 128])
+Projected edge attr: torch.Size([982, 128])
+Projected edge attr: torch.Size([982, 128])
+Projected edge attr: torch.Size([1222, 128])
+Projected edge attr: torch.Size([1222, 128])
+Projected edge attr: torch.Size([809, 128])
+Projected edge attr: torch.Size([809, 128])
+Projected edge attr: torch.Size([1026, 128])
+Projected edge attr: torch.Size([1026, 128])
+
+======================================================================
+Epoch 7 Summary
+======================================================================
+  Avg Total Loss = 5.1831
+  Avg InfoNCE    = 2.8881
+  Avg Var Loss   = 0.0550
+  Avg Cov Loss   = 0.9211
+  Final SRC: mean=0.4567, std=2.7823
+  Final REF: mean=0.4657, std=2.6596
+  ---
+  📊 Final Separation: 0.117
+======================================================================
+
+Projected edge attr: torch.Size([736, 128])
+Projected edge attr: torch.Size([736, 128])
+Projected edge attr: torch.Size([905, 128])
+Projected edge attr: torch.Size([905, 128])
+Projected edge attr: torch.Size([651, 128])
+Projected edge attr: torch.Size([651, 128])
+Projected edge attr: torch.Size([795, 128])
+Projected edge attr: torch.Size([795, 128])
+Projected edge attr: torch.Size([1270, 128])
+Projected edge attr: torch.Size([1270, 128])
+Projected edge attr: torch.Size([1601, 128])
+Projected edge attr: torch.Size([1601, 128])
+Projected edge attr: torch.Size([984, 128])
+Projected edge attr: torch.Size([984, 128])
+Projected edge attr: torch.Size([1253, 128])
+Projected edge attr: torch.Size([1253, 128])
+Projected edge attr: torch.Size([1020, 128])
+Projected edge attr: torch.Size([1020, 128])
+Projected edge attr: torch.Size([1252, 128])
+Projected edge attr: torch.Size([1252, 128])
+Projected edge attr: torch.Size([704, 128])
+Projected edge attr: torch.Size([704, 128])
+Projected edge attr: torch.Size([874, 128])
+Projected edge attr: torch.Size([874, 128])
+Projected edge attr: torch.Size([754, 128])
+Projected edge attr: torch.Size([754, 128])
+Projected edge attr: torch.Size([954, 128])
+Projected edge attr: torch.Size([954, 128])
+Projected edge attr: torch.Size([618, 128])
+Projected edge attr: torch.Size([618, 128])
+Projected edge attr: torch.Size([769, 128])
+Projected edge attr: torch.Size([769, 128])
+Projected edge attr: torch.Size([988, 128])
+Projected edge attr: torch.Size([988, 128])
+Projected edge attr: torch.Size([1242, 128])
+Projected edge attr: torch.Size([1242, 128])
+Projected edge attr: torch.Size([993, 128])
+Projected edge attr: torch.Size([993, 128])
+Projected edge attr: torch.Size([1242, 128])
+Projected edge attr: torch.Size([1242, 128])
+
+[Epoch 8] Step 100
+  Total Loss       = 3.3789
+  InfoNCE          = 1.8049
+  Variance Loss    = 0.0292
+  Covariance Loss  = 0.8433
+  ---
+  Var(src, ref)    = 1.2933, 1.3522
+  STD(src, ref)    = 1.1157, 1.1480
+  Norm(src, ref)   = 42.7901, 39.9495
+  Cov(src, ref)    = 6.0925, 5.0330
+  Cosine Sim       = 0.9239
+  Grad Norm        = 12.2252
+  LR               = 0.000074
+  ---
+  🎯 EMBEDDING QUALITY (Key Metric):
+    Positive pairs: 0.924 (want > 0.7)
+    Negative pairs: 0.818 (want < 0.3)
+    Separation:     0.106 (want > 0.4)
+    ❌ POOR - Model struggling
+       → Increase batch_size to 8+
+       → Increase lr to 1e-3
+Projected edge attr: torch.Size([970, 128])
+Projected edge attr: torch.Size([970, 128])
+Projected edge attr: torch.Size([1212, 128])
+Projected edge attr: torch.Size([1212, 128])
+Projected edge attr: torch.Size([1123, 128])
+Projected edge attr: torch.Size([1123, 128])
+Projected edge attr: torch.Size([1410, 128])
+Projected edge attr: torch.Size([1410, 128])
+Projected edge attr: torch.Size([930, 128])
+Projected edge attr: torch.Size([930, 128])
+Projected edge attr: torch.Size([1157, 128])
+Projected edge attr: torch.Size([1157, 128])
+Projected edge attr: torch.Size([830, 128])
+Projected edge attr: torch.Size([830, 128])
+Projected edge attr: torch.Size([1018, 128])
+Projected edge attr: torch.Size([1018, 128])
+Projected edge attr: torch.Size([831, 128])
+Projected edge attr: torch.Size([831, 128])
+Projected edge attr: torch.Size([1023, 128])
+Projected edge attr: torch.Size([1023, 128])
+Projected edge attr: torch.Size([767, 128])
+Projected edge attr: torch.Size([767, 128])
+Projected edge attr: torch.Size([952, 128])
+Projected edge attr: torch.Size([952, 128])
+Projected edge attr: torch.Size([857, 128])
+Projected edge attr: torch.Size([857, 128])
+Projected edge attr: torch.Size([1066, 128])
+Projected edge attr: torch.Size([1066, 128])
+Projected edge attr: torch.Size([704, 128])
+Projected edge attr: torch.Size([704, 128])
+Projected edge attr: torch.Size([857, 128])
+Projected edge attr: torch.Size([857, 128])
+Projected edge attr: torch.Size([1132, 128])
+Projected edge attr: torch.Size([1132, 128])
+Projected edge attr: torch.Size([1405, 128])
+Projected edge attr: torch.Size([1405, 128])
+Projected edge attr: torch.Size([997, 128])
+Projected edge attr: torch.Size([997, 128])
+Projected edge attr: torch.Size([1255, 128])
+Projected edge attr: torch.Size([1255, 128])
+Projected edge attr: torch.Size([875, 128])
+Projected edge attr: torch.Size([875, 128])
+Projected edge attr: torch.Size([1080, 128])
+Projected edge attr: torch.Size([1080, 128])
+Projected edge attr: torch.Size([777, 128])
+Projected edge attr: torch.Size([777, 128])
+Projected edge attr: torch.Size([956, 128])
+Projected edge attr: torch.Size([956, 128])
+Projected edge attr: torch.Size([1132, 128])
+Projected edge attr: torch.Size([1132, 128])
+Projected edge attr: torch.Size([1420, 128])
+Projected edge attr: torch.Size([1420, 128])
+Projected edge attr: torch.Size([825, 128])
+Projected edge attr: torch.Size([825, 128])
+Projected edge attr: torch.Size([1021, 128])
+Projected edge attr: torch.Size([1021, 128])
+
+======================================================================
+Epoch 8 Summary
+======================================================================
+  Avg Total Loss = 4.9326
+  Avg InfoNCE    = 2.4113
+  Avg Var Loss   = 0.0587
+  Avg Cov Loss   = 1.0540
+  Final SRC: mean=0.4978, std=2.7762
+  Final REF: mean=0.3731, std=2.3619
+  ---
+  📊 Final Separation: 0.003
+======================================================================
+
+Projected edge attr: torch.Size([1096, 128])
+Projected edge attr: torch.Size([1096, 128])
+Projected edge attr: torch.Size([1385, 128])
+Projected edge attr: torch.Size([1385, 128])
+Projected edge attr: torch.Size([835, 128])
+Projected edge attr: torch.Size([835, 128])
+Projected edge attr: torch.Size([1031, 128])
+Projected edge attr: torch.Size([1031, 128])
+Projected edge attr: torch.Size([888, 128])
+Projected edge attr: torch.Size([888, 128])
+Projected edge attr: torch.Size([1107, 128])
+Projected edge attr: torch.Size([1107, 128])
+Projected edge attr: torch.Size([956, 128])
+Projected edge attr: torch.Size([956, 128])
+Projected edge attr: torch.Size([1195, 128])
+Projected edge attr: torch.Size([1195, 128])
+Projected edge attr: torch.Size([753, 128])
+Projected edge attr: torch.Size([753, 128])
+Projected edge attr: torch.Size([926, 128])
+Projected edge attr: torch.Size([926, 128])
+Projected edge attr: torch.Size([857, 128])
+Projected edge attr: torch.Size([857, 128])
+Projected edge attr: torch.Size([1038, 128])
+Projected edge attr: torch.Size([1038, 128])
+
+[Epoch 9] Step 110
+  Total Loss       = 4.3294
+  InfoNCE          = 2.3523
+  Variance Loss    = 0.0317
+  Covariance Loss  = 1.1837
+  ---
+  Var(src, ref)    = 1.6771, 1.3959
+  STD(src, ref)    = 1.2768, 1.1432
+  Norm(src, ref)   = 34.8513, 33.8898
+  Cov(src, ref)    = 7.3897, 5.4921
+  Cosine Sim       = 0.8723
+  Grad Norm        = 30.3593
+  LR               = 0.000017
+  ---
+  🎯 EMBEDDING QUALITY (Key Metric):
+    Positive pairs: 0.872 (want > 0.7)
+    Negative pairs: 0.724 (want < 0.3)
+    Separation:     0.149 (want > 0.4)
+    ❌ POOR - Model struggling
+       → Increase batch_size to 8+
+       → Increase lr to 1e-3
+Projected edge attr: torch.Size([1015, 128])
+Projected edge attr: torch.Size([1015, 128])
+Projected edge attr: torch.Size([1254, 128])
+Projected edge attr: torch.Size([1254, 128])
+Projected edge attr: torch.Size([772, 128])
+Projected edge attr: torch.Size([772, 128])
+Projected edge attr: torch.Size([947, 128])
+Projected edge attr: torch.Size([947, 128])
+Projected edge attr: torch.Size([888, 128])
+Projected edge attr: torch.Size([888, 128])
+Projected edge attr: torch.Size([1091, 128])
+Projected edge attr: torch.Size([1091, 128])
+Projected edge attr: torch.Size([749, 128])
+Projected edge attr: torch.Size([749, 128])
+Projected edge attr: torch.Size([917, 128])
+Projected edge attr: torch.Size([917, 128])
+Projected edge attr: torch.Size([1168, 128])
+Projected edge attr: torch.Size([1168, 128])
+Projected edge attr: torch.Size([1468, 128])
+Projected edge attr: torch.Size([1468, 128])
+Projected edge attr: torch.Size([776, 128])
+Projected edge attr: torch.Size([776, 128])
+Projected edge attr: torch.Size([958, 128])
+Projected edge attr: torch.Size([958, 128])
+Projected edge attr: torch.Size([988, 128])
+Projected edge attr: torch.Size([988, 128])
+Projected edge attr: torch.Size([1217, 128])
+Projected edge attr: torch.Size([1217, 128])
+Projected edge attr: torch.Size([835, 128])
+Projected edge attr: torch.Size([835, 128])
+Projected edge attr: torch.Size([1063, 128])
+Projected edge attr: torch.Size([1063, 128])
+Projected edge attr: torch.Size([795, 128])
+Projected edge attr: torch.Size([795, 128])
+Projected edge attr: torch.Size([1006, 128])
+Projected edge attr: torch.Size([1006, 128])
+Projected edge attr: torch.Size([857, 128])
+Projected edge attr: torch.Size([857, 128])
+Projected edge attr: torch.Size([1108, 128])
+Projected edge attr: torch.Size([1108, 128])
+Projected edge attr: torch.Size([957, 128])
+Projected edge attr: torch.Size([957, 128])
+Projected edge attr: torch.Size([1179, 128])
+Projected edge attr: torch.Size([1179, 128])
+Projected edge attr: torch.Size([929, 128])
+Projected edge attr: torch.Size([929, 128])
+Projected edge attr: torch.Size([1163, 128])
+Projected edge attr: torch.Size([1163, 128])
+Projected edge attr: torch.Size([839, 128])
+Projected edge attr: torch.Size([839, 128])
+Projected edge attr: torch.Size([1063, 128])
+Projected edge attr: torch.Size([1063, 128])
+Projected edge attr: torch.Size([876, 128])
+Projected edge attr: torch.Size([876, 128])
+Projected edge attr: torch.Size([1091, 128])
+Projected edge attr: torch.Size([1091, 128])
+Projected edge attr: torch.Size([998, 128])
+Projected edge attr: torch.Size([998, 128])
+Projected edge attr: torch.Size([1237, 128])
+Projected edge attr: torch.Size([1237, 128])
+Projected edge attr: torch.Size([1080, 128])
+Projected edge attr: torch.Size([1080, 128])
+Projected edge attr: torch.Size([1354, 128])
+Projected edge attr: torch.Size([1354, 128])
+Projected edge attr: torch.Size([871, 128])
+Projected edge attr: torch.Size([871, 128])
+Projected edge attr: torch.Size([1066, 128])
+Projected edge attr: torch.Size([1066, 128])
+Projected edge attr: torch.Size([1047, 128])
+Projected edge attr: torch.Size([1047, 128])
+Projected edge attr: torch.Size([1309, 128])
+Projected edge attr: torch.Size([1309, 128])
+
+======================================================================
+Epoch 9 Summary
+======================================================================
+  Avg Total Loss = 4.4998
+  Avg InfoNCE    = 2.3174
+  Avg Var Loss   = 0.0505
+  Avg Cov Loss   = 0.9209
+  Final SRC: mean=0.4374, std=2.6642
+  Final REF: mean=0.4545, std=2.5816
+  ---
+  📊 Final Separation: 0.037
+======================================================================
+
+
+======================================================================
+Training Complete!
+======================================================================
+Best loss: 3.2211
+Final checkpoint: checkpoints//model_best.pth

@@ -62,7 +62,9 @@ class DualSceneAlignerWithMatching(nn.Module):
         if self.use_cosine:
             # Use cosine similarity as matching probability
             cos_sim = F.cosine_similarity(src_emb, ref_emb, dim=-1)
-            matching_prob = (cos_sim + 1) / 2  # Map [-1, 1] to [0, 1]
+            matching_prob = (cos_sim + 1) / 2  # Map [-1, 1] to [0, 1]/
+
+     
         else:
             # Use MLP to predict matching probability
             concat_emb = torch.cat([src_emb, ref_emb], dim=-1)
