@@ -1,0 +1,966 @@
+Learning rate: 0.001
+Epochs: 100
+Log every: 10 steps
+Checkpoints: checkpoints/
+
+======================================================================
+Starting Training
+======================================================================
+
+Loading: 2451c041-fae8-24f6-9213-b8b6af8d86c1.json vs 2451c046-fae8-24f6-91fb-c25185c51c7b.json
+Loading: 8e0f1c37-9e28-2339-85b0-6a08741718f7.json vs 8e0f1c39-9e28-2339-8432-ca5ca8653c58.json
+Loading: 74ef8474-9dce-2d66-82e5-309429937089.json vs 75c25973-9ca2-2844-96f4-90cd531364ac.json
+Loading: 2e36955d-e133-204c-90da-122ae14d42a3.json vs 2e36955f-e133-204c-9372-e883fa503f74.json
+Loading: 75c259b9-9ca2-2844-9473-43d990560f90.json vs 787ed580-9d98-2c97-8167-6d3b445da2c0.json
+Loading: 2451c053-fae8-24f6-91f0-6bebca1fe741.json vs 2451c057-fae8-24f6-92b8-df89e0429f6e.json
+Loading: b05fdd58-fca0-2d4f-8bd7-e80abe1ddb4c.json vs b05fdd5a-fca0-2d4f-89fd-d54bd26a115b.json
+Loading: 7272e161-a01b-20f6-8b5a-0b97efeb6545.json vs 7272e182-a01b-20f6-89b8-3bdec0091c89.json
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([196, 518])
+src_batch shape: torch.Size([196])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [14, 28, 34, 15, 30, 20, 17, 38]
+First node features (first 10 dims):
+tensor([ 0.7089,  1.9958,  0.2145,  0.0000,  0.0000,  0.0000,  0.0199,  0.0042,
+         0.0053, -0.0182], device='mps:0')
+
+=== EMERGENCY DIAGNOSTIC ===
+Loading: 137a8156-1db5-2cc0-80ff-73ceef09cc7c.json vs 170725d2-9f1b-2d87-803b-c3210c0d30ff.json
+Raw node from dataset:
+  Dims 0-2 (centroid): tensor([ 0.2433, -0.0569, -0.5636])
+  Dims 3-5 (color): tensor([0., 0., 0.])
+  Dims 6-10 (CLIP start): tensor([ 0.0223,  0.0205, -0.0140, -0.0055,  0.0213])
+  CLIP norm: 1.0004
+✓ Dataset loads CLIP correctly
+❌ Problem: batching is duplicating the same scene!
+
+Graph 0, first node (first 10): tensor([ 0.7089,  1.9958,  0.2145,  0.0000,  0.0000,  0.0000,  0.0199,  0.0042,
+         0.0053, -0.0182], device='mps:0')
+Graph 1, first node (first 10): tensor([ 0.4775, -1.4476, -0.2244,  0.0000,  0.0000,  0.0000,  0.0223,  0.0205,
+        -0.0140, -0.0055], device='mps:0')
+
+Centroid diff: 1.3712
+Color diff: 0.0000
+CLIP diff: 0.0093
+Total diff: 0.0171
+❌ CLIP embeddings are too similar!
+Projected edge attr: torch.Size([980, 128])
+Projected edge attr: torch.Size([980, 128])
+Projected edge attr: torch.Size([1230, 128])
+Projected edge attr: torch.Size([1230, 128])
+Projected edge attr: torch.Size([965, 128])
+Projected edge attr: torch.Size([965, 128])
+Projected edge attr: torch.Size([1202, 128])
+Projected edge attr: torch.Size([1202, 128])
+  Batch size: 8
+
+[Epoch 0] Step 0
+  Total Loss       = 23.7525
+  InfoNCE          = 3.9580
+  Variance Loss    = 0.7918
+  Covariance Loss  = 0.0006
+  ---
+  Var(src, ref)    = 0.0529, 0.0447
+  STD(src, ref)    = 0.2187, 0.1973
+  Norm(src, ref)   = 6.0429, 6.1056
+  Cov(src, ref)    = 0.1320, 0.1233
+  Cosine Sim       = 0.6433
+  Grad Norm        = 54.2483
+  LR               = 0.000008
+  ---
+  🎯 EMBEDDING QUALITY (Key Metric):
+    Positive pairs: 0.643 (want > 0.7)
+    Negative pairs: 0.627 (want < 0.3)
+    Separation:     0.017 (want > 0.4)
+    ❌ VERY POOR - NOT LEARNING!
+       → STOP TRAINING - Fix hyperparameters!
+       → batch_size >= 8, lr = 1e-3, lambda_var = 50
+  ⚠️  Low variance → Severe collapse!
+  💾 Saved best model (loss=23.7525)
+Loading: 41385847-a238-2435-838b-61864922c518.json vs 4138584b-a238-2435-8128-a939fb07c1c8.json
+Loading: 42384914-60a7-271e-9c5f-f0e1eee114ae.json vs 42384916-60a7-271e-9c1f-6722abc6495d.json
+Loading: 87e6cf71-9d1a-289f-8510-bddeda7aaad8.json vs 87e6cf79-9d1a-289f-845c-abe4deb8642f.json
+Loading: b05fdd92-fca0-2d4f-89dd-723db1a8d78c.json vs b05fdda6-fca0-2d4f-8973-9f8a5cdac3ad.json
+Loading: 2e36954b-e133-204c-92ad-1a66c6f63e1a.json vs 2e36954d-e133-204c-92aa-5cf8c2f8b46f.json
+Loading: 50e7c0ad-0730-2a5f-8635-252404ee82e0.json vs 50e7c0b1-0730-2a5f-8471-b240fa51b1d7.json
+Loading: 4138584b-a238-2435-8128-a939fb07c1c8.json vs 4138584f-a238-2435-8242-4c9b86032127.json
+Loading: 87e6cf6b-9d1a-289f-866c-b90904d9487d.json vs 87e6cf6d-9d1a-289f-879a-543d3fa7ba74.json
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([270, 518])
+src_batch shape: torch.Size([270])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [48, 30, 40, 23, 19, 51, 16, 43]
+First node features (first 10 dims):
+tensor([ 0.0859,  2.2359, -0.6414,  0.0000,  0.0000,  0.0000,  0.0223,  0.0205,
+        -0.0140, -0.0055], device='mps:0')
+
+=== EMERGENCY DIAGNOSTIC ===
+Loading: 137a8156-1db5-2cc0-80ff-73ceef09cc7c.json vs 170725d2-9f1b-2d87-803b-c3210c0d30ff.json
+Raw node from dataset:
+  Dims 0-2 (centroid): tensor([ 0.2433, -0.0569, -0.5636])
+  Dims 3-5 (color): tensor([0., 0., 0.])
+  Dims 6-10 (CLIP start): tensor([ 0.0223,  0.0205, -0.0140, -0.0055,  0.0213])
+  CLIP norm: 1.0004
+✓ Dataset loads CLIP correctly
+❌ Problem: batching is duplicating the same scene!
+
+Graph 0, first node (first 10): tensor([ 0.0859,  2.2359, -0.6414,  0.0000,  0.0000,  0.0000,  0.0223,  0.0205,
+        -0.0140, -0.0055], device='mps:0')
+Graph 1, first node (first 10): tensor([ 0.3469,  0.8788, -0.1732,  0.0000,  0.0000,  0.0000,  0.0223,  0.0205,
+        -0.0140, -0.0055], device='mps:0')
+
+Centroid diff: 0.6955
+Color diff: 0.0000
+CLIP diff: 0.0000
+Total diff: 0.0040
+❌ CLIP embeddings are too similar!
+Projected edge attr: torch.Size([1350, 128])
+Projected edge attr: torch.Size([1350, 128])
+Projected edge attr: torch.Size([1700, 128])
+Projected edge attr: torch.Size([1700, 128])
+Projected edge attr: torch.Size([1000, 128])
+Projected edge attr: torch.Size([1000, 128])
+Projected edge attr: torch.Size([1260, 128])
+Projected edge attr: torch.Size([1260, 128])
+  Batch size: 8
+  💾 Saved best model (loss=23.4461)
+Loading: 7272e1a0-a01b-20f6-8b34-1fdc43d1f911.json vs 74ef846e-9dce-2d66-83d5-294aac7b1b0f.json
+Loading: 87e6cf79-9d1a-289f-845c-abe4deb8642f.json vs 87e6cf7b-9d1a-289f-8692-57e5757dac99.json
+Loading: 4acaebbe-6c10-2a2a-866a-f0e58185caf7.json vs 4acaebc0-6c10-2a2a-852e-0226d6539299.json
+Loading: 8f0f1461-55de-28ce-821c-d2eeaa217cc1.json vs 8f0f1463-55de-28ce-80e5-d3294f7795ba.json
+Loading: 7272e190-a01b-20f6-8bde-769bcd548633.json vs 7272e196-a01b-20f6-880f-dbca4564e4a5.json
+Loading: 19f1a897-a988-2bf8-8f8d-f3b64da81c2a.json vs 2451c03f-fae8-24f6-90ac-6ba38cab8c92.json
+Loading: 87e6cf6d-9d1a-289f-879a-543d3fa7ba74.json vs 87e6cf6f-9d1a-289f-8693-db8b73a4c4f4.json
+Loading: 8f0f1463-55de-28ce-80e5-d3294f7795ba.json vs 8f0f1467-55de-28ce-8331-b670a7274af9.json
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([167, 518])
+src_batch shape: torch.Size([167])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [29, 17, 17, 10, 33, 30, 20, 11]
+First node features (first 10 dims):
+tensor([ 0.0837,  0.5652, -1.0181,  0.0000,  0.0000,  0.0000,  0.0173,  0.0313,
+        -0.0269, -0.0142], device='mps:0')
+
+=== EMERGENCY DIAGNOSTIC ===
+Loading: 137a8156-1db5-2cc0-80ff-73ceef09cc7c.json vs 170725d2-9f1b-2d87-803b-c3210c0d30ff.json
+Raw node from dataset:
+  Dims 0-2 (centroid): tensor([ 0.2433, -0.0569, -0.5636])
+  Dims 3-5 (color): tensor([0., 0., 0.])
+  Dims 6-10 (CLIP start): tensor([ 0.0223,  0.0205, -0.0140, -0.0055,  0.0213])
+  CLIP norm: 1.0004
+✓ Dataset loads CLIP correctly
+❌ Problem: batching is duplicating the same scene!
+
+Graph 0, first node (first 10): tensor([ 0.0837,  0.5652, -1.0181,  0.0000,  0.0000,  0.0000,  0.0173,  0.0313,
+        -0.0269, -0.0142], device='mps:0')
+Graph 1, first node (first 10): tensor([-0.1850,  1.2198, -1.2070,  0.0000,  0.0000,  0.0000,  0.0207,  0.0346,
+        -0.0098, -0.0204], device='mps:0')
+
+Centroid diff: 0.3707
+Color diff: 0.0000
+CLIP diff: 0.0076
+Total diff: 0.0097
+❌ CLIP embeddings are too similar!
+Projected edge attr: torch.Size([835, 128])
+Projected edge attr: torch.Size([835, 128])
+Projected edge attr: torch.Size([1036, 128])
+Projected edge attr: torch.Size([1036, 128])
+Projected edge attr: torch.Size([945, 128])
+Projected edge attr: torch.Size([945, 128])
+Projected edge attr: torch.Size([1188, 128])
+Projected edge attr: torch.Size([1188, 128])
+  Batch size: 8
+  💾 Saved best model (loss=22.2257)
+Loading: 75c2599b-9ca2-2844-9683-a503346d840a.json vs 75c259a5-9ca2-2844-9441-d72912c1e696.json
+Loading: 75c25977-9ca2-2844-97ba-92479480fc00.json vs 75c2598b-9ca2-2844-967d-a16c92acf4ea.json
+Loading: 7272e182-a01b-20f6-89b8-3bdec0091c89.json vs 7272e189-a01b-20f6-8a2e-05b6c8395143.json
+Loading: 8f0f1447-55de-28ce-83c5-092887498eea.json vs 8f0f144b-55de-28ce-8053-2828b87a0cc9.json
+Loading: b05fdd66-fca0-2d4f-88bb-210da4439475.json vs b05fdd68-fca0-2d4f-895a-2f40f6b4aca9.json
+Loading: 8f0f142a-55de-28ce-81f2-5d5c683204b8.json vs 8f0f142e-55de-28ce-8073-1629a4573a6a.json
+Loading: 787ed580-9d98-2c97-8167-6d3b445da2c0.json vs 787ed58a-9d98-2c97-826e-8e98355c30d7.json
+Loading: b05fdd68-fca0-2d4f-895a-2f40f6b4aca9.json vs b05fdd92-fca0-2d4f-89dd-723db1a8d78c.json
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([215, 518])
+src_batch shape: torch.Size([215])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [21, 33, 30, 9, 26, 18, 34, 44]
+First node features (first 10 dims):
+tensor([-1.8183,  0.5337, -0.9230,  0.0000,  0.0000,  0.0000,  0.0223,  0.0205,
+        -0.0140, -0.0055], device='mps:0')
+
+=== EMERGENCY DIAGNOSTIC ===
+Loading: 137a8156-1db5-2cc0-80ff-73ceef09cc7c.json vs 170725d2-9f1b-2d87-803b-c3210c0d30ff.json
+Raw node from dataset:
+  Dims 0-2 (centroid): tensor([ 0.2433, -0.0569, -0.5636])
+  Dims 3-5 (color): tensor([0., 0., 0.])
+  Dims 6-10 (CLIP start): tensor([ 0.0223,  0.0205, -0.0140, -0.0055,  0.0213])
+  CLIP norm: 1.0004
+✓ Dataset loads CLIP correctly
+❌ Problem: batching is duplicating the same scene!
+
+Graph 0, first node (first 10): tensor([-1.8183,  0.5337, -0.9230,  0.0000,  0.0000,  0.0000,  0.0223,  0.0205,
+        -0.0140, -0.0055], device='mps:0')
+Graph 1, first node (first 10): tensor([-0.5647,  2.2873,  0.2332,  0.0000,  0.0000,  0.0000,  0.0229,  0.0138,
+        -0.0313, -0.0060], device='mps:0')
+
+Centroid diff: 1.3878
+Color diff: 0.0000
+CLIP diff: 0.0072
+Total diff: 0.0151
+❌ CLIP embeddings are too similar!
+Projected edge attr: torch.Size([1075, 128])
+Projected edge attr: torch.Size([1075, 128])
+Projected edge attr: torch.Size([1336, 128])
+Projected edge attr: torch.Size([1336, 128])
+Projected edge attr: torch.Size([985, 128])
+Projected edge attr: torch.Size([985, 128])
+Projected edge attr: torch.Size([1222, 128])
+Projected edge attr: torch.Size([1222, 128])
+  Batch size: 8
+  💾 Saved best model (loss=22.1283)
+Loading: 2e369525-e133-204c-93ab-2b23ce5ef16e.json vs 2e369527-e133-204c-91cc-bb874b8fd4ae.json
+Loading: 2451c046-fae8-24f6-91fb-c25185c51c7b.json vs 2451c053-fae8-24f6-91f0-6bebca1fe741.json
+Loading: 4acaebba-6c10-2a2a-8650-34c2f160db99.json vs 4acaebbe-6c10-2a2a-866a-f0e58185caf7.json
+Loading: 74ef846e-9dce-2d66-83d5-294aac7b1b0f.json vs 74ef8470-9dce-2d66-8339-4b51b8406cef.json
+Loading: 9c27de4b-6184-2cda-8293-fa3e68da0041.json vs 9c27de4d-6184-2cda-80c6-174eddb07154.json
+Loading: 8f0f144b-55de-28ce-8053-2828b87a0cc9.json vs 8f0f144d-55de-28ce-8075-69a0a3b631b5.json
+Loading: 41385867-a238-2435-8152-dc84ef14eae1.json vs 42384914-60a7-271e-9c5f-f0e1eee114ae.json
+Loading: 2e369527-e133-204c-91cc-bb874b8fd4ae.json vs 2e369529-e133-204c-91f5-6ab463d511c1.json
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([172, 518])
+src_batch shape: torch.Size([172])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [12, 15, 20, 50, 29, 12, 21, 13]
+First node features (first 10 dims):
+tensor([-1.7218,  0.7011, -1.1678,  0.0000,  0.0000,  0.0000,  0.0199,  0.0042,
+         0.0053, -0.0182], device='mps:0')
+
+=== EMERGENCY DIAGNOSTIC ===
+Loading: 137a8156-1db5-2cc0-80ff-73ceef09cc7c.json vs 170725d2-9f1b-2d87-803b-c3210c0d30ff.json
+Raw node from dataset:
+  Dims 0-2 (centroid): tensor([ 0.2433, -0.0569, -0.5636])
+  Dims 3-5 (color): tensor([0., 0., 0.])
+  Dims 6-10 (CLIP start): tensor([ 0.0223,  0.0205, -0.0140, -0.0055,  0.0213])
+  CLIP norm: 1.0004
+✓ Dataset loads CLIP correctly
+❌ Problem: batching is duplicating the same scene!
+
+Graph 0, first node (first 10): tensor([-1.7218,  0.7011, -1.1678,  0.0000,  0.0000,  0.0000,  0.0199,  0.0042,
+         0.0053, -0.0182], device='mps:0')
+Graph 1, first node (first 10): tensor([ 0.5374,  1.4026, -1.3642,  0.0000,  0.0000,  0.0000,  0.0091,  0.0114,
+         0.0094, -0.0141], device='mps:0')
+
+Centroid diff: 1.0524
+Color diff: 0.0000
+CLIP diff: 0.0093
+Total diff: 0.0153
+❌ CLIP embeddings are too similar!
+Projected edge attr: torch.Size([860, 128])
+Projected edge attr: torch.Size([860, 128])
+Projected edge attr: torch.Size([1058, 128])
+Projected edge attr: torch.Size([1058, 128])
+Projected edge attr: torch.Size([870, 128])
+Projected edge attr: torch.Size([870, 128])
+Projected edge attr: torch.Size([1066, 128])
+Projected edge attr: torch.Size([1066, 128])
+  Batch size: 8
+Loading: b05fdd5a-fca0-2d4f-89fd-d54bd26a115b.json vs b05fdd66-fca0-2d4f-88bb-210da4439475.json
+Loading: 87e6cf7b-9d1a-289f-8692-57e5757dac99.json vs 8e0f1c24-9e28-2339-840c-7e135addd26b.json
+Loading: b05fdda6-fca0-2d4f-8973-9f8a5cdac3ad.json vs 137a8156-1db5-2cc0-80ff-73ceef09cc7c.json
+Loading: 75c25999-9ca2-2844-9761-7642c9829210.json vs 75c2599b-9ca2-2844-9683-a503346d840a.json
+Loading: 5630cfd8-12bf-2860-8773-e3dde9da2aff.json vs 5630cfda-12bf-2860-8511-9baf30eec4ad.json
+Loading: 75c259a5-9ca2-2844-9441-d72912c1e696.json vs 75c259b9-9ca2-2844-9473-43d990560f90.json
+Loading: 42384916-60a7-271e-9c1f-6722abc6495d.json vs 4238491e-60a7-271e-9fe8-eb04b4209883.json
+Loading: 9c27de56-6184-2cda-8196-591957b6387d.json vs b05fdd58-fca0-2d4f-8bd7-e80abe1ddb4c.json
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([248, 518])
+src_batch shape: torch.Size([248])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [32, 24, 32, 26, 41, 28, 29, 36]
+First node features (first 10 dims):
+tensor([-3.1779e+00, -3.3307e-01, -7.5018e-01,  0.0000e+00,  0.0000e+00,
+         0.0000e+00,  1.9714e-02,  1.6296e-02, -2.8351e-02,  9.6703e-04],
+       device='mps:0')
+
+=== EMERGENCY DIAGNOSTIC ===
+Loading: 137a8156-1db5-2cc0-80ff-73ceef09cc7c.json vs 170725d2-9f1b-2d87-803b-c3210c0d30ff.json
+Raw node from dataset:
+  Dims 0-2 (centroid): tensor([ 0.2433, -0.0569, -0.5636])
+  Dims 3-5 (color): tensor([0., 0., 0.])
+  Dims 6-10 (CLIP start): tensor([ 0.0223,  0.0205, -0.0140, -0.0055,  0.0213])
+  CLIP norm: 1.0004
+✓ Dataset loads CLIP correctly
+❌ Problem: batching is duplicating the same scene!
+
+Graph 0, first node (first 10): tensor([-3.1779e+00, -3.3307e-01, -7.5018e-01,  0.0000e+00,  0.0000e+00,
+         0.0000e+00,  1.9714e-02,  1.6296e-02, -2.8351e-02,  9.6703e-04],
+       device='mps:0')
+Graph 1, first node (first 10): tensor([ 1.0095, -1.7552,  0.3283,  0.0000,  0.0000,  0.0000,  0.0223,  0.0205,
+        -0.0140, -0.0055], device='mps:0')
+
+Centroid diff: 2.2294
+Color diff: 0.0000
+CLIP diff: 0.0064
+Total diff: 0.0193
+❌ CLIP embeddings are too similar!
+Projected edge attr: torch.Size([1240, 128])
+Projected edge attr: torch.Size([1240, 128])
+Projected edge attr: torch.Size([1561, 128])
+Projected edge attr: torch.Size([1561, 128])
+Projected edge attr: torch.Size([1045, 128])
+Projected edge attr: torch.Size([1045, 128])
+Projected edge attr: torch.Size([1282, 128])
+Projected edge attr: torch.Size([1282, 128])
+  Batch size: 8
+Loading: 41385851-a238-2435-8056-b7d662a97c93.json vs 41385867-a238-2435-8152-dc84ef14eae1.json
+Loading: 5630cfc9-12bf-2860-84ed-5bb189f0e94e.json vs 5630cfcb-12bf-2860-87ee-b4e4a5bf0cb0.json
+Loading: 2e369529-e133-204c-91f5-6ab463d511c1.json vs 2e36952b-e133-204c-911e-7644cb34e8b2.json
+Loading: 8f0f1434-55de-28ce-80ee-1f84b796e1cc.json vs 8f0f1437-55de-28ce-828e-dbf210a7f472.json
+Loading: 8e0f1c39-9e28-2339-8432-ca5ca8653c58.json vs 8e0f1c42-9e28-2339-861e-2d29caae3f9a.json
+Loading: 2451c057-fae8-24f6-92b8-df89e0429f6e.json vs 2e369523-e133-204c-91f9-6f3deaa8e11e.json
+Loading: 2e36954f-e133-204c-9320-34d52370eb4d.json vs 2e36955d-e133-204c-90da-122ae14d42a3.json
+Loading: 19f1a892-a988-2bf8-8c91-0705cf396888.json vs 19f1a897-a988-2bf8-8f8d-f3b64da81c2a.json
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([216, 518])
+src_batch shape: torch.Size([216])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [35, 40, 15, 15, 21, 21, 18, 51]
+First node features (first 10 dims):
+tensor([ 1.0958,  2.2779, -0.7042,  0.0000,  0.0000,  0.0000,  0.0229,  0.0138,
+        -0.0313, -0.0060], device='mps:0')
+
+=== EMERGENCY DIAGNOSTIC ===
+Loading: 137a8156-1db5-2cc0-80ff-73ceef09cc7c.json vs 170725d2-9f1b-2d87-803b-c3210c0d30ff.json
+Raw node from dataset:
+  Dims 0-2 (centroid): tensor([ 0.2433, -0.0569, -0.5636])
+  Dims 3-5 (color): tensor([0., 0., 0.])
+  Dims 6-10 (CLIP start): tensor([ 0.0223,  0.0205, -0.0140, -0.0055,  0.0213])
+  CLIP norm: 1.0004
+✓ Dataset loads CLIP correctly
+❌ Problem: batching is duplicating the same scene!
+
+Graph 0, first node (first 10): tensor([ 1.0958,  2.2779, -0.7042,  0.0000,  0.0000,  0.0000,  0.0229,  0.0138,
+        -0.0313, -0.0060], device='mps:0')
+Graph 1, first node (first 10): tensor([-1.3450, -0.0129, -0.9521,  0.0000,  0.0000,  0.0000,  0.0223,  0.0205,
+        -0.0140, -0.0055], device='mps:0')
+
+Centroid diff: 1.6598
+Color diff: 0.0000
+CLIP diff: 0.0072
+Total diff: 0.0167
+❌ CLIP embeddings are too similar!
+Projected edge attr: torch.Size([1080, 128])
+Projected edge attr: torch.Size([1080, 128])
+Projected edge attr: torch.Size([1323, 128])
+Projected edge attr: torch.Size([1323, 128])
+Projected edge attr: torch.Size([980, 128])
+Projected edge attr: torch.Size([980, 128])
+Projected edge attr: torch.Size([1206, 128])
+Projected edge attr: torch.Size([1206, 128])
+  Batch size: 8
+Loading: 75c2598b-9ca2-2844-967d-a16c92acf4ea.json vs 75c25999-9ca2-2844-9761-7642c9829210.json
+Loading: 8e0f1c42-9e28-2339-861e-2d29caae3f9a.json vs 8e0f1c53-9e28-2339-8588-2b24d9e9f3e8.json
+Loading: 787ed590-9d98-2c97-80db-89baaa605049.json vs 87e6cf6b-9d1a-289f-866c-b90904d9487d.json
+Loading: 2e369523-e133-204c-91f9-6f3deaa8e11e.json vs 2e369525-e133-204c-93ab-2b23ce5ef16e.json
+Loading: 2e36954d-e133-204c-92aa-5cf8c2f8b46f.json vs 2e36954f-e133-204c-9320-34d52370eb4d.json
+Loading: 8e0f1c53-9e28-2339-8588-2b24d9e9f3e8.json vs 8f0f142a-55de-28ce-81f2-5d5c683204b8.json
+Loading: 8e0f1c26-9e28-2339-8799-53c13e81d9ff.json vs 8e0f1c2f-9e28-2339-85ae-05fc50d1a3a7.json
+Loading: 50e7c0b1-0730-2a5f-8471-b240fa51b1d7.json vs 5630cfc9-12bf-2860-84ed-5bb189f0e94e.json
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([219, 518])
+src_batch shape: torch.Size([219])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [13, 24, 18, 14, 18, 50, 51, 31]
+First node features (first 10 dims):
+tensor([ 0.0741,  1.3626, -0.9467,  0.0000,  0.0000,  0.0000,  0.0223,  0.0205,
+        -0.0140, -0.0055], device='mps:0')
+
+=== EMERGENCY DIAGNOSTIC ===
+Loading: 137a8156-1db5-2cc0-80ff-73ceef09cc7c.json vs 170725d2-9f1b-2d87-803b-c3210c0d30ff.json
+Raw node from dataset:
+  Dims 0-2 (centroid): tensor([ 0.2433, -0.0569, -0.5636])
+  Dims 3-5 (color): tensor([0., 0., 0.])
+  Dims 6-10 (CLIP start): tensor([ 0.0223,  0.0205, -0.0140, -0.0055,  0.0213])
+  CLIP norm: 1.0004
+✓ Dataset loads CLIP correctly
+❌ Problem: batching is duplicating the same scene!
+
+Graph 0, first node (first 10): tensor([ 0.0741,  1.3626, -0.9467,  0.0000,  0.0000,  0.0000,  0.0223,  0.0205,
+        -0.0140, -0.0055], device='mps:0')
+Graph 1, first node (first 10): tensor([ 0.7486,  1.4785, -0.9972,  0.0000,  0.0000,  0.0000,  0.0223,  0.0205,
+        -0.0140, -0.0055], device='mps:0')
+
+Centroid diff: 0.2803
+Color diff: 0.0000
+CLIP diff: 0.0000
+Total diff: 0.0016
+❌ CLIP embeddings are too similar!
+Projected edge attr: torch.Size([1095, 128])
+Projected edge attr: torch.Size([1095, 128])
+Projected edge attr: torch.Size([1338, 128])
+Projected edge attr: torch.Size([1338, 128])
+Projected edge attr: torch.Size([1210, 128])
+Projected edge attr: torch.Size([1210, 128])
+Projected edge attr: torch.Size([1514, 128])
+Projected edge attr: torch.Size([1514, 128])
+  Batch size: 8
+  💾 Saved best model (loss=21.5353)
+Loading: 4acaebcc-6c10-2a2a-858b-29c7e4fb410d.json vs 50e7c0ad-0730-2a5f-8635-252404ee82e0.json
+Loading: 787ed58a-9d98-2c97-826e-8e98355c30d7.json vs 787ed590-9d98-2c97-80db-89baaa605049.json
+Loading: 5630cfcb-12bf-2860-87ee-b4e4a5bf0cb0.json vs 5630cfcd-12bf-2860-87f0-65937859709c.json
+Loading: 7272e189-a01b-20f6-8a2e-05b6c8395143.json vs 7272e190-a01b-20f6-8bde-769bcd548633.json
+Loading: 4acaebc8-6c10-2a2a-8525-fe9c4b7f4b25.json vs 4acaebcc-6c10-2a2a-858b-29c7e4fb410d.json
+Loading: 4138584f-a238-2435-8242-4c9b86032127.json vs 41385851-a238-2435-8056-b7d662a97c93.json
+Loading: 2e369549-e133-204c-91af-a19767a23bf2.json vs 2e36954b-e133-204c-92ad-1a66c6f63e1a.json
+Loading: 8f0f1437-55de-28ce-828e-dbf210a7f472.json vs 8f0f1447-55de-28ce-83c5-092887498eea.json
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([250, 518])
+src_batch shape: torch.Size([250])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [33, 29, 63, 31, 26, 37, 15, 16]
+First node features (first 10 dims):
+tensor([-1.1594e+00, -2.7580e-01, -2.5498e-01,  0.0000e+00,  0.0000e+00,
+         0.0000e+00,  1.9714e-02,  1.6296e-02, -2.8351e-02,  9.6703e-04],
+       device='mps:0')
+
+=== EMERGENCY DIAGNOSTIC ===
+Loading: 137a8156-1db5-2cc0-80ff-73ceef09cc7c.json vs 170725d2-9f1b-2d87-803b-c3210c0d30ff.json
+Raw node from dataset:
+  Dims 0-2 (centroid): tensor([ 0.2433, -0.0569, -0.5636])
+  Dims 3-5 (color): tensor([0., 0., 0.])
+  Dims 6-10 (CLIP start): tensor([ 0.0223,  0.0205, -0.0140, -0.0055,  0.0213])
+  CLIP norm: 1.0004
+✓ Dataset loads CLIP correctly
+❌ Problem: batching is duplicating the same scene!
+
+Graph 0, first node (first 10): tensor([-1.1594e+00, -2.7580e-01, -2.5498e-01,  0.0000e+00,  0.0000e+00,
+         0.0000e+00,  1.9714e-02,  1.6296e-02, -2.8351e-02,  9.6703e-04],
+       device='mps:0')
+Graph 1, first node (first 10): tensor([-0.4516,  2.0296,  0.0828,  0.0000,  0.0000,  0.0000,  0.0223,  0.0205,
+        -0.0140, -0.0055], device='mps:0')
+
+Centroid diff: 1.1170
+Color diff: 0.0000
+CLIP diff: 0.0064
+Total diff: 0.0128
+❌ CLIP embeddings are too similar!
+Projected edge attr: torch.Size([1250, 128])
+Projected edge attr: torch.Size([1250, 128])
+Projected edge attr: torch.Size([1576, 128])
+Projected edge attr: torch.Size([1576, 128])
+Projected edge attr: torch.Size([1160, 128])
+Projected edge attr: torch.Size([1160, 128])
+Projected edge attr: torch.Size([1452, 128])
+Projected edge attr: torch.Size([1452, 128])
+  Batch size: 8
+Loading: 8f0f144d-55de-28ce-8075-69a0a3b631b5.json vs 8f0f1455-55de-28ce-832d-d58f1c6c398d.json
+Loading: 2e36952b-e133-204c-911e-7644cb34e8b2.json vs 2e369549-e133-204c-91af-a19767a23bf2.json
+Loading: 4138583f-a238-2435-8304-d0ccada0d1c6.json vs 41385847-a238-2435-838b-61864922c518.json
+Loading: 87e6cf6f-9d1a-289f-8693-db8b73a4c4f4.json vs 87e6cf71-9d1a-289f-8510-bddeda7aaad8.json
+Loading: 41385827-a238-2435-8320-d8d3eb507f5e.json vs 4138583f-a238-2435-8304-d0ccada0d1c6.json
+Loading: 8f0f1467-55de-28ce-8331-b670a7274af9.json vs 9c27de4b-6184-2cda-8293-fa3e68da0041.json
+Loading: 5630cfd5-12bf-2860-857e-914ddf3d09f5.json vs 5630cfd8-12bf-2860-8773-e3dde9da2aff.json
+Loading: 170725d2-9f1b-2d87-803b-c3210c0d30ff.json vs 170725d4-9f1b-2d87-812a-b126916caa9f.json
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([160, 518])
+src_batch shape: torch.Size([160])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [13, 13, 23, 25, 29, 11, 21, 25]
+First node features (first 10 dims):
+tensor([-1.1000,  0.9296, -1.0662,  0.0000,  0.0000,  0.0000,  0.0021,  0.0061,
+        -0.0028, -0.0174], device='mps:0')
+
+=== EMERGENCY DIAGNOSTIC ===
+Loading: 137a8156-1db5-2cc0-80ff-73ceef09cc7c.json vs 170725d2-9f1b-2d87-803b-c3210c0d30ff.json
+Raw node from dataset:
+  Dims 0-2 (centroid): tensor([ 0.2433, -0.0569, -0.5636])
+  Dims 3-5 (color): tensor([0., 0., 0.])
+  Dims 6-10 (CLIP start): tensor([ 0.0223,  0.0205, -0.0140, -0.0055,  0.0213])
+  CLIP norm: 1.0004
+✓ Dataset loads CLIP correctly
+❌ Problem: batching is duplicating the same scene!
+
+Graph 0, first node (first 10): tensor([-1.1000,  0.9296, -1.0662,  0.0000,  0.0000,  0.0000,  0.0021,  0.0061,
+        -0.0028, -0.0174], device='mps:0')
+Graph 1, first node (first 10): tensor([-0.2075,  1.9838, -1.0781,  0.0000,  0.0000,  0.0000,  0.0229,  0.0138,
+        -0.0313, -0.0060], device='mps:0')
+
+Centroid diff: 0.6529
+Color diff: 0.0000
+CLIP diff: 0.0135
+Total diff: 0.0171
+Projected edge attr: torch.Size([800, 128])
+Projected edge attr: torch.Size([800, 128])
+Projected edge attr: torch.Size([998, 128])
+Projected edge attr: torch.Size([998, 128])
+Projected edge attr: torch.Size([1290, 128])
+Projected edge attr: torch.Size([1290, 128])
+Projected edge attr: torch.Size([1608, 128])
+Projected edge attr: torch.Size([1608, 128])
+  Batch size: 8
+Loading: 8e0f1c24-9e28-2339-840c-7e135addd26b.json vs 8e0f1c26-9e28-2339-8799-53c13e81d9ff.json
+Loading: 2451c03f-fae8-24f6-90ac-6ba38cab8c92.json vs 2451c041-fae8-24f6-9213-b8b6af8d86c1.json
+Loading: 9c27de4d-6184-2cda-80c6-174eddb07154.json vs 9c27de4f-6184-2cda-81d6-9c806607918e.json
+Loading: 74ef8470-9dce-2d66-8339-4b51b8406cef.json vs 74ef8474-9dce-2d66-82e5-309429937089.json
+Loading: 5630cfda-12bf-2860-8511-9baf30eec4ad.json vs 5630cfe9-12bf-2860-840b-7363340dd0c4.json
+Loading: 2e36955f-e133-204c-9372-e883fa503f74.json vs 41385827-a238-2435-8320-d8d3eb507f5e.json
+Loading: 5630cfe9-12bf-2860-840b-7363340dd0c4.json vs 7272e161-a01b-20f6-8b5a-0b97efeb6545.json
+Loading: 8f0f1455-55de-28ce-832d-d58f1c6c398d.json vs 8f0f145e-55de-28ce-8203-45b4e2bb36d9.json
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([180, 518])
+src_batch shape: torch.Size([180])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [42, 12, 26, 40, 14, 15, 19, 12]
+First node features (first 10 dims):
+tensor([ 0.2869,  0.3078,  0.2603,  0.0000,  0.0000,  0.0000,  0.0197,  0.0163,
+        -0.0284,  0.0010], device='mps:0')
+
+=== EMERGENCY DIAGNOSTIC ===
+Loading: 137a8156-1db5-2cc0-80ff-73ceef09cc7c.json vs 170725d2-9f1b-2d87-803b-c3210c0d30ff.json
+Raw node from dataset:
+  Dims 0-2 (centroid): tensor([ 0.2433, -0.0569, -0.5636])
+  Dims 3-5 (color): tensor([0., 0., 0.])
+  Dims 6-10 (CLIP start): tensor([ 0.0223,  0.0205, -0.0140, -0.0055,  0.0213])
+  CLIP norm: 1.0004
+✓ Dataset loads CLIP correctly
+❌ Problem: batching is duplicating the same scene!
+
+Graph 0, first node (first 10): tensor([ 0.2869,  0.3078,  0.2603,  0.0000,  0.0000,  0.0000,  0.0197,  0.0163,
+        -0.0284,  0.0010], device='mps:0')
+Graph 1, first node (first 10): tensor([ 0.9987,  1.9411, -0.0573,  0.0000,  0.0000,  0.0000,  0.0127,  0.0363,
+        -0.0099, -0.0106], device='mps:0')
+
+Centroid diff: 0.8875
+Color diff: 0.0000
+CLIP diff: 0.0124
+Total diff: 0.0174
+Projected edge attr: torch.Size([900, 128])
+Projected edge attr: torch.Size([900, 128])
+Projected edge attr: torch.Size([1100, 128])
+Projected edge attr: torch.Size([1100, 128])
+Projected edge attr: torch.Size([1235, 128])
+Projected edge attr: torch.Size([1235, 128])
+Projected edge attr: torch.Size([1542, 128])
+Projected edge attr: torch.Size([1542, 128])
+  Batch size: 8
+
+[Epoch 0] Step 10
+  Total Loss       = 22.6722
+  InfoNCE          = 2.8107
+  Variance Loss    = 0.7944
+  Covariance Loss  = 0.0005
+  ---
+  Var(src, ref)    = 0.0450, 0.0474
+  STD(src, ref)    = 0.2034, 0.2071
+  Norm(src, ref)   = 6.6410, 6.7771
+  Cov(src, ref)    = 0.1133, 0.1154
+  Cosine Sim       = 0.7633
+  Grad Norm        = 34.1273
+  LR               = 0.000092
+  ---
+  🎯 EMBEDDING QUALITY (Key Metric):
+    Positive pairs: 0.763 (want > 0.7)
+    Negative pairs: 0.743 (want < 0.3)
+    Separation:     0.020 (want > 0.4)
+    ❌ VERY POOR - NOT LEARNING!
+       → STOP TRAINING - Fix hyperparameters!
+       → batch_size >= 8, lr = 1e-3, lambda_var = 50
+  ⚠️  Low variance → Severe collapse!
+Loading: 170725d4-9f1b-2d87-812a-b126916caa9f.json vs 19f1a892-a988-2bf8-8c91-0705cf396888.json
+Loading: 5630cfcd-12bf-2860-87f0-65937859709c.json vs 5630cfd5-12bf-2860-857e-914ddf3d09f5.json
+Loading: 7272e198-a01b-20f6-8a8b-6688d9ac044e.json vs 7272e1a0-a01b-20f6-8b34-1fdc43d1f911.json
+Loading: 7272e196-a01b-20f6-880f-dbca4564e4a5.json vs 7272e198-a01b-20f6-8a8b-6688d9ac044e.json
+Loading: 137a8156-1db5-2cc0-80ff-73ceef09cc7c.json vs 170725d2-9f1b-2d87-803b-c3210c0d30ff.json
+Loading: 8e0f1c2f-9e28-2339-85ae-05fc50d1a3a7.json vs 8e0f1c37-9e28-2339-85b0-6a08741718f7.json
+Loading: 75c25973-9ca2-2844-96f4-90cd531364ac.json vs 75c25977-9ca2-2844-97ba-92479480fc00.json
+Loading: 4238491e-60a7-271e-9fe8-eb04b4209883.json vs 4acaebba-6c10-2a2a-8650-34c2f160db99.json
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([250, 518])
+src_batch shape: torch.Size([250])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [50, 34, 19, 28, 21, 35, 25, 38]
+First node features (first 10 dims):
+tensor([-2.2694,  0.4481, -0.4370,  0.0000,  0.0000,  0.0000,  0.0223,  0.0205,
+        -0.0140, -0.0055], device='mps:0')
+
+=== EMERGENCY DIAGNOSTIC ===
+Loading: 137a8156-1db5-2cc0-80ff-73ceef09cc7c.json vs 170725d2-9f1b-2d87-803b-c3210c0d30ff.json
+Raw node from dataset:
+  Dims 0-2 (centroid): tensor([ 0.2433, -0.0569, -0.5636])
+  Dims 3-5 (color): tensor([0., 0., 0.])
+  Dims 6-10 (CLIP start): tensor([ 0.0223,  0.0205, -0.0140, -0.0055,  0.0213])
+  CLIP norm: 1.0004
+✓ Dataset loads CLIP correctly
+❌ Problem: batching is duplicating the same scene!
+
+Graph 0, first node (first 10): tensor([-2.2694,  0.4481, -0.4370,  0.0000,  0.0000,  0.0000,  0.0223,  0.0205,
+        -0.0140, -0.0055], device='mps:0')
+Graph 1, first node (first 10): tensor([-2.0376,  2.2971, -0.2062,  0.0000,  0.0000,  0.0000,  0.0229,  0.0138,
+        -0.0313, -0.0060], device='mps:0')
+
+Centroid diff: 0.7705
+Color diff: 0.0000
+CLIP diff: 0.0072
+Total diff: 0.0116
+❌ CLIP embeddings are too similar!
+Projected edge attr: torch.Size([1250, 128])
+Projected edge attr: torch.Size([1250, 128])
+Projected edge attr: torch.Size([1572, 128])
+Projected edge attr: torch.Size([1572, 128])
+Projected edge attr: torch.Size([1130, 128])
+Projected edge attr: torch.Size([1130, 128])
+Projected edge attr: torch.Size([1415, 128])
+Projected edge attr: torch.Size([1415, 128])
+  Batch size: 8
+
+======================================================================
+Epoch 0 Summary
+======================================================================
+  Avg Total Loss = 22.6927
+  Avg InfoNCE    = 2.8451
+  Avg Var Loss   = 0.7939
+  Avg Cov Loss   = 0.0005
+  Final SRC: mean=-0.0380, std=0.4232
+  Final REF: mean=-0.0472, std=0.4366
+  ---
+  📊 Final Separation: 0.029
+======================================================================
+
+Loading: 7272e190-a01b-20f6-8bde-769bcd548633.json vs 7272e196-a01b-20f6-880f-dbca4564e4a5.json
+Loading: 8f0f1461-55de-28ce-821c-d2eeaa217cc1.json vs 8f0f1463-55de-28ce-80e5-d3294f7795ba.json
+Loading: 75c25977-9ca2-2844-97ba-92479480fc00.json vs 75c2598b-9ca2-2844-967d-a16c92acf4ea.json
+Loading: 75c259a5-9ca2-2844-9441-d72912c1e696.json vs 75c259b9-9ca2-2844-9473-43d990560f90.json
+Loading: 8e0f1c2f-9e28-2339-85ae-05fc50d1a3a7.json vs 8e0f1c37-9e28-2339-85b0-6a08741718f7.json
+Loading: 170725d4-9f1b-2d87-812a-b126916caa9f.json vs 19f1a892-a988-2bf8-8c91-0705cf396888.json
+Loading: 8e0f1c42-9e28-2339-861e-2d29caae3f9a.json vs 8e0f1c53-9e28-2339-8588-2b24d9e9f3e8.json
+Loading: 5630cfcb-12bf-2860-87ee-b4e4a5bf0cb0.json vs 5630cfcd-12bf-2860-87f0-65937859709c.json
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([276, 518])
+src_batch shape: torch.Size([276])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [33, 10, 33, 28, 35, 50, 24, 63]
+First node features (first 10 dims):
+tensor([ 2.7863,  2.9439, -0.6505,  0.0000,  0.0000,  0.0000,  0.0229,  0.0138,
+        -0.0313, -0.0060], device='mps:0')
+
+=== EMERGENCY DIAGNOSTIC ===
+Loading: 137a8156-1db5-2cc0-80ff-73ceef09cc7c.json vs 170725d2-9f1b-2d87-803b-c3210c0d30ff.json
+Raw node from dataset:
+  Dims 0-2 (centroid): tensor([ 0.2433, -0.0569, -0.5636])
+  Dims 3-5 (color): tensor([0., 0., 0.])
+  Dims 6-10 (CLIP start): tensor([ 0.0223,  0.0205, -0.0140, -0.0055,  0.0213])
+  CLIP norm: 1.0004
+✓ Dataset loads CLIP correctly
+❌ Problem: batching is duplicating the same scene!
+
+Graph 0, first node (first 10): tensor([ 2.7863,  2.9439, -0.6505,  0.0000,  0.0000,  0.0000,  0.0229,  0.0138,
+        -0.0313, -0.0060], device='mps:0')
+Graph 1, first node (first 10): tensor([-0.2950,  1.4533, -1.4885,  0.0000,  0.0000,  0.0000, -0.0024,  0.0087,
+        -0.0139, -0.0222], device='mps:0')
+
+Centroid diff: 1.8033
+Color diff: 0.0000
+CLIP diff: 0.0141
+Total diff: 0.0243
+Projected edge attr: torch.Size([1380, 128])
+Projected edge attr: torch.Size([1380, 128])
+Projected edge attr: torch.Size([1750, 128])
+Projected edge attr: torch.Size([1750, 128])
+Projected edge attr: torch.Size([1225, 128])
+Projected edge attr: torch.Size([1225, 128])
+Projected edge attr: torch.Size([1545, 128])
+Projected edge attr: torch.Size([1545, 128])
+  Batch size: 8
+Loading: 41385827-a238-2435-8320-d8d3eb507f5e.json vs 4138583f-a238-2435-8304-d0ccada0d1c6.json
+Loading: 8f0f144b-55de-28ce-8053-2828b87a0cc9.json vs 8f0f144d-55de-28ce-8075-69a0a3b631b5.json
+Loading: 8e0f1c24-9e28-2339-840c-7e135addd26b.json vs 8e0f1c26-9e28-2339-8799-53c13e81d9ff.json
+Loading: 787ed590-9d98-2c97-80db-89baaa605049.json vs 87e6cf6b-9d1a-289f-866c-b90904d9487d.json
+Loading: 41385847-a238-2435-838b-61864922c518.json vs 4138584b-a238-2435-8128-a939fb07c1c8.json
+Loading: 8f0f145e-55de-28ce-8203-45b4e2bb36d9.json vs 8f0f1461-55de-28ce-821c-d2eeaa217cc1.json
+Loading: 9c27de56-6184-2cda-8196-591957b6387d.json vs b05fdd58-fca0-2d4f-8bd7-e80abe1ddb4c.json
+Loading: b05fdd92-fca0-2d4f-89dd-723db1a8d78c.json vs b05fdda6-fca0-2d4f-8973-9f8a5cdac3ad.json
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([217, 518])
+src_batch shape: torch.Size([217])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [29, 12, 42, 18, 48, 9, 36, 23]
+First node features (first 10 dims):
+tensor([-0.2518,  2.2307, -0.4777,  0.0000,  0.0000,  0.0000,  0.0229,  0.0138,
+        -0.0313, -0.0060], device='mps:0')
+
+=== EMERGENCY DIAGNOSTIC ===
+Loading: 137a8156-1db5-2cc0-80ff-73ceef09cc7c.json vs 170725d2-9f1b-2d87-803b-c3210c0d30ff.json
+Raw node from dataset:
+  Dims 0-2 (centroid): tensor([ 0.2433, -0.0569, -0.5636])
+  Dims 3-5 (color): tensor([0., 0., 0.])
+  Dims 6-10 (CLIP start): tensor([ 0.0223,  0.0205, -0.0140, -0.0055,  0.0213])
+  CLIP norm: 1.0004
+✓ Dataset loads CLIP correctly
+❌ Problem: batching is duplicating the same scene!
+
+Graph 0, first node (first 10): tensor([-0.2518,  2.2307, -0.4777,  0.0000,  0.0000,  0.0000,  0.0229,  0.0138,
+        -0.0313, -0.0060], device='mps:0')
+Graph 1, first node (first 10): tensor([-0.1944,  0.7913, -0.9469,  0.0000,  0.0000,  0.0000,  0.0199,  0.0042,
+         0.0053, -0.0182], device='mps:0')
+
+Centroid diff: 0.6553
+Color diff: 0.0000
+CLIP diff: 0.0124
+Total diff: 0.0160
+Projected edge attr: torch.Size([1085, 128])
+Projected edge attr: torch.Size([1085, 128])
+Projected edge attr: torch.Size([1341, 128])
+Projected edge attr: torch.Size([1341, 128])
+Projected edge attr: torch.Size([1025, 128])
+Projected edge attr: torch.Size([1025, 128])
+Projected edge attr: torch.Size([1270, 128])
+Projected edge attr: torch.Size([1270, 128])
+  Batch size: 8
+  💾 Saved best model (loss=20.7439)
+Loading: 5630cfcd-12bf-2860-87f0-65937859709c.json vs 5630cfd5-12bf-2860-857e-914ddf3d09f5.json
+Loading: b05fdd66-fca0-2d4f-88bb-210da4439475.json vs b05fdd68-fca0-2d4f-895a-2f40f6b4aca9.json
+Loading: 41385867-a238-2435-8152-dc84ef14eae1.json vs 42384914-60a7-271e-9c5f-f0e1eee114ae.json
+Loading: 2e36952b-e133-204c-911e-7644cb34e8b2.json vs 2e369549-e133-204c-91af-a19767a23bf2.json
+Loading: 4acaebc0-6c10-2a2a-852e-0226d6539299.json vs 4acaebc8-6c10-2a2a-8525-fe9c4b7f4b25.json
+Loading: 8e0f1c39-9e28-2339-8432-ca5ca8653c58.json vs 8e0f1c42-9e28-2339-861e-2d29caae3f9a.json
+Loading: 2e36954f-e133-204c-9320-34d52370eb4d.json vs 2e36955d-e133-204c-90da-122ae14d42a3.json
+Loading: 7272e196-a01b-20f6-880f-dbca4564e4a5.json vs 7272e198-a01b-20f6-8a8b-6688d9ac044e.json
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([189, 518])
+src_batch shape: torch.Size([189])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [34, 26, 21, 13, 28, 21, 18, 28]
+First node features (first 10 dims):
+tensor([-2.0376,  2.2971, -0.2062,  0.0000,  0.0000,  0.0000,  0.0229,  0.0138,
+        -0.0313, -0.0060], device='mps:0')
+
+=== EMERGENCY DIAGNOSTIC ===
+Loading: 137a8156-1db5-2cc0-80ff-73ceef09cc7c.json vs 170725d2-9f1b-2d87-803b-c3210c0d30ff.json
+Raw node from dataset:
+  Dims 0-2 (centroid): tensor([ 0.2433, -0.0569, -0.5636])
+  Dims 3-5 (color): tensor([0., 0., 0.])
+  Dims 6-10 (CLIP start): tensor([ 0.0223,  0.0205, -0.0140, -0.0055,  0.0213])
+  CLIP norm: 1.0004
+✓ Dataset loads CLIP correctly
+❌ Problem: batching is duplicating the same scene!
+
+Graph 0, first node (first 10): tensor([-2.0376,  2.2971, -0.2062,  0.0000,  0.0000,  0.0000,  0.0229,  0.0138,
+        -0.0313, -0.0060], device='mps:0')
+Graph 1, first node (first 10): tensor([ 1.0275,  2.6878,  0.2074,  0.0000,  0.0000,  0.0000,  0.0223,  0.0205,
+        -0.0140, -0.0055], device='mps:0')
+
+Centroid diff: 1.2898
+Color diff: 0.0000
+CLIP diff: 0.0072
+Total diff: 0.0146
+❌ CLIP embeddings are too similar!
+Projected edge attr: torch.Size([945, 128])
+Projected edge attr: torch.Size([945, 128])
+Projected edge attr: torch.Size([1172, 128])
+Projected edge attr: torch.Size([1172, 128])
+Projected edge attr: torch.Size([970, 128])
+Projected edge attr: torch.Size([970, 128])
+Projected edge attr: torch.Size([1200, 128])
+Projected edge attr: torch.Size([1200, 128])
+  Batch size: 8
+Loading: 2451c057-fae8-24f6-92b8-df89e0429f6e.json vs 2e369523-e133-204c-91f9-6f3deaa8e11e.json
+Loading: 4acaebba-6c10-2a2a-8650-34c2f160db99.json vs 4acaebbe-6c10-2a2a-866a-f0e58185caf7.json
+Loading: 2e36954b-e133-204c-92ad-1a66c6f63e1a.json vs 2e36954d-e133-204c-92aa-5cf8c2f8b46f.json
+Loading: 4acaebcc-6c10-2a2a-858b-29c7e4fb410d.json vs 50e7c0ad-0730-2a5f-8635-252404ee82e0.json
+Loading: 2451c053-fae8-24f6-91f0-6bebca1fe741.json vs 2451c057-fae8-24f6-92b8-df89e0429f6e.json
+Loading: 8e0f1c37-9e28-2339-85b0-6a08741718f7.json vs 8e0f1c39-9e28-2339-8432-ca5ca8653c58.json
+Loading: 2451c041-fae8-24f6-9213-b8b6af8d86c1.json vs 2451c046-fae8-24f6-91fb-c25185c51c7b.json
+Loading: 87e6cf79-9d1a-289f-845c-abe4deb8642f.json vs 87e6cf7b-9d1a-289f-8692-57e5757dac99.json
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([172, 518])
+src_batch shape: torch.Size([172])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [21, 20, 19, 33, 20, 28, 14, 17]
+First node features (first 10 dims):
+tensor([-1.6907,  0.1598,  0.4531,  0.0000,  0.0000,  0.0000,  0.0223,  0.0205,
+        -0.0140, -0.0055], device='mps:0')
+
+=== EMERGENCY DIAGNOSTIC ===
+Loading: 137a8156-1db5-2cc0-80ff-73ceef09cc7c.json vs 170725d2-9f1b-2d87-803b-c3210c0d30ff.json
+Raw node from dataset:
+  Dims 0-2 (centroid): tensor([ 0.2433, -0.0569, -0.5636])
+  Dims 3-5 (color): tensor([0., 0., 0.])
+  Dims 6-10 (CLIP start): tensor([ 0.0223,  0.0205, -0.0140, -0.0055,  0.0213])
+  CLIP norm: 1.0004
+✓ Dataset loads CLIP correctly
+❌ Problem: batching is duplicating the same scene!
+
+Graph 0, first node (first 10): tensor([-1.6907,  0.1598,  0.4531,  0.0000,  0.0000,  0.0000,  0.0223,  0.0205,
+        -0.0140, -0.0055], device='mps:0')
+Graph 1, first node (first 10): tensor([ 0.8901,  1.1413, -1.2162,  0.0000,  0.0000,  0.0000,  0.0229,  0.0138,
+        -0.0313, -0.0060], device='mps:0')
+
+Centroid diff: 1.7439
+Color diff: 0.0000
+CLIP diff: 0.0072
+Total diff: 0.0172
+❌ CLIP embeddings are too similar!
+Projected edge attr: torch.Size([860, 128])
+Projected edge attr: torch.Size([860, 128])
+Projected edge attr: torch.Size([1092, 128])
+Projected edge attr: torch.Size([1092, 128])
+Projected edge attr: torch.Size([905, 128])
+Projected edge attr: torch.Size([905, 128])
+Projected edge attr: torch.Size([1118, 128])
+Projected edge attr: torch.Size([1118, 128])
+  Batch size: 8
+Loading: 4138583f-a238-2435-8304-d0ccada0d1c6.json vs 41385847-a238-2435-838b-61864922c518.json
+Loading: 8f0f1447-55de-28ce-83c5-092887498eea.json vs 8f0f144b-55de-28ce-8053-2828b87a0cc9.json
+Loading: 4238491e-60a7-271e-9fe8-eb04b4209883.json vs 4acaebba-6c10-2a2a-8650-34c2f160db99.json
+Loading: 9c27de4d-6184-2cda-80c6-174eddb07154.json vs 9c27de4f-6184-2cda-81d6-9c806607918e.json
+Loading: 7272e161-a01b-20f6-8b5a-0b97efeb6545.json vs 7272e182-a01b-20f6-89b8-3bdec0091c89.json
+Loading: 75c25999-9ca2-2844-9761-7642c9829210.json vs 75c2599b-9ca2-2844-9683-a503346d840a.json
+Loading: 74ef8470-9dce-2d66-8339-4b51b8406cef.json vs 74ef8474-9dce-2d66-82e5-309429937089.json
+Loading: 9c27de4f-6184-2cda-81d6-9c806607918e.json vs 9c27de56-6184-2cda-8196-591957b6387d.json
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([253, 518])
+src_batch shape: torch.Size([253])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [23, 9, 38, 26, 38, 26, 40, 53]
+First node features (first 10 dims):
+tensor([ 0.0855,  0.4505,  0.1704,  0.0000,  0.0000,  0.0000,  0.0223,  0.0205,
+        -0.0140, -0.0055], device='mps:0')
+
+=== EMERGENCY DIAGNOSTIC ===
+Loading: 137a8156-1db5-2cc0-80ff-73ceef09cc7c.json vs 170725d2-9f1b-2d87-803b-c3210c0d30ff.json
+Raw node from dataset:
+  Dims 0-2 (centroid): tensor([ 0.2433, -0.0569, -0.5636])
+  Dims 3-5 (color): tensor([0., 0., 0.])
+  Dims 6-10 (CLIP start): tensor([ 0.0223,  0.0205, -0.0140, -0.0055,  0.0213])
+  CLIP norm: 1.0004
+✓ Dataset loads CLIP correctly
+❌ Problem: batching is duplicating the same scene!
+
+Graph 0, first node (first 10): tensor([ 0.0855,  0.4505,  0.1704,  0.0000,  0.0000,  0.0000,  0.0223,  0.0205,
+        -0.0140, -0.0055], device='mps:0')
+Graph 1, first node (first 10): tensor([-0.0262,  0.1350, -0.9751,  0.0000,  0.0000,  0.0000, -0.0020, -0.0043,
+        -0.0339, -0.0102], device='mps:0')
+
+Centroid diff: 0.5242
+Color diff: 0.0000
+CLIP diff: 0.0106
+Total diff: 0.0136
+Projected edge attr: torch.Size([1265, 128])
+Projected edge attr: torch.Size([1265, 128])
+Projected edge attr: torch.Size([1564, 128])
+Projected edge attr: torch.Size([1564, 128])
+Projected edge attr: torch.Size([1270, 128])
+Projected edge attr: torch.Size([1270, 128])
+Projected edge attr: torch.Size([1623, 128])
+Projected edge attr: torch.Size([1623, 128])
+  Batch size: 8
+  💾 Saved best model (loss=20.4480)
+Loading: 2451c046-fae8-24f6-91fb-c25185c51c7b.json vs 2451c053-fae8-24f6-91f0-6bebca1fe741.json
+Loading: 2e369525-e133-204c-93ab-2b23ce5ef16e.json vs 2e369527-e133-204c-91cc-bb874b8fd4ae.json
+Loading: 19f1a897-a988-2bf8-8f8d-f3b64da81c2a.json vs 2451c03f-fae8-24f6-90ac-6ba38cab8c92.json
+Loading: 8f0f1467-55de-28ce-8331-b670a7274af9.json vs 9c27de4b-6184-2cda-8293-fa3e68da0041.json
+Loading: 75c2599b-9ca2-2844-9683-a503346d840a.json vs 75c259a5-9ca2-2844-9441-d72912c1e696.json
+Loading: 137a8156-1db5-2cc0-80ff-73ceef09cc7c.json vs 170725d2-9f1b-2d87-803b-c3210c0d30ff.json
+Loading: 7272e189-a01b-20f6-8a2e-05b6c8395143.json vs 7272e190-a01b-20f6-8bde-769bcd548633.json
+Loading: 5630cfe9-12bf-2860-840b-7363340dd0c4.json vs 7272e161-a01b-20f6-8b5a-0b97efeb6545.json
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([160, 518])
+src_batch shape: torch.Size([160])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [15, 12, 30, 11, 21, 21, 31, 19]
+First node features (first 10 dims):
+tensor([ 0.5374,  1.4026, -1.3642,  0.0000,  0.0000,  0.0000,  0.0091,  0.0114,
+         0.0094, -0.0141], device='mps:0')
+
+=== EMERGENCY DIAGNOSTIC ===
+Loading: 137a8156-1db5-2cc0-80ff-73ceef09cc7c.json vs 170725d2-9f1b-2d87-803b-c3210c0d30ff.json
+Raw node from dataset:
+  Dims 0-2 (centroid): tensor([ 0.2433, -0.0569, -0.5636])
+  Dims 3-5 (color): tensor([0., 0., 0.])
+  Dims 6-10 (CLIP start): tensor([ 0.0223,  0.0205, -0.0140, -0.0055,  0.0213])
+  CLIP norm: 1.0004
+✓ Dataset loads CLIP correctly
+❌ Problem: batching is duplicating the same scene!
+
+Graph 0, first node (first 10): tensor([ 0.5374,  1.4026, -1.3642,  0.0000,  0.0000,  0.0000,  0.0091,  0.0114,
+         0.0094, -0.0141], device='mps:0')
+Graph 1, first node (first 10): tensor([-1.7218,  0.7011, -1.1678,  0.0000,  0.0000,  0.0000,  0.0199,  0.0042,
+         0.0053, -0.0182], device='mps:0')
+
+Centroid diff: 1.0524
+Color diff: 0.0000
+CLIP diff: 0.0093
+Total diff: 0.0153
+❌ CLIP embeddings are too similar!
+Projected edge attr: torch.Size([800, 128])
+Projected edge attr: torch.Size([800, 128])
+Projected edge attr: torch.Size([998, 128])
+Projected edge attr: torch.Size([998, 128])
+Projected edge attr: torch.Size([990, 128])
+Projected edge attr: torch.Size([990, 128])
+Projected edge attr: torch.Size([1214, 128])
+Projected edge attr: torch.Size([1214, 128])
+  Batch size: 8
+Loading: 2451c03f-fae8-24f6-90ac-6ba38cab8c92.json vs 2451c041-fae8-24f6-9213-b8b6af8d86c1.json
+Loading: 87e6cf71-9d1a-289f-8510-bddeda7aaad8.json vs 87e6cf79-9d1a-289f-845c-abe4deb8642f.json
+Loading: 75c259b9-9ca2-2844-9473-43d990560f90.json vs 787ed580-9d98-2c97-8167-6d3b445da2c0.json
+Loading: 87e6cf6d-9d1a-289f-879a-543d3fa7ba74.json vs 87e6cf6f-9d1a-289f-8693-db8b73a4c4f4.json
+Loading: b05fdd58-fca0-2d4f-8bd7-e80abe1ddb4c.json vs b05fdd5a-fca0-2d4f-89fd-d54bd26a115b.json
+Loading: 2e369523-e133-204c-91f9-6f3deaa8e11e.json vs 2e369525-e133-204c-93ab-2b23ce5ef16e.json
+Loading: 8e0f1c53-9e28-2339-8588-2b24d9e9f3e8.json vs 8f0f142a-55de-28ce-81f2-5d5c683204b8.json
+Loading: 4acaebbe-6c10-2a2a-866a-f0e58185caf7.json vs 4acaebc0-6c10-2a2a-852e-0226d6539299.json
+
+=== BATCH INSPECTION ===
+Node features shape: torch.Size([200, 518])
+src_batch shape: torch.Size([200])
+Unique graphs in batch: tensor([0, 1, 2, 3, 4, 5, 6, 7], device='mps:0')
+Nodes per graph: [12, 40, 30, 20, 17, 14, 50, 17]
+First node features (first 10 dims):
+tensor([ 0.9987,  1.9411, -0.0573,  0.0000,  0.0000,  0.0000,  0.0127,  0.0363,
+        -0.0099, -0.0106], device='mps:0')
+
+=== EMERGENCY DIAGNOSTIC ===
+Loading: 137a8156-1db5-2cc0-80ff-73ceef09cc7c.json vs 170725d2-9f1b-2d87-803b-c3210c0d30ff.json
+Raw node from dataset:
+  Dims 0-2 (centroid): tensor([ 0.2433, -0.0569, -0.5636])
+  Dims 3-5 (color): tensor([0., 0., 0.])
+  Dims 6-10 (CLIP start): tensor([ 0.0223,  0.0205, -0.0140, -0.0055,  0.0213])
+  CLIP norm: 1.0004
+✓ Dataset loads CLIP correctly
+❌ Problem: batching is duplicating the same scene!
+
+Graph 0, first node (first 10): tensor([ 0.9987,  1.9411, -0.0573,  0.0000,  0.0000,  0.0000,  0.0127,  0.0363,
+        -0.0099, -0.0106], device='mps:0')
+Graph 1, first node (first 10): tensor([ 1.5695,  0.2046, -0.3756,  0.0000,  0.0000,  0.0000,  0.0229,  0.0138,
+        -0.0313, -0.0060], device='mps:0')
+
+Centroid diff: 0.8752
+Color diff: 0.0000
+CLIP diff: 0.0110
+Total diff: 0.0160
+Projected edge attr: torch.Size([1000, 128])
+Projected edge attr: torch.Size([1000, 128])
+Projected edge attr: torch.Size([1252, 128])
+Projected edge attr: torch.Size([1252, 128])
+Projected edge attr: torch.Size([900, 128])
+Projected edge attr: torch.Size([900, 128])
+Projected edge attr: torch.Size([1128, 128])
+Projected edge attr: torch.Size([1128, 128])
