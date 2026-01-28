@@ -1,0 +1,27 @@
+{
+  "total_graphs": 3456,
+  "scanscribe_text_graphs": 3356,
+  "3dssg_3d_graphs": 100,
+  "overlapping_references": 10,
+  "overlapping_reference_ids": [
+    "2e36954b-e133-204c-92ad-1a66c6f63e1a",
+    "41385827-a238-2435-8320-d8d3eb507f5e",
+    "41385847-a238-2435-838b-61864922c518",
+    "4138584b-a238-2435-8128-a939fb07c1c8",
+    "4acaebba-6c10-2a2a-8650-34c2f160db99",
+    "4acaebc0-6c10-2a2a-852e-0226d6539299",
+    "4acaebcc-6c10-2a2a-858b-29c7e4fb410d",
+    "50e7c0ad-0730-2a5f-8635-252404ee82e0",
+    "5630cfc9-12bf-2860-84ed-5bb189f0e94e",
+    "5630cfcb-12bf-2860-87ee-b4e4a5bf0cb0"
+  ],
+  "scanscribe_unique_references": 153,
+  "3dssg_unique_references": 90,
+  "format": {
+    "node_features": "centroid(3) + color(3) + CLIP(512) = 518 dims",
+    "clip_model": "ViT-B/32",
+    "scanscribe_geometry": "dummy [0,0,0] centroids (text has no spatial info)",
+    "3dssg_geometry": "real centroids + colors from 3D scans",
+    "id_mapping": "ScanScribe scan IDs mapped to 3RScan reference IDs"
+  }
+}
