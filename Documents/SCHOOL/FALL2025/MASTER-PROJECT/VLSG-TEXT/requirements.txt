@@ -1,0 +1,33 @@
+#FOR SHIRLEY
+
+# PyTorch (choose ONE based on your system)
+# For CUDA 11.8 (NVIDIA GPU):
+torch>=2.0.0
+torchvision>=0.15.0
+
+# For CPU only, use:
+# torch>=2.0.0+cpu
+# torchvision>=0.15.0+cpu
+# -f https://download.pytorch.org/whl/torch_stable.html
+
+# Core dependencies
+numpy>=1.24.0
+scipy>=1.10.0
+
+# Graph neural networks
+torch-geometric>=2.3.0
+torch-scatter>=2.1.0
+torch-sparse>=0.6.0
+
+# CLIP for embeddings
+git+https://github.com/openai/CLIP.git
+
+# File processing
+plyfile>=0.7.4
+
+# Utilities
+tqdm>=4.65.0
+
+# Optional but recommended
+matplotlib>=3.7.0
+pandas>=2.0.0

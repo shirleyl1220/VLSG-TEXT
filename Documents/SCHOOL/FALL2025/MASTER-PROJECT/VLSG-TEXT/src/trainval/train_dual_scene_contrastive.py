@@ -310,6 +310,21 @@ def train(args):
     print(f"Total parameters: {total_params:,}")
     print(f"Trainable parameters: {trainable_params:,}")
 
+    checkpoint_path = f"{args.save_dir}/model_best.pth"
+    if os.path.exists(checkpoint_path):
+        print(f"\n{'='*70}")
+        print("Found existing checkpoint!")
+        print(f"{'='*70}")
+        checkpoint = torch.load(checkpoint_path, map_location=device)
+        model.load_state_dict(checkpoint['model'])
+        print(f"Loaded model from epoch {checkpoint['epoch']} (loss={checkpoint['loss']:.4f})")
+        
+        response = input("Resume from this checkpoint? [y/N]: ")
+        if response.lower() == 'y':
+            print("Resuming training from checkpoint...")
+        else:
+            print("Starting fresh training...")
+
     # ===== Loss & Optimizer =====
     print("\n" + "="*70)
     print("Setting up Training")
