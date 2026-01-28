@@ -306,8 +306,13 @@ def evaluate_scanscribe(model, scanscribe_graphs, db_scene_paths,
                     score = match_scores[idx]
                     
                     is_correct = "✓ CORRECT" if pred_group == true_group else "✗"
-                    print(f"  Rank {rank+1}: {pred_scene_id:40s} (room: {pred_group:40s}) score={score:.4f} {is_correct}")
-                
+                    pred_group_str = pred_group if pred_group is not None else "UNKNOWN"
+
+                    print(
+                        f"  Rank {rank+1}: {pred_scene_id:40s} "
+                        f"(room: {pred_group_str:40s}) "
+                        f"score={score:.4f} {is_correct}"
+                    )                
                 # Check top-k results for this query
                 print(f"\nResults for this query:")
                 for k in [1, 3, 5]:
