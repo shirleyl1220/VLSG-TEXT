@@ -32,7 +32,7 @@ class EdgeGATLayer(nn.Module):
 
         if edge_attr is not None:
             edge_attr = self.proj_edge(edge_attr)
-            print("Projected edge attr:", edge_attr.shape)
+            # print("Projected edge attr:", edge_attr.shape)
 
         out = self.gat(x, edge_index, edge_attr)
         # print("GAT output:", out.shape)
