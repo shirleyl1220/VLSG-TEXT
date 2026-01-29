@@ -21,7 +21,6 @@ sys.path.append('.')
 from src.models.sgaligner.src.aligner.dual_scene_aligner import DualSceneAligner
 from src.models.sgaligner.src.aligner.dual_scene_aligner_wrapper import load_model_with_matching
 
-
 torch.cuda.empty_cache()
 device = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
 print(f"Using device: {device}")
@@ -60,7 +59,7 @@ def scanscribe_to_your_format(scanscribe_graph, scene_id):
             "centroid": [0.0, 0.0, 0.0],  # No spatial info from text
             "mean_color": [128.0, 128.0, 128.0],  # Default gray
             "radius": 0.4,
-            "clip_text_emb": clip_emb[0].cpu().numpy().tolist()
+            "clip_text_emb": clip_emb[0].detach().cpu().tolist()
         }
     
     # Convert edges
@@ -92,14 +91,27 @@ def scene_graph_to_batch(query_data, db_data, device):
     Works for both ScanScribe queries and 3RScan database scenes.
     """
     def build_features(scene_data):
-        nodes = scene_data['nodes']
-        node_ids = list(nodes.keys())
-        id2idx = {str(nid): i for i, nid in enumerate(node_ids)}
+        # Get nodes - handle both dict and list
+        nodes_raw = scene_data.get('nodes')
+        
+        if nodes_raw is None:
+            raise KeyError(f"No 'nodes' key found. Keys: {scene_data.keys()}")
+        
+        if isinstance(nodes_raw, dict):
+            # Dict format: {node_id: {label, centroid, ...}}
+            node_ids = list(nodes_raw.keys())
+            nodes = [nodes_raw[nid] for nid in node_ids]
+            id2idx = {str(nid): i for i, nid in enumerate(node_ids)}
+        else:
+            # List format: [{id, label, ...}, ...]
+            nodes = nodes_raw
+            node_ids = [str(n['id']) for n in nodes]
+            id2idx = {str(nid): i for i, nid in enumerate(node_ids)}
         
         # Node features (518 dims)
         node_feats = []
-        for nid in node_ids:
-            n = nodes[nid]
+        for i in range(len(nodes)):
+            n = nodes[i]
             centroid = np.array(n['centroid'], dtype=np.float32)
             color = np.array(n['mean_color'], dtype=np.float32) / 255.0
             clip_vec = np.array(n.get('clip_text_emb', np.zeros(512)), dtype=np.float32)
@@ -110,35 +122,32 @@ def scene_graph_to_batch(query_data, db_data, device):
         node_feats = torch.tensor(np.array(node_feats), dtype=torch.float32)
         
         # Geometric edges (k-NN based on centroids)
-        centroids = np.array([nodes[nid]['centroid'] for nid in node_ids], dtype=float)
-        N = len(node_ids)
+        centroids = np.array([nodes[i]['centroid'] for i in range(len(nodes))], dtype=float)
+        N = len(nodes)
         K = 5
-        
-        dmat = np.linalg.norm(centroids[:, None, :] - centroids[None, :, :], axis=2)
-        np.fill_diagonal(dmat, np.inf)
-        
-        if N > 1:
-            knn_idx = np.argsort(dmat, axis=1)[:, :min(K, N-1)]
-        else:
-            knn_idx = np.array([]).reshape(0, 0)
         
         geom_edge_index = []
         geom_edge_attr = []
         
-        for i in range(N):
-            ci = centroids[i]
-            ri = nodes[node_ids[i]].get('radius', 0.4)
+        if N > 1:
+            dmat = np.linalg.norm(centroids[:, None, :] - centroids[None, :, :], axis=2)
+            np.fill_diagonal(dmat, np.inf)
+            knn_idx = np.argsort(dmat, axis=1)[:, :min(K, N-1)]
             
-            for j in (knn_idx[i] if N > 1 else []):
-                cj = centroids[j]
-                rj = nodes[node_ids[j]].get('radius', 0.4)
+            for i in range(N):
+                ci = centroids[i]
+                ri = nodes[i].get('radius', 0.4)
                 
-                vec = cj - ci
-                dist = float(np.linalg.norm(vec))
-                feat = np.array([vec[0], vec[1], vec[2], dist, ri, rj, 0.0, 0.0], dtype=np.float32)
-                
-                geom_edge_index.append([i, j])
-                geom_edge_attr.append(feat)
+                for j in knn_idx[i]:
+                    cj = centroids[j]
+                    rj = nodes[j].get('radius', 0.4)
+                    
+                    vec = cj - ci
+                    dist = float(np.linalg.norm(vec))
+                    feat = np.array([vec[0], vec[1], vec[2], dist, ri, rj, 0.0, 0.0], dtype=np.float32)
+                    
+                    geom_edge_index.append([i, j])
+                    geom_edge_attr.append(feat)
         
         if geom_edge_index:
             geom_edges = torch.tensor(geom_edge_index, dtype=torch.long).t()
@@ -158,7 +167,7 @@ def scene_graph_to_batch(query_data, db_data, device):
             
             if s is not None and o is not None:
                 text_edge_index.append([s, o])
-                text_rel_ids.append(1)  # Dummy relation ID
+                text_rel_ids.append(1)
         
         if text_edge_index:
             text_edges = torch.tensor(text_edge_index, dtype=torch.long).t()
@@ -198,12 +207,6 @@ def evaluate_scanscribe(model, scanscribe_graphs, db_scene_paths,
                         scene_to_group, top_k=[1, 3, 5, 10]):
     """
     Evaluate on ScanScribe text descriptions.
-    
-    For each text description:
-    1. Convert to scene graph (already done in scanscribe_graphs)
-    2. Convert to your format
-    3. Match against database of 3RScan scenes
-    4. Check if correct room is in top-k
     """
     model.eval()
     
@@ -214,8 +217,8 @@ def evaluate_scanscribe(model, scanscribe_graphs, db_scene_paths,
     # Build database scene ID to path mapping
     db_scene_id_to_path = {}
     for path in db_scene_paths:
-        scene_id = os.path.basename(path).replace('.json', '')
-        db_scene_id_to_path[scene_id] = path
+        filename = os.path.basename(path).replace('.json', '')
+        db_scene_id_to_path[filename] = path
     
     print(f"Database scenes: {len(db_scene_id_to_path)}")
     print(f"ScanScribe scenes: {len(scanscribe_graphs)}")
@@ -223,7 +226,8 @@ def evaluate_scanscribe(model, scanscribe_graphs, db_scene_paths,
     # Filter ScanScribe to only scenes in our database
     matching_scenes = []
     for scene_id in scanscribe_graphs.keys():
-        if scene_id in db_scene_id_to_path:
+        # Check if base scene_id exists in database (might have _text_ suffix)
+        if scene_id in scene_to_group:
             matching_scenes.append(scene_id)
     
     print(f"Matching scenes: {len(matching_scenes)}")
@@ -275,21 +279,18 @@ def evaluate_scanscribe(model, scanscribe_graphs, db_scene_paths,
             
             # Match against all database scenes
             match_scores = []
-            db_scene_ids = []
+            db_filenames = []
             
-            for db_scene_id, db_path in db_scene_id_to_path.items():
+            for db_filename, db_path in db_scene_id_to_path.items():
                 db_data = load_scene_graph(db_path)
-                
-                # Create batch
                 batch = scene_graph_to_batch(query_data, db_data, device)
                 
-                # Get matching probability
                 with torch.no_grad():
                     out = model(batch)
                     matching_prob = out["matching_prob"]
                 
                 match_scores.append(matching_prob.item())
-                db_scene_ids.append(db_scene_id)
+                db_filenames.append(db_filename)
             
             # Sort by matching score (highest first)
             match_scores = np.array(match_scores)
@@ -297,34 +298,61 @@ def evaluate_scanscribe(model, scanscribe_graphs, db_scene_paths,
             
             # DEBUG: Print ranking for first 3 evaluations
             if eval_count <= 3:
-                print(f"\nMatching against {len(db_scene_ids)} database scenes...")
+                print(f"\nMatching against {len(db_filenames)} database scenes...")
                 print(f"\nTop 10 predictions:")
                 for rank in range(min(10, len(sorted_indices))):
                     idx = sorted_indices[rank]
-                    pred_scene_id = db_scene_ids[idx]
-                    pred_group = scene_to_group.get(pred_scene_id)
+                    db_filename = db_filenames[idx]
+                    
+                    # Extract base scene ID (remove _text_X suffix)
+                    if '_text_' in db_filename:
+                        base_scene_id = db_filename.split('_text_')[0]
+                    else:
+                        base_scene_id = db_filename
+                    
+                    pred_group = scene_to_group.get(base_scene_id)
                     score = match_scores[idx]
                     
                     is_correct = "✓ CORRECT" if pred_group == true_group else "✗"
-                    pred_group_str = pred_group if pred_group is not None else "UNKNOWN"
-
+                    pred_group_str = pred_group[:40] if pred_group is not None else "UNKNOWN"
+                    
                     print(
-                        f"  Rank {rank+1}: {pred_scene_id:40s} "
+                        f"  Rank {rank+1}: {db_filename:40s} "
                         f"(room: {pred_group_str:40s}) "
                         f"score={score:.4f} {is_correct}"
-                    )                
+                    )
+                
                 # Check top-k results for this query
                 print(f"\nResults for this query:")
                 for k in [1, 3, 5]:
-                    top_k_scenes = [db_scene_ids[i] for i in sorted_indices[:k]]
-                    top_k_groups = [scene_to_group.get(sid) for sid in top_k_scenes]
+                    top_k_filenames = [db_filenames[i] for i in sorted_indices[:k]]
+                    
+                    # Extract base scene IDs
+                    top_k_base_ids = []
+                    for fname in top_k_filenames:
+                        if '_text_' in fname:
+                            top_k_base_ids.append(fname.split('_text_')[0])
+                        else:
+                            top_k_base_ids.append(fname)
+                    
+                    top_k_groups = [scene_to_group.get(sid) for sid in top_k_base_ids]
                     correct = true_group in top_k_groups
                     print(f"  Top-{k}: {'✓ Correct' if correct else '✗ Wrong'}")
             
             # Check top-k
             for k in top_k:
-                top_k_scenes = [db_scene_ids[i] for i in sorted_indices[:k]]
-                top_k_groups = [scene_to_group.get(sid) for sid in top_k_scenes]
+                top_k_filenames = [db_filenames[i] for i in sorted_indices[:k]]
+                
+                # Extract base scene IDs
+                top_k_base_ids = []
+                for fname in top_k_filenames:
+                    if '_text_' in fname:
+                        top_k_base_ids.append(fname.split('_text_')[0])
+                    else:
+                        top_k_base_ids.append(fname)
+                
+                # Get their room IDs
+                top_k_groups = [scene_to_group.get(sid) for sid in top_k_base_ids]
                 
                 # Success if correct room in top-k
                 correct = 1 if true_group in top_k_groups else 0
@@ -382,7 +410,7 @@ def main(args):
     db_scene_paths = sorted([
         os.path.join(args.dataset_dir, f) 
         for f in os.listdir(args.dataset_dir) 
-        if f.endswith('.json')
+        if f.endswith('.json') and f not in ['metadata.json', 'training_splits.json']
     ])
     
     print(f"Database scenes: {len(db_scene_paths)}")
@@ -410,7 +438,7 @@ def main(args):
     model = load_model_with_matching(
         checkpoint_path=args.checkpoint,
         base_model_config=config,
-        hidden_dim=128,
+        hidden_dim=256,  # Your model outputs 256, not 128!
         use_cosine=True,
         device=device
     )
@@ -438,13 +466,14 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--checkpoint', type=str, required=True,
                        help='Path to model checkpoint')
-    parser.add_argument('--dataset_dir', type=str, default='scene_graphs_unique',
-                       help='Directory with 3RScan scene graph JSONs (your database)')
+    parser.add_argument('--dataset_dir', type=str, 
+                       default='src/datasets/combined_dataset_clip',
+                       help='Directory with scene graph JSONs (your database)')
     parser.add_argument('--scanscribe_path', type=str,
-                       default='playground/graph_models/data_checkpoints/processed_data/testing/scanscribe_graphs_test_final_no_graph_min.pt',
+                       default='/content/drive/MyDrive/VLSG_Files/scanscribe_graphs_test_final_no_graph_min.pt',
                        help='Path to ScanScribe test graphs')
     parser.add_argument('--metadata_path', type=str,
-                       default='/Users/shirley/Documents/SCHOOL/FALL2025/MASTER-PROJECT/meta_files/3RScan.json',
+                       default='/content/drive/MyDrive/VLSG_Files/3RScan.json',
                        help='Path to 3RScan.json metadata')
     parser.add_argument('--num_relations', type=int, default=50,
                        help='Number of relation types')
