@@ -18,7 +18,6 @@ import clip
 
 # Import wrapper
 sys.path.append('.')
-from src.models.sgaligner.src.aligner.dual_scene_aligner import DualSceneAligner
 from src.models.sgaligner.src.aligner.dual_scene_aligner_wrapper import load_model_with_matching
 
 torch.cuda.empty_cache()
@@ -40,18 +39,32 @@ def scanscribe_to_your_format(scanscribe_graph, scene_id):
     Convert ScanScribe graph format to your training format.
     
     ScanScribe has: label + word2vec/ada embeddings
-    Your format needs: label + centroid + color + CLIP
+    Your format needs: label + centroid + color + node_CLIP + scene_CLIP (1030 dims)
     """
     nodes_dict = {}
     
+    # First pass: collect all labels for scene-level CLIP
+    all_labels = [node['label'] for node in scanscribe_graph['nodes']]
+    
+    # Create scene description (like your training data)
+    scene_description = f"A room with {', '.join(all_labels[:10])}"
+    
+    # Get scene-level CLIP embedding
+    with torch.no_grad():
+        scene_tokens = clip.tokenize([scene_description]).to(device)
+        scene_clip_emb = clip_model.encode_text(scene_tokens)
+        scene_clip_emb = scene_clip_emb / scene_clip_emb.norm(dim=-1, keepdim=True)
+        scene_clip_list = scene_clip_emb[0].detach().cpu().tolist()
+    
+    # Second pass: create nodes with scene CLIP
     for node in scanscribe_graph['nodes']:
-        # Get CLIP embedding from label
+        # Get node-level CLIP embedding from label
         label = node['label']
         
         with torch.no_grad():
             tokens = clip.tokenize([label]).to(device)
-            clip_emb = clip_model.encode_text(tokens)
-            clip_emb = clip_emb / clip_emb.norm(dim=-1, keepdim=True)
+            node_clip_emb = clip_model.encode_text(tokens)
+            node_clip_emb = node_clip_emb / node_clip_emb.norm(dim=-1, keepdim=True)
         
         nodes_dict[node['id']] = {
             "label": label,
@@ -59,7 +72,7 @@ def scanscribe_to_your_format(scanscribe_graph, scene_id):
             "centroid": [0.0, 0.0, 0.0],  # No spatial info from text
             "mean_color": [128.0, 128.0, 128.0],  # Default gray
             "radius": 0.4,
-            "clip_text_emb": clip_emb[0].detach().cpu().tolist()
+            "clip_text_emb": node_clip_emb[0].detach().cpu().tolist()
         }
     
     # Convert edges
@@ -73,6 +86,8 @@ def scanscribe_to_your_format(scanscribe_graph, scene_id):
     
     return {
         "scene_id": scene_id,
+        "scene_description": scene_description,
+        "scene_clip_emb": scene_clip_list,  # NEW!
         "nodes": nodes_dict,
         "edges_text": edges_text
     }
@@ -108,15 +123,22 @@ def scene_graph_to_batch(query_data, db_data, device):
             node_ids = [str(n['id']) for n in nodes]
             id2idx = {str(nid): i for i, nid in enumerate(node_ids)}
         
-        # Node features (518 dims)
+        # Get scene-level CLIP (512D) - SAME for all nodes
+        scene_clip = np.array(
+            scene_data.get('scene_clip_emb', [0.0] * 512), 
+            dtype=np.float32
+        )
+        
+        # Node features (1030 dims: centroid + color + node_CLIP + scene_CLIP)
         node_feats = []
         for i in range(len(nodes)):
             n = nodes[i]
-            centroid = np.array([0.0, 0.0, 0.0], dtype=np.float32)  # Zero out for fair comparison
+            centroid = np.array(n['centroid'], dtype=np.float32)
             color = np.array(n['mean_color'], dtype=np.float32) / 255.0
-            clip_vec = np.array(n.get('clip_text_emb', np.zeros(512)), dtype=np.float32)
+            node_clip = np.array(n.get('clip_text_emb', np.zeros(512)), dtype=np.float32)
             
-            feat = np.concatenate([centroid, color, clip_vec])
+            # Concatenate: 3 + 3 + 512 + 512 = 1030
+            feat = np.concatenate([centroid, color, node_clip, scene_clip])
             node_feats.append(feat)
         
         node_feats = torch.tensor(np.array(node_feats), dtype=torch.float32)
@@ -205,7 +227,14 @@ def scene_graph_to_batch(query_data, db_data, device):
 
 def evaluate_scanscribe(model, scanscribe_graphs, db_scene_paths, 
                         scene_to_group, top_k=[1, 3, 5, 10]):
+    """
+    Evaluate on ScanScribe text descriptions.
+    """
     model.eval()
+    
+    print(f"\n{'='*70}")
+    print("Evaluating on ScanScribe")
+    print(f"{'='*70}")
     
     # Build database scene ID to path mapping
     db_scene_id_to_path = {}
@@ -213,110 +242,170 @@ def evaluate_scanscribe(model, scanscribe_graphs, db_scene_paths,
         filename = os.path.basename(path).replace('.json', '')
         db_scene_id_to_path[filename] = path
     
-    # GROUP database scenes by ROOM
-    room_to_files = {}
-    for filename, path in db_scene_id_to_path.items():
-        # Extract base scene ID
-        if '_text_' in filename:
-            base_scene_id = filename.split('_text_')[0]
-        else:
-            base_scene_id = filename
-        
-        room_id = scene_to_group.get(base_scene_id)
-        if room_id:
-            if room_id not in room_to_files:
-                room_to_files[room_id] = []
-            room_to_files[room_id].append(path)
+    print(f"Database scenes: {len(db_scene_id_to_path)}")
+    print(f"ScanScribe scenes: {len(scanscribe_graphs)}")
     
-    print(f"Unique rooms in database: {len(room_to_files)}")
+    # Filter ScanScribe to only scenes in our database
+    matching_scenes = []
+    for scene_id in scanscribe_graphs.keys():
+        # Check if base scene_id exists in database (might have _text_ suffix)
+        if scene_id in scene_to_group:
+            matching_scenes.append(scene_id)
     
-    # Compute ONE embedding per room (average of all scans)
-    print("Computing room-level embeddings...")
-    room_embeddings = {}
+    print(f"Matching scenes: {len(matching_scenes)}")
     
-    for room_id, file_paths in tqdm(room_to_files.items(), desc="Processing rooms"):
-        embeddings = []
-        
-        for db_path in file_paths:
-            db_data = load_scene_graph(db_path)
-            # Create dummy query (we only need ref embedding)
-            dummy_query = db_data  # Use same data for both
-            batch = scene_graph_to_batch(dummy_query, db_data, device)
-            
-            with torch.no_grad():
-                out = model(batch)
-                ref_emb = out["ref_emb"]
-                embeddings.append(ref_emb)
-        
-        # Average all embeddings for this room
-        room_embeddings[room_id] = torch.stack(embeddings).mean(dim=0)
+    # DEBUG: Show which scenes matched
+    print(f"\nFirst 10 matching scenes:")
+    for i, scene_id in enumerate(matching_scenes[:10]):
+        num_texts = len(scanscribe_graphs[scene_id])
+        room_id = scene_to_group.get(scene_id, "Unknown")
+        print(f"  {i+1}. {scene_id} (room: {room_id}, {num_texts} texts)")
     
-    print(f"Computed {len(room_embeddings)} room embeddings")
+    if len(matching_scenes) == 0:
+        print("⚠️  No matching scenes between ScanScribe and your database!")
+        return {k: (0.0, 0.0) for k in top_k}
     
-    # NOW evaluate queries against ROOMS (not individual scans)
+    # Evaluate
     results = {k: [] for k in top_k}
+    
+    # Counter for debug prints
     eval_count = 0
     
-    for scene_id in tqdm(scanscribe_graphs.keys(), desc="Evaluating"):
+    # For each ScanScribe scene
+    for scene_id in tqdm(matching_scenes, desc="Evaluating ScanScribe"):
         scene_texts = scanscribe_graphs[scene_id]
         
+        # For each text description of this scene
         for text_id, scanscribe_graph in scene_texts.items():
             eval_count += 1
             
-            # Convert query to your format
+            # DEBUG: Print first 3 evaluations
+            if eval_count <= 3:
+                print(f"\n{'='*70}")
+                print(f"DEBUG: Evaluation {eval_count}")
+                print(f"{'='*70}")
+                print(f"Query Scene: {scene_id}")
+                print(f"Text ID: {text_id}")
+                print(f"Ground Truth Room: {scene_to_group.get(scene_id)}")
+                print(f"\nQuery Graph:")
+                print(f"  Nodes: {len(scanscribe_graph['nodes'])}")
+                node_labels = [n['label'] for n in scanscribe_graph['nodes'][:5]]
+                print(f"  First 5 node labels: {', '.join(node_labels)}")
+                print(f"  Edges: {len(scanscribe_graph['edges'])}")
+            
+            # Convert to your format
             query_data = scanscribe_to_your_format(scanscribe_graph, scene_id)
+            
+            # Get ground truth room
             true_group = scene_to_group.get(scene_id)
             
-            # Get query embedding
-            dummy_db = query_data
-            batch = scene_graph_to_batch(query_data, dummy_db, device)
-            
-            with torch.no_grad():
-                out = model(batch)
-                query_emb = out["src_emb"]
-            
-            # Compare against ALL rooms
+            # Match against all database scenes
             match_scores = []
-            room_ids = []
+            db_filenames = []
             
-            for room_id, room_emb in room_embeddings.items():
-                # Cosine similarity
-                cos_sim = F.cosine_similarity(query_emb, room_emb, dim=-1)
-                matching_prob = (cos_sim + 1) / 2
+            for db_filename, db_path in db_scene_id_to_path.items():
+                db_data = load_scene_graph(db_path)
+                batch = scene_graph_to_batch(query_data, db_data, device)
+                
+                with torch.no_grad():
+                    out = model(batch)
+                    matching_prob = out["matching_prob"]
                 
                 match_scores.append(matching_prob.item())
-                room_ids.append(room_id)
+                db_filenames.append(db_filename)
             
-            # Sort by score
+            # Sort by matching score (highest first)
             match_scores = np.array(match_scores)
             sorted_indices = np.argsort(match_scores)[::-1]
             
-            # Check top-k
-            for k in top_k:
-                top_k_rooms = [room_ids[i] for i in sorted_indices[:k]]
-                correct = 1 if true_group in top_k_rooms else 0
-                results[k].append(correct)
-
+            # DEBUG: Print ranking for first 3 evaluations
             if eval_count <= 3:
-                print(f"\n{'='*70}")
-                print(f"Query {eval_count}: {scene_id}")
-                print(f"Ground truth: {true_group}")
+                print(f"\nMatching against {len(db_filenames)} database scenes...")
                 print(f"\nTop 10 predictions:")
                 for rank in range(min(10, len(sorted_indices))):
                     idx = sorted_indices[rank]
-                    pred_room = room_ids[idx]
+                    db_filename = db_filenames[idx]
+                    
+                    # Extract base scene ID (remove _text_X suffix)
+                    if '_text_' in db_filename:
+                        base_scene_id = db_filename.split('_text_')[0]
+                    else:
+                        base_scene_id = db_filename
+                    
+                    pred_group = scene_to_group.get(base_scene_id)
                     score = match_scores[idx]
-                    is_correct = "✓" if pred_room == true_group else "✗"
-                    print(f"  Rank {rank+1}: {pred_room[:40]:40s} score={score:.4f} {is_correct}")
+                    
+                    is_correct = "✓ CORRECT" if pred_group == true_group else "✗"
+                    pred_group_str = pred_group[:40] if pred_group is not None else "UNKNOWN"
+                    
+                    print(
+                        f"  Rank {rank+1}: {db_filename:40s} "
+                        f"(room: {pred_group_str:40s}) "
+                        f"score={score:.4f} {is_correct}"
+                    )
                 
+                # Check top-k results for this query
+                print(f"\nResults for this query:")
+                for k in [1, 3, 5]:
+                    top_k_filenames = [db_filenames[i] for i in sorted_indices[:k]]
+                    
+                    # Extract base scene IDs
+                    top_k_base_ids = []
+                    for fname in top_k_filenames:
+                        if '_text_' in fname:
+                            top_k_base_ids.append(fname.split('_text_')[0])
+                        else:
+                            top_k_base_ids.append(fname)
+                    
+                    top_k_groups = [scene_to_group.get(sid) for sid in top_k_base_ids]
+                    correct = true_group in top_k_groups
+                    print(f"  Top-{k}: {'✓ Correct' if correct else '✗ Wrong'}")
+            
+            # Check top-k
+            for k in top_k:
+                top_k_filenames = [db_filenames[i] for i in sorted_indices[:k]]
+                
+                # Extract base scene IDs
+                top_k_base_ids = []
+                for fname in top_k_filenames:
+                    if '_text_' in fname:
+                        top_k_base_ids.append(fname.split('_text_')[0])
+                    else:
+                        top_k_base_ids.append(fname)
+                
+                # Get their room IDs
+                top_k_groups = [scene_to_group.get(sid) for sid in top_k_base_ids]
+                
+                # Success if correct room in top-k
+                correct = 1 if true_group in top_k_groups else 0
+                results[k].append(correct)
+    
     # Compute accuracy
     accuracy = {}
     for k in top_k:
-        mean_acc = np.mean(results[k])
-        std_acc = np.std(results[k])
-        accuracy[k] = (mean_acc, std_acc)
+        if results[k]:
+            mean_acc = np.mean(results[k])
+            std_acc = np.std(results[k])
+            accuracy[k] = (mean_acc, std_acc)
+        else:
+            accuracy[k] = (0.0, 0.0)
     
+    print(f"\n{'='*70}")
+    print(f"Evaluation Summary")
+    print(f"{'='*70}")
+    print(f"Total queries evaluated: {eval_count}")
+    print(f"Scenes with texts: {len(matching_scenes)}")
+    print(f"Database scenes: {len(db_scene_id_to_path)}")
+    
+    print(f"\nResults:")
+    for k in top_k:
+        mean, std = accuracy[k]
+        num_correct = int(mean * len(results[k]))
+        print(f"  Top-{k}: {mean*100:.2f}% ± {std*100:.2f}% ({num_correct}/{len(results[k])} correct)")
+    
+    model.train()
     return accuracy
+
 
 def main(args):
     print(f"\n{'='*70}")
@@ -343,9 +432,7 @@ def main(args):
     db_scene_paths = sorted([
         os.path.join(args.dataset_dir, f) 
         for f in os.listdir(args.dataset_dir) 
-        if f.endswith('.json') 
-        and not f.startswith('metadata') 
-        and not f.startswith('training_splits')
+        if f.endswith('.json') and f not in ['metadata.json', 'training_splits.json']
     ])
     
     print(f"Database scenes: {len(db_scene_paths)}")
@@ -363,9 +450,9 @@ def main(args):
     
     dummy_clip = torch.randn(args.num_relations, 512) * 0.1
     config = {
-        'node_input_dim': 518,
+        'node_input_dim': 1030,  # ← Updated to 1030!
         'relation_dim': 512,
-        'hidden_dim': 128,
+        'hidden_dim': 256,  # Output dimension
         'rel_clip_matrix': dummy_clip.to(device),
         'dropout': 0.1
     }
@@ -373,7 +460,7 @@ def main(args):
     model = load_model_with_matching(
         checkpoint_path=args.checkpoint,
         base_model_config=config,
-        hidden_dim=256,  # Your model outputs 256, not 128!
+        hidden_dim=256,
         use_cosine=True,
         device=device
     )
