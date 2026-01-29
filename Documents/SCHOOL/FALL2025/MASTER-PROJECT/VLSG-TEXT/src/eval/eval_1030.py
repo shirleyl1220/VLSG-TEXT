@@ -340,4 +340,4 @@ if __name__ == '__main__':
     for k in [1, 3, 5, 10]:
         mean, std = scanscribe_acc[k]
         print(f"  Top-{k}: {mean*100:.2f}% ± {std*100:.2f}%")
-    print(f"{'='*70}\n")
+    print(f"{'='*70}\n")       
