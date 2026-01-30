@@ -408,6 +408,7 @@ def train(args):
     device = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
     print(f"Using device: {device}")
     
+    
     # Load dataset - scene CLIP is already in node features (1030 dims)!
     dataset = DualSceneGraphDataset(
         dataset_dir=args.dataset_dir,
@@ -420,9 +421,36 @@ def train(args):
     print(f"{'='*70}")
     print(f"Dataset size: {len(dataset)}")
     
-    # Check first sample
+    # Check first 5 samples for subgraph diversity WITH LABELS
+    print("\n🔍 SUBGRAPH COMPOSITION TEST (first 5 samples):")
+    for i in range(5):
+        sample = dataset[i]
+        num_nodes_src = sample['node_feats_src'].shape[0]
+        num_nodes_ref = sample['node_feats_ref'].shape[0]
+        num_edges_src = sample['text_edges_src'].shape[1]
+        num_edges_ref = sample['text_edges_ref'].shape[1]
+        
+        # Load the raw JSON to get object labels
+        src_file = dataset.scene_files[i]
+        with open(src_file) as f:
+            src_json = json.load(f)
+        
+        # Get object labels (first 10)
+        src_labels = list(src_json['nodes'].keys())[:10]
+        src_label_names = [src_json['nodes'][nid].get('base_label', src_json['nodes'][nid].get('label', 'unknown')) 
+                          for nid in src_labels]
+        
+        print(f"\n  Sample {i}:")
+        print(f"    SRC: {num_nodes_src} nodes, {num_edges_src} edges")
+        print(f"    Objects: {', '.join(src_label_names)}")
+        print(f"    REF: {num_nodes_ref} nodes, {num_edges_ref} edges")
+    
+    print(f"\n{'='*70}\n")
+    
+    # Check first sample feature breakdown
     sample = dataset[0]
-    print(f"\nFirst sample inspection:")
+    print(f"\n{'='*70}")
+    print(f"First sample inspection:")
     print(f"  Node features shape: {sample['node_feats_src'].shape}")
     print(f"  Expected: (N, 1030) where N = num nodes")
     
@@ -434,17 +462,17 @@ def train(args):
     print(f"  Node CLIP (6-517):  mean={first_node[6:518].mean():.4f}, std={first_node[6:518].std():.4f}, norm={first_node[6:518].norm():.4f}")
     print(f"  Scene CLIP (518-1029): mean={first_node[518:].mean():.4f}, std={first_node[518:].std():.4f}, norm={first_node[518:].norm():.4f}")
     
-    # Check if scene CLIP is same for all nodes
-    if sample['node_feats_src'].shape[0] > 1:
-        scene_clip_0 = sample['node_feats_src'][0, 518:]
-        scene_clip_1 = sample['node_feats_src'][1, 518:]
-        scene_clip_diff = (scene_clip_0 - scene_clip_1).abs().max().item()
-        print(f"\nScene CLIP consistency check:")
-        print(f"  Max diff between node 0 and node 1: {scene_clip_diff:.6f}")
-        if scene_clip_diff < 1e-6:
-            print(f"  ✓ Scene CLIP is same for all nodes (as expected!)")
-        else:
-            print(f"  ❌ WARNING: Scene CLIP differs between nodes!")
+    # # Check if scene CLIP is same for all nodes
+    # if sample['node_feats_src'].shape[0] > 1:
+    #     scene_clip_0 = sample['node_feats_src'][0, 518:]
+    #     scene_clip_1 = sample['node_feats_src'][1, 518:]
+    #     scene_clip_diff = (scene_clip_0 - scene_clip_1).abs().max().item()
+    #     print(f"\nScene CLIP consistency check:")
+    #     print(f"  Max diff between node 0 and node 1: {scene_clip_diff:.6f}")
+    #     if scene_clip_diff < 1e-6:
+    #         print(f"  ✓ Scene CLIP is same for all nodes (as expected!)")
+    #     else:
+    #         print(f"  ❌ WARNING: Scene CLIP differs between nodes!")
     
     # Check diversity across scenes
     if len(dataset) >= 2:
@@ -480,6 +508,8 @@ def train(args):
 
         src_batch_idx = []
         ref_batch_idx = []
+        
+        room_ids = []  # For contrastive loss
 
         src_node_offset = 0
         ref_node_offset = 0
@@ -522,6 +552,9 @@ def train(args):
 
             ref_batch_idx.extend([i] * n_ref)
             ref_node_offset += n_ref
+            
+            # Room ID for this pair
+            room_ids.append(sample["room_id"])
 
         return {
             "node_feats_src": torch.cat(node_feats_src_list, dim=0),
@@ -539,6 +572,7 @@ def train(args):
             "src_batch": torch.tensor(src_batch_idx, dtype=torch.long),
             "ref_batch": torch.tensor(ref_batch_idx, dtype=torch.long),
             "batch_size": batch_size,
+            "room_ids": room_ids,  # String room IDs
         }
     
     dataloader = DataLoader(
@@ -559,7 +593,7 @@ def train(args):
         relation_dim=512,
         hidden_dim=256,  # Output dimension
         rel_clip_matrix=dummy_clip_matrix.to(device),
-        dropout=0.1
+        dropout=0.0  # ← REDUCED! Subgraph aug already provides regularization
     ).to(device)
     
     print(f"✓ Model loaded with {sum(p.numel() for p in model.parameters()):,} parameters")
@@ -568,18 +602,67 @@ def train(args):
     loss_fn = SupervisedContrastiveLoss(temperature=0.07)
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=1e-4)
     
-    global_step = 0
     # Training loop
     print("\nStarting training...")
+    
+    # For first 3 epochs, store detailed subgraph info
+    subgraph_samples = []
+
+    global_step = 0
+    scheduler = LambdaLR(optimizer, lr_lambda=lambda step: 0.95 ** (step / len(dataloader)))    
+    
     for epoch in range(args.epochs):
         model.train()
         epoch_loss = 0
         
-        for batch in dataloader:
+        # Track subgraph stats for first 3 epochs
+        if epoch < 3:
+            batch_node_counts_src = []
+            batch_node_counts_ref = []
+        
+        for batch_idx, batch in enumerate(dataloader):
             # Move to device
             for k, v in batch.items():
                 if isinstance(v, torch.Tensor):
                     batch[k] = v.to(device)
+            
+            # DEBUG: Capture first 3 batches of first 3 epochs
+            if epoch < 3 and batch_idx < 3:
+                # Get actual samples to inspect
+                batch_start_idx = batch_idx * args.batch_size
+                batch_sample_indices = list(range(batch_start_idx, min(batch_start_idx + args.batch_size, len(dataset))))
+                
+                for sample_idx in batch_sample_indices[:2]:  # First 2 from each batch
+                    if sample_idx < len(dataset):
+                        sample_data = dataset[sample_idx]
+                        src_file = dataset.scene_files[sample_idx]
+                        
+                        # Load JSON to get labels
+                        with open(src_file) as f:
+                            src_json = json.load(f)
+                        
+                        # Get object labels
+                        src_labels = [src_json['nodes'][nid].get('base_label', src_json['nodes'][nid].get('label', 'unknown')) 
+                                     for nid in list(src_json['nodes'].keys())[:15]]
+                        
+                        subgraph_samples.append({
+                            'epoch': epoch,
+                            'batch': batch_idx,
+                            'sample_idx': sample_idx,
+                            'num_nodes': sample_data['node_feats_src'].shape[0],
+                            'num_edges': sample_data['text_edges_src'].shape[1],
+                            'labels': src_labels,
+                            'scene_id': src_json.get('scene_id', 'unknown')
+                        })
+            
+            # DEBUG: Track batch composition for first 3 epochs
+            if epoch < 3:
+                # Count nodes per graph in batch
+                for i in range(batch['batch_size']):
+                    src_mask = batch['src_batch'] == i
+                    ref_mask = batch['ref_batch'] == i
+                    batch_node_counts_src.append(src_mask.sum().item())
+                    batch_node_counts_ref.append(ref_mask.sum().item())
             
             # Forward - scene CLIP already in node features!
             out = model(batch)
@@ -591,9 +674,13 @@ def train(args):
             # Combine for contrastive loss
             all_embeddings = torch.cat([src_emb, ref_emb], dim=0)
             
-            # Create labels (assume consecutive pairs are from same room for now)
-            # This is a simplified version - you may want to use actual room labels
-            room_labels = torch.arange(args.batch_size, device=device).repeat(2)
+            # Create room labels from actual room IDs
+            # Convert string room IDs to integer labels
+            unique_rooms = list(set(batch['room_ids']))
+            room_id_to_label = {room_id: i for i, room_id in enumerate(unique_rooms)}
+            
+            room_labels_list = [room_id_to_label[room_id] for room_id in batch['room_ids']]
+            room_labels = torch.tensor(room_labels_list * 2, device=device)  # Repeat for src + ref
             
             # Loss
             loss = loss_fn(all_embeddings, room_labels)
@@ -610,28 +697,35 @@ def train(args):
             grad_norm = grad_norm ** 0.5
             
             optimizer.step()
-            scheduler = LambdaLR(optimizer, lr_lambda=lambda step: 1 - step / (len(dataloader) * args.epochs))
+            # Learning rate scheduler step (if any)
             scheduler.step()
-            
             
             epoch_loss += loss.item()
             global_step += 1
             
             # Detailed logging every N steps
-            if global_step :
+            if global_step % args.log_every == 0:
                 with torch.no_grad():
                     # Normalize for similarity computation
                     src_norm_emb = F.normalize(src_emb, dim=-1)
                     ref_norm_emb = F.normalize(ref_emb, dim=-1)
                     
-                    # Positive/negative separation
-                    pos_mask = torch.eye(args.batch_size, device=device).bool()
-                    neg_mask = ~pos_mask
+                    # Positive/negative separation using actual room labels
                     cross_sim = src_norm_emb @ ref_norm_emb.T
                     
-                    pos_sim = cross_sim[pos_mask].mean().item()
+                    # Create positive mask from room labels
+                    room_labels_src = room_labels[:args.batch_size]
+                    room_labels_ref = room_labels[args.batch_size:]
+                    pos_mask = (room_labels_src.unsqueeze(1) == room_labels_ref.unsqueeze(0))
+                    neg_mask = ~pos_mask
+                    
+                    pos_sim = cross_sim[pos_mask].mean().item() if pos_mask.sum() > 0 else 0.0
                     neg_sim = cross_sim[neg_mask].mean().item() if neg_mask.sum() > 0 else 0.0
                     separation = pos_sim - neg_sim
+                    
+                    # Count positive/negative pairs
+                    num_pos_pairs = pos_mask.sum().item()
+                    num_neg_pairs = neg_mask.sum().item()
                     
                     # Stats
                     src_var = src_emb.var(dim=0).mean().item()
@@ -643,6 +737,11 @@ def train(args):
                 print(f"[Epoch {epoch}] Step {global_step}/{len(dataloader)*(epoch+1)}")
                 print(f"{'='*70}")
                 print(f"  Loss = {loss.item():.4f}")
+                print(f"  ---")
+                print(f"  📊 BATCH COMPOSITION:")
+                print(f"    Unique rooms in batch: {len(unique_rooms)}")
+                print(f"    Positive pairs: {num_pos_pairs} (same room)")
+                print(f"    Negative pairs: {num_neg_pairs} (different rooms)")
                 print(f"  ---")
                 print(f"  📊 VARIANCE & STD:")
                 print(f"    Var(src, ref) = {src_var:.4f}, {ref_var:.4f}")
@@ -660,7 +759,10 @@ def train(args):
                 elif separation > 0.1:
                     print(f"    ⚠️  MODERATE")
                 else:
-                    print(f"    ❌ POOR - Check data!")
+                    print(f"    ❌ POOR - Not enough negatives?")
+                
+                if num_neg_pairs < args.batch_size:
+                    print(f"  ⚠️  WARNING: Very few negative pairs! Increase batch size!")
                 
                 if src_var < 0.5 or ref_var < 0.5:
                     print(f"  ⚠️  WARNING: Low variance → collapse risk!")
@@ -676,6 +778,48 @@ def train(args):
         print(f"Epoch {epoch} Summary")
         print(f"{'='*70}")
         print(f"  Avg Loss         = {avg_epoch_loss:.4f}")
+        
+        # Subgraph stats for first 3 epochs
+        if epoch < 3:
+            import numpy as np
+            print(f"\n  📊 SUBGRAPH STATISTICS:")
+            print(f"    SRC node counts: min={min(batch_node_counts_src)}, max={max(batch_node_counts_src)}, avg={np.mean(batch_node_counts_src):.1f}")
+            print(f"    REF node counts: min={min(batch_node_counts_ref)}, max={max(batch_node_counts_ref)}, avg={np.mean(batch_node_counts_ref):.1f}")
+            print(f"    Total batches: {len(batch_node_counts_src) // batch['batch_size']}")
+            
+            # Check if we're seeing variety (sign of subgraph aug working)
+            unique_src = len(set(batch_node_counts_src))
+            unique_ref = len(set(batch_node_counts_ref))
+            print(f"    Unique SRC sizes: {unique_src}")
+            print(f"    Unique REF sizes: {unique_ref}")
+            
+            if unique_src > 5 and unique_ref > 5:
+                print(f"    ✓ Good variety - subgraph augmentation working!")
+            elif unique_src <= 2 and unique_ref <= 2:
+                print(f"    ❌ NO VARIETY - subgraph augmentation NOT working!")
+                print(f"       All graphs have same size - check _create_subgraph")
+            else:
+                print(f"    ⚠️  Some variety but could be better")
+            
+            # Print detailed samples
+            epoch_samples = [s for s in subgraph_samples if s['epoch'] == epoch]
+            if epoch_samples:
+                print(f"\n  🔍 DETAILED SUBGRAPH SAMPLES (Epoch {epoch}):")
+                for i, sample in enumerate(epoch_samples[:6]):  # Show first 6
+                    print(f"\n    Sample {i+1} (Batch {sample['batch']}, Index {sample['sample_idx']}):")
+                    print(f"      Scene: {sample['scene_id'][:40]}")
+                    print(f"      Nodes: {sample['num_nodes']}, Edges: {sample['num_edges']}")
+                    print(f"      Objects: {', '.join(sample['labels'][:10])}")
+                    if len(sample['labels']) > 10:
+                        print(f"      ... and {len(sample['labels']) - 10} more")
+                    
+                    # Check if this looks like a subgraph or full scene
+                    if sample['num_nodes'] < 10:
+                        print(f"      → Likely SUBGRAPH (small)")
+                    elif sample['num_nodes'] > 18:
+                        print(f"      → Likely FULL SCENE (large)")
+                    else:
+                        print(f"      → Medium-sized graph")
         
         # Final batch statistics
         with torch.no_grad():
@@ -717,6 +861,7 @@ if __name__ == "__main__":
     parser.add_argument("--batch_size", type=int, default=16)
     parser.add_argument("--epochs", type=int, default=100)
     parser.add_argument("--lr", type=float, default=1e-3)
+    parser.add_argument("--log_every", type=int, default=10)
     
     args = parser.parse_args()
     train(args)

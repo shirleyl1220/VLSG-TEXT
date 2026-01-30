@@ -15,33 +15,48 @@ import random
 import numpy as np
 from torch.utils.data import Dataset
 
-
 def build_node_features_with_scene_clip(node_dict, scene_clip_emb):
-    """
-    Build 1030-dim features with BOTH node-level and scene-level CLIP.
-    
-    Args:
-        node_dict: Single node data
-        scene_clip_emb: Scene-level CLIP (512D) - shared by all nodes in scene
-    """
+    """Build 1030D with scene CLIP in every node."""
     centroid = np.array(node_dict["centroid"], dtype=np.float32)
     color = np.array(node_dict["mean_color"], dtype=np.float32) / 255.0
-    
-    # Node-level CLIP (object-specific: "desk_center_middle")
-    node_clip = np.array(
-        node_dict.get("clip_text_emb", np.zeros(512)),
-        dtype=np.float32
-    )
-    
-    # Scene-level CLIP (room-type: "office with desk, chair, monitor...")
-    scene_clip = np.array(scene_clip_emb, dtype=np.float32)
+    node_clip = np.array(node_dict.get("clip_text_emb", np.zeros(512)), dtype=np.float32)
+    scene_clip = np.array(scene_clip_emb, dtype=np.float32)  # ← Add back!
     
     return torch.cat([
         torch.from_numpy(centroid),    # 3
-        torch.from_numpy(color),       # 3
-        torch.from_numpy(node_clip),   # 512 (object)
-        torch.from_numpy(scene_clip)   # 512 (room)
+        torch.from_numpy(color),       # 3  
+        torch.from_numpy(node_clip),   # 512
+        torch.from_numpy(scene_clip)   # 512 ← Include scene CLIP!
     ])  # Total: 1030 dims
+
+# def build_node_features_with_scene_clip(node_dict, scene_clip_emb):
+#     """
+#     Build 518-dim node features WITHOUT scene CLIP in nodes.
+    
+#     Scene CLIP will be added AFTER GNN, not duplicated in every node!
+    
+#     Args:
+#         node_dict: Single node data
+#         scene_clip_emb: Scene-level CLIP (NOT USED - kept for API compatibility)
+    
+#     Returns: centroid(3) + color(3) + node_CLIP(512) = 518 dims
+#     """
+#     centroid = np.array(node_dict["centroid"], dtype=np.float32)
+#     color = np.array(node_dict["mean_color"], dtype=np.float32) / 255.0
+    
+#     # Node-level CLIP only (object-specific: "desk_center_middle")
+#     node_clip = np.array(
+#         node_dict.get("clip_text_emb", np.zeros(512)),
+#         dtype=np.float32
+#     )
+    
+#     # DON'T concatenate scene_clip_emb here!
+#     # It will be added after GNN processing
+#     return torch.cat([
+#         torch.from_numpy(centroid),    # 3
+#         torch.from_numpy(color),       # 3  
+#         torch.from_numpy(node_clip)    # 512 (object only)
+#     ])  # Total: 518 dims (no scene CLIP!)
 
 
 def extract_centroids_and_radii(nodes):
@@ -198,7 +213,10 @@ class DualSceneGraphDataset(Dataset):
         """Load scene with scene-level CLIP"""
         with open(json_path, 'r') as f:
             data = json.load(f)
-        
+        return self._load_scene_from_data(data)
+    
+    def _load_scene_from_data(self, data):
+        """Load scene from data dict (allows subgraph augmentation)."""
         nodes = data["nodes"]
         text_relations = data.get("edges_text", [])
         
@@ -223,28 +241,162 @@ class DualSceneGraphDataset(Dataset):
         text_edges, text_attr = build_text_edges(text_relations, self.rel2id, id2idx)
 
         return node_feats, geom_edges, geom_attr, text_edges, text_attr
+    
+    def _create_subgraph(self, data, ratio=None):
+        """
+        Create subgraph by keeping 40-70% of nodes.
+        Simulates ScanScribe partial queries!
+        """
+        nodes = data['nodes']
+        edges = data.get('edges_text', [])
+        
+        if ratio is None:
+            ratio = random.uniform(0.4, 0.7)  # Like ScanScribe
+        
+        num_nodes = len(nodes)
+        num_keep = max(3, int(num_nodes * ratio))
+        
+        # Random sampling
+        all_node_ids = list(nodes.keys())
+        keep_node_ids = set(random.sample(all_node_ids, num_keep))
+        
+        # Filter nodes
+        subgraph_nodes = {nid: nodes[nid] for nid in keep_node_ids}
+        
+        # Filter edges
+        subgraph_edges = []
+        for edge in edges:
+            if edge['subject'] in keep_node_ids and edge['object'] in keep_node_ids:
+                subgraph_edges.append(edge)
+        
+        return {
+            'scene_id': data['scene_id'] + '_subgraph',
+            'nodes': subgraph_nodes,
+            'edges_text': subgraph_edges,
+            'scene_clip_emb': data.get('scene_clip_emb', [0.0] * 512),
+            'scene_description': data.get('scene_description', '')
+        }
 
     def __getitem__(self, idx):
+        """
+        Returns a proper positive pair (same room, different scans).
+        
+        NOW WITH SUBGRAPH AUGMENTATION:
+        - 50% of time: use full scene
+        - 50% of time: use random subgraph (40-70% of nodes)
+        
+        Returns scene_clip_emb separately (not in node features!)
+        """
         src_path = self.scene_files[idx]
-        ref_idx = (idx + 1) % len(self.scene_files)
-        ref_path = self.scene_files[ref_idx]
-
-        src = self._load_scene(src_path)
-        ref = self._load_scene(ref_path)
+        src_scene_id = os.path.basename(src_path).replace('.json', '')
+        
+        # Find positive pair (same room, different scan)
+        group_id = self.scene_to_group.get(src_scene_id)
+        
+        if group_id and group_id in self.group_to_scenes:
+            same_room_scenes = self.group_to_scenes[group_id]
+            candidates = [s for s in same_room_scenes if s != src_scene_id]
+            
+            if candidates:
+                ref_scene_id = random.choice(candidates)
+                ref_path = os.path.join(self.dataset_dir, ref_scene_id + '.json')
+            else:
+                ref_idx = random.randint(0, len(self.scene_files) - 1)
+                while ref_idx == idx:
+                    ref_idx = random.randint(0, len(self.scene_files) - 1)
+                ref_path = self.scene_files[ref_idx]
+                ref_scene_id = os.path.basename(ref_path).replace('.json', '')
+        else:
+            ref_idx = random.randint(0, len(self.scene_files) - 1)
+            while ref_idx == idx:
+                ref_idx = random.randint(0, len(self.scene_files) - 1)
+            ref_path = self.scene_files[ref_idx]
+            ref_scene_id = os.path.basename(ref_path).replace('.json', '')
+        
+        # Load scene data
+        with open(src_path) as f:
+            src_data = json.load(f)
+        with open(ref_path) as f:
+            ref_data = json.load(f)
+        
+        # Extract scene CLIP BEFORE subgraph augmentation
+        src_scene_clip = torch.tensor(
+            src_data.get('scene_clip_emb', [0.0] * 512), 
+            dtype=torch.float32
+        )
+        ref_scene_clip = torch.tensor(
+            ref_data.get('scene_clip_emb', [0.0] * 512),
+            dtype=torch.float32
+        )
+        
+        # ====== SUBGRAPH AUGMENTATION ======
+        # 50% of time: create random subgraph
+        if random.random() < 0.5:
+            src_data = self._create_subgraph(src_data)
+        if random.random() < 0.5:
+            ref_data = self._create_subgraph(ref_data)
+        # ====================================
+        
+        src = self._load_scene_from_data(src_data)
+        ref = self._load_scene_from_data(ref_data)
+        
+        # Determine room labels
+        src_group = self.scene_to_group.get(src_scene_id, src_scene_id)
+        ref_group = self.scene_to_group.get(ref_scene_id, ref_scene_id)
 
         return {
-            "node_feats_src": src[0],
+            "node_feats_src": src[0],  # 518D (no scene CLIP!)
             "geom_edges_src": src[1],
             "geom_attr_src": src[2],
             "text_edges_src": src[3],
             "text_attr_src": src[4],
 
-            "node_feats_ref": ref[0],
+            "node_feats_ref": ref[0],  # 518D (no scene CLIP!)
             "geom_edges_ref": ref[1],
             "geom_attr_ref": ref[2],
             "text_edges_ref": ref[3],
             "text_attr_ref": ref[4],
+            
+            "scene_clip_src": src_scene_clip,  # 512D - returned separately!
+            "scene_clip_ref": ref_scene_clip,  # 512D - returned separately!
+            "room_id": src_group,
+            "is_positive": (src_group == ref_group),
         }
-
+    
+    def _create_subgraph(self, scene_data):
+        """
+        Create random subgraph with 40-70% of nodes.
+        Simulates ScanScribe partial queries during training!
+        """
+        nodes = scene_data['nodes']
+        edges = scene_data.get('edges_text', [])
+        
+        # Random ratio between 0.4 and 0.7
+        ratio = random.uniform(0.4, 0.7)
+        num_nodes = len(nodes)
+        num_keep = max(3, int(num_nodes * ratio))
+        
+        # Random node sampling
+        all_node_ids = list(nodes.keys())
+        keep_node_ids = set(random.sample(all_node_ids, num_keep))
+        
+        # Filter nodes
+        subgraph_nodes = {nid: nodes[nid] for nid in keep_node_ids}
+        
+        # Filter edges (only keep edges between kept nodes)
+        subgraph_edges = []
+        for edge in edges:
+            if edge['subject'] in keep_node_ids and edge['object'] in keep_node_ids:
+                subgraph_edges.append(edge)
+        
+        # Create subgraph (preserve scene CLIP!)
+        return {
+            'scene_id': scene_data['scene_id'] + '_subgraph',
+            'nodes': subgraph_nodes,
+            'edges_text': subgraph_edges,
+            'scene_clip_emb': scene_data.get('scene_clip_emb', [0.0] * 512),
+            'scene_description': scene_data.get('scene_description', '')
+        }
+    
     def __len__(self):
         return len(self.scene_files)
