@@ -13,6 +13,7 @@ from tqdm import tqdm
 import numpy as np
 import random
 import clip
+from pathlib import Path
 
 sys.path.append('../data_processing')
 sys.path.append('../../../')
@@ -20,6 +21,8 @@ from scene_graph import SceneGraph
 from helper import get_matching_subgraph
 
 # Import wrapper
+REPO_ROOT = Path(__file__).resolve().parents[2]
+sys.path.append(str(REPO_ROOT))
 sys.path.append('../../../../')
 from src.models.sgaligner.src.aligner.dual_scene_aligner import DualSceneAligner
 from src.models.sgaligner.src.aligner.dual_scene_aligner_wrapper import load_model_with_matching
@@ -235,7 +238,7 @@ def eval_acc_dual_aligner(model, database_3dssg, dataset, clip_model, mode='scan
             sorted_indices = np.argsort(match_scores)[::-1]  # High to low
             
             # DEBUG: Show first 3 batches of each round
-            if debug_count < 3:
+            if debug_count < 5:
                 print(f"\n{'='*70}")
                 print(f"DEBUG Batch {debug_count + 1} (Round {eval_round}, Batch {batch_idx})")
                 print(f"{'='*70}")
@@ -350,7 +353,7 @@ if __name__ == '__main__':
     
     # Load 3DSSG database (needed for queries)
     print("Loading 3DSSG database...")
-    _3dssg_scenes = torch.load('/Users/shirley/Documents/SCHOOL/SPRING25/masterproject/attempt2/whereami-text2sgm/playground/graph_models/data_checkpoints/processed_data/3dssg/3dssg_graphs_processed_edgelists_relationembed.pt', 
+    _3dssg_scenes = torch.load('/content/drive/MyDrive/VLSG_Files/3dssg_graphs_processed_edgelists_relationembed.pt', 
                                weights_only=False, map_location='cpu')
     _3dssg_graphs = {}
     for sid in tqdm(_3dssg_scenes, desc="3DSSG"):
@@ -360,7 +363,7 @@ if __name__ == '__main__':
     print(f"✓ Loaded {len(_3dssg_graphs)} 3DSSG database scenes")
     
     # Load ScanScribe test queries
-    scanscribe_test = torch.load('/Users/shirley/Documents/SCHOOL/SPRING25/masterproject/attempt2/whereami-text2sgm/playground/graph_models/data_checkpoints/processed_data/testing/scanscribe_graphs_test_final_no_graph_min.pt',
+    scanscribe_test = torch.load('/content/drive/MyDrive/VLSG_Files/scanscribe_graphs_test_final_no_graph_min.pt',
                                  weights_only=False, map_location='cpu')
     scanscribe_graphs = {}
     for sid in tqdm(scanscribe_test, desc="ScanScribe"):
