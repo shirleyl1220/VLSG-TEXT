@@ -215,7 +215,9 @@ def eval_acc_dual_aligner(model, database_3dssg, dataset, clip_model, mode='scan
                 db = database_3dssg[dataset[i].scene_id]
                 
                 # Subgraph matching (CRITICAL!)
-                query_subgraph, db_subgraph = get_matching_subgraph(query, db)
+                # query_subgraph, db_subgraph = get_matching_subgraph(query, db)
+                query_subgraph = query
+                db_subgraph = db
                 if db_subgraph is None or len(db_subgraph.nodes) <= 1 or len(db_subgraph.edge_idx[0]) < 1:
                     db_subgraph = db
                 if query_subgraph is None or len(query_subgraph.nodes) <= 1 or len(query_subgraph.edge_idx[0]) < 1:
@@ -368,7 +370,7 @@ if __name__ == '__main__':
     
     # Load 3DSSG database (needed for queries)
     print("Loading 3DSSG database...")
-    _3dssg_scenes = torch.load('/content/drive/MyDrive/VLSG_Files/3dssg_graphs_processed_edgelists_relationembed.pt', 
+    _3dssg_scenes = torch.load('/content/drive/MyDrive/VLSG_Files/3dssg_graphs_518D.pt', 
                                weights_only=False, map_location='cpu')
     _3dssg_graphs = {}
     for sid in tqdm(_3dssg_scenes, desc="3DSSG"):

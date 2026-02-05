@@ -8,12 +8,6 @@ import torch
 import numpy as np
 import clip
 from tqdm import tqdm
-from pathlib import Path
-import sys
-
-# Add paths
-sys.path.append('../data_processing')
-from scene_graph import SceneGraph
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Using device: {device}")
@@ -38,7 +32,7 @@ def convert_graph_to_518(graph_data, clip_model, device):
     Convert a single graph's node features to 518-dim format.
     
     Args:
-        graph_data: Dictionary containing graph information
+        graph_data: Dictionary with 'objects', 'relationships', 'edge_lists'
         clip_model: CLIP model for generating embeddings
         device: Device to run CLIP on
     
@@ -46,45 +40,37 @@ def convert_graph_to_518(graph_data, clip_model, device):
         Updated graph_data with 518-dim node features
     """
     # Create a copy to avoid modifying original
-    new_graph = graph_data.copy()
+    new_graph = {
+        'objects': {},
+        'relationships': graph_data.get('relationships', {}),
+        'edge_lists': graph_data.get('edge_lists', {})
+    }
     
-    # Get node information
-    if 'nodes' not in graph_data:
-        print(f"Warning: No 'nodes' key in graph_data")
-        return new_graph
+    # Get objects
+    objects = graph_data.get('objects', {})
     
-    nodes = graph_data['nodes']
-    new_nodes = {}
-    
-    for node_id, node_info in nodes.items():
-        # Copy node info
-        new_node = node_info.copy()
+    for obj_id, obj_info in objects.items():
+        # Copy object info
+        new_obj = obj_info.copy()
         
         # Get label
-        if hasattr(node_info, 'label'):
-            label = node_info.label
-        elif isinstance(node_info, dict) and 'label' in node_info:
-            label = node_info['label']
-        else:
-            print(f"Warning: No label found for node {node_id}, using 'object'")
-            label = 'object'
+        label = obj_info.get('label', 'object')
         
         # Build 518-dim feature
-        # Centroid (3D) - use existing or zero
-        if hasattr(node_info, 'centroid'):
-            centroid = np.array(node_info.centroid, dtype=np.float32)[:3]
-        elif isinstance(node_info, dict) and 'centroid' in node_info:
-            centroid = np.array(node_info['centroid'], dtype=np.float32)[:3]
+        # Centroid (3D) - extract from OBB if available, else zeros
+        if 'obb' in obj_info and obj_info['obb'] is not None:
+            obb = obj_info['obb']
+            if 'centroid' in obb:
+                centroid = np.array(obb['centroid'], dtype=np.float32)[:3]
+            elif isinstance(obb, dict) and 'position' in obb:
+                centroid = np.array(obb['position'], dtype=np.float32)[:3]
+            else:
+                centroid = np.zeros(3, dtype=np.float32)
         else:
             centroid = np.zeros(3, dtype=np.float32)
         
-        # Color (3D) - use existing or default gray
-        if hasattr(node_info, 'color'):
-            color = np.array(node_info.color, dtype=np.float32)[:3]
-        elif isinstance(node_info, dict) and 'color' in node_info:
-            color = np.array(node_info['color'], dtype=np.float32)[:3]
-        else:
-            color = np.array([0.5, 0.5, 0.5], dtype=np.float32)
+        # Color (3D) - default gray (no color info in 3DSSG usually)
+        color = np.array([0.5, 0.5, 0.5], dtype=np.float32)
         
         # Node CLIP (512D)
         node_clip = get_clip_embedding(label, clip_model, device)
@@ -92,23 +78,11 @@ def convert_graph_to_518(graph_data, clip_model, device):
         # Concatenate: 3 + 3 + 512 = 518
         feature_518 = np.concatenate([centroid, color, node_clip])
         
-        # Update node feature
-        if hasattr(node_info, 'feature'):
-            new_node.feature = feature_518
-        elif isinstance(node_info, dict):
-            new_node['feature'] = feature_518
-        else:
-            # Create new dict structure
-            new_node = {
-                'label': label,
-                'centroid': centroid,
-                'color': color,
-                'feature': feature_518
-            }
+        # Update object with new feature
+        new_obj['feature_518'] = feature_518  # Add as new key to preserve original
         
-        new_nodes[node_id] = new_node
+        new_graph['objects'][obj_id] = new_obj
     
-    new_graph['nodes'] = new_nodes
     return new_graph
 
 
@@ -138,6 +112,8 @@ def convert_3dssg_dataset(input_path, output_path, clip_model, device):
             )
         except Exception as e:
             print(f"\nError converting scene {scene_id}: {e}")
+            import traceback
+            traceback.print_exc()
             continue
     
     print(f"\n✓ Converted {len(converted_data)}/{len(data)} scenes")
@@ -149,37 +125,46 @@ def convert_3dssg_dataset(input_path, output_path, clip_model, device):
     
     # Verify
     print("\nVerifying conversion...")
-    test_scene = list(converted_data.keys())[0]
-    test_node = list(converted_data[test_scene]['nodes'].values())[0]
+    test_scene_id = list(converted_data.keys())[0]
+    test_scene = converted_data[test_scene_id]
     
-    if hasattr(test_node, 'feature'):
-        feature_dim = len(test_node.feature)
-    elif isinstance(test_node, dict) and 'feature' in test_node:
-        feature_dim = len(test_node['feature'])
+    if 'objects' in test_scene and len(test_scene['objects']) > 0:
+        test_obj_id = list(test_scene['objects'].keys())[0]
+        test_obj = test_scene['objects'][test_obj_id]
+        
+        if 'feature_518' in test_obj:
+            feature_dim = len(test_obj['feature_518'])
+            print(f"Sample node feature dimension: {feature_dim}")
+            
+            if feature_dim == 518:
+                print("✅ Conversion successful!")
+                
+                # Show sample
+                print(f"\nSample object (scene: {test_scene_id}, obj: {test_obj_id}):")
+                print(f"  Label: {test_obj.get('label', 'N/A')}")
+                print(f"  Feature shape: {test_obj['feature_518'].shape}")
+                print(f"  Centroid: {test_obj['feature_518'][:3]}")
+                print(f"  Color: {test_obj['feature_518'][3:6]}")
+                print(f"  CLIP (first 5): {test_obj['feature_518'][6:11]}")
+            else:
+                print(f"⚠️ Warning: Expected 518 dims, got {feature_dim}")
+        else:
+            print("⚠️ Warning: 'feature_518' key not found in object")
     else:
-        feature_dim = "Unknown"
-    
-    print(f"Sample node feature dimension: {feature_dim}")
-    
-    if feature_dim == 518:
-        print("✅ Conversion successful!")
-    else:
-        print(f"⚠️ Warning: Expected 518 dims, got {feature_dim}")
+        print("⚠️ Warning: No objects found in test scene")
 
 
-if __name__ == '__main__':
-    # Paths
-    input_path = '/content/drive/MyDrive/VLSG_Files/3dssg_graphs_processed_edgelists_relationembed.pt'
-    output_path = '/content/drive/MyDrive/VLSG_Files/3dssg_graphs_518D.pt'
-    
-    # Convert
-    convert_3dssg_dataset(input_path, output_path, clip_model, device)
-    
-    print("\n" + "="*70)
-    print("CONVERSION COMPLETE!")
-    print("="*70)
-    print(f"Input:  {input_path}")
-    print(f"Output: {output_path}")
-    print("\nYou can now use this file in your evaluation script:")
-    print(f"_3dssg_scenes = torch.load('{output_path}', weights_only=False, map_location='cpu')")
-    print("="*70)
+# Paths
+input_path = '/content/drive/MyDrive/VLSG_Files/3dssg_graphs_processed_edgelists_relationembed.pt'
+output_path = '/content/drive/MyDrive/VLSG_Files/3dssg_graphs_518D.pt'
+
+# Convert
+convert_3dssg_dataset(input_path, output_path, clip_model, device)
+
+print("\n" + "="*70)
+print("CONVERSION COMPLETE!")
+print("="*70)
+print(f"Input:  {input_path}")
+print(f"Output: {output_path}")
+print("\nYou can now use this file in your evaluation script.")
+print("="*70)
