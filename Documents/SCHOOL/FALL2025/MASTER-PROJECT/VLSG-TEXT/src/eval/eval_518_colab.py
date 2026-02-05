@@ -226,11 +226,26 @@ def eval_acc_dual_aligner(model, database_3dssg, dataset, clip_model, mode='scan
                 
                 with torch.no_grad():
                     out = model(batch)
-                    matching_prob = out["matching_prob"]
+                    matching_prob = out["matching_prob"].item()
                 
-                match_scores.append(matching_prob.item())
+                query_labels = set(n.label for n in query_subgraph.nodes.values())
+                db_labels    = set(n.label for n in db_subgraph.nodes.values())
+                overlap = query_labels & db_labels
+
+                if len(db_labels) > 0 and len(query_labels) > 0:
+                    precision = len(overlap) / len(db_labels)
+                    recall    = len(overlap) / len(query_labels)
+                    f1 = (2 * precision * recall) / (precision + recall + 1e-8)
+                else:
+                    f1 = 0.0
+
+                # NEW: normalized score
+                final_score = matching_prob * f1
+
+                match_scores.append(matching_prob)
                 true_match.append(1 if query.scene_id == db.scene_id else 0)
                 scene_ids.append(dataset[i].scene_id)
+
             
             # Sort and check top-k
             match_scores = np.array(match_scores)
