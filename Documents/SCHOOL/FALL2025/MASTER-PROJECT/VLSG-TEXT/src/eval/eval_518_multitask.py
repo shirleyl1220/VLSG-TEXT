@@ -299,7 +299,7 @@ def eval_acc_dual_aligner(model, database_3dssg, dataset, clip_model, mode='scan
             sorted_indices = np.argsort(match_scores)[::-1]
             
             # DEBUG: Show first 5 batches
-            if debug_count < 5:
+            if debug_count < 21:
                 print(f"\n{'='*70}")
                 print(f"DEBUG Batch {debug_count + 1} (Round {eval_round}, Batch {batch_idx})")
                 print(f"{'='*70}")
