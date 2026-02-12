@@ -264,12 +264,20 @@ def eval_acc_dual_aligner(model, database_3dssg, dataset, clip_model, mode='scan
         for batch_idx, t_set in enumerate(sampled_test_indices):
             match_scores = []
             scene_ids = []
+            seen_scene_ids = set()  # ← Track unique scenes
             
             query_scene_id = dataset[t_set[0]].scene_id
             
             for i in t_set:
+                db_scene_id = dataset[i].scene_id
+                
+                # SKIP DUPLICATES
+                if db_scene_id in seen_scene_ids:
+                    continue
+                seen_scene_ids.add(db_scene_id)  # ← CRITICAL: Mark as seen!
+                
                 query = dataset[t_set[0]]
-                db = database_3dssg[dataset[i].scene_id]
+                db = database_3dssg[db_scene_id]
                 
                 # Optional: Subgraph matching
                 query_subgraph = query
@@ -290,10 +298,9 @@ def eval_acc_dual_aligner(model, database_3dssg, dataset, clip_model, mode='scan
                     src_emb = out['src_emb']
                     ref_emb = out['ref_emb']
                     
-                    # Cosine similarity
+                    # 1. Embedding similarity
                     src_norm = F.normalize(src_emb, dim=-1)
                     ref_norm = F.normalize(ref_emb, dim=-1)
-                  # 1. Embedding similarity
                     emb_sim = (src_norm * ref_norm).sum().item()
 
                     # 2. Scene CLIP similarity
@@ -302,42 +309,23 @@ def eval_acc_dual_aligner(model, database_3dssg, dataset, clip_model, mode='scan
                         batch['scene_clip_ref']
                     ).item()
 
-                    # 3. Label overlap
+                    # 3. Label overlap (Jaccard)
                     query_labels = set(n.label for n in query.nodes.values())
                     db_labels = set(n.label for n in db.nodes.values())
                     overlap = len(query_labels & db_labels)
                     union = len(query_labels | db_labels)
                     jaccard = overlap / union if union > 0 else 0
 
-                    # 4. COMBINED
-                    final_score = 0.4 * emb_sim + 0.3 * scene_sim + 0.3 * jaccard
-
-                    match_scores.append(final_score)# 1. Embedding similarity
-                    emb_sim = (src_norm * ref_norm).sum().item()
-
-                    # 2. Scene CLIP similarity
-                    scene_sim = F.cosine_similarity(
-                        batch['scene_clip_src'], 
-                        batch['scene_clip_ref']
-                    ).item()
-
-                    # 3. Label overlap
-                    query_labels = set(n.label for n in query.nodes.values())
-                    db_labels = set(n.label for n in db.nodes.values())
-                    overlap = len(query_labels & db_labels)
-                    union = len(query_labels | db_labels)
-                    jaccard = overlap / union if union > 0 else 0
-
-                    # 4. COMBINED
+                    # 4. COMBINED SCORE
                     final_score = 0.4 * emb_sim + 0.3 * scene_sim + 0.3 * jaccard
 
                     match_scores.append(final_score)
-                    scene_ids.append(dataset[i].scene_id)
+                    scene_ids.append(db_scene_id)
             
             # Sort by similarity (high to low)
             match_scores = np.array(match_scores)
             sorted_indices = np.argsort(match_scores)[::-1]
-            
+                       
             # DEBUG: Show first 5 batches
             if debug_count < 21:
                 print(f"\n{'='*70}")
