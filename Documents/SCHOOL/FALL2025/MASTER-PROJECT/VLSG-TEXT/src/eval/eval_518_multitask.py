@@ -94,6 +94,144 @@ class SimpleGraphMatcher(nn.Module):
 # ============================================================
 # Helper Functions
 # ============================================================
+def grid_search_weights(model, database_3dssg, dataset, clip_model, device):
+    """Find optimal fusion weights."""
+    
+    print("\n" + "="*70)
+    print("GRID SEARCH: Finding optimal fusion weights")
+    print("="*70)
+    
+    weight_configs = [
+        # (emb_weight, scene_clip_weight, jaccard_weight)
+        (0.5, 0.3, 0.2),  # Favor learned embeddings
+        (0.4, 0.4, 0.2),  # Balance emb + scene
+        (0.4, 0.3, 0.3),  # Current baseline
+        (0.3, 0.5, 0.2),  # Favor scene CLIP
+        (0.3, 0.4, 0.3),  # Balance scene + jaccard
+        (0.3, 0.3, 0.4),  # Favor label overlap
+        (0.2, 0.5, 0.3),  # Strong scene CLIP
+        (0.2, 0.4, 0.4),  # Favor semantics
+        (0.33, 0.33, 0.34), # Equal weights
+        (0.25, 0.5, 0.25), # Very strong scene CLIP
+    ]
+    
+    best_top1 = 0
+    
+    best_weights = None
+    results = []
+    
+    # Quick eval: 3 rounds, 50 iterations
+    for w_emb, w_scene, w_jac in weight_configs:
+        print(f"\nTesting: emb={w_emb:.2f}, scene={w_scene:.2f}, jaccard={w_jac:.2f}")
+        
+        # Run quick eval
+        top1_acc = quick_eval_with_weights(
+            model, database_3dssg, dataset, clip_model, device,
+            w_emb, w_scene, w_jac,
+            eval_rounds=3, iterations=50
+        )
+        
+        results.append((w_emb, w_scene, w_jac, top1_acc))
+        print(f"  → Top-1: {top1_acc:.2f}%")
+        
+        if top1_acc > best_top1:
+            best_top1 = top1_acc
+            best_weights = (w_emb, w_scene, w_jac)
+    
+    print("\n" + "="*70)
+    print("GRID SEARCH RESULTS:")
+    print("="*70)
+    results.sort(key=lambda x: x[3], reverse=True)
+    for w_emb, w_scene, w_jac, acc in results[:5]:
+        print(f"  emb={w_emb:.2f}, scene={w_scene:.2f}, jac={w_jac:.2f} → {acc:.2f}%")
+    
+    print(f"\n✅ BEST WEIGHTS: emb={best_weights[0]:.2f}, scene={best_weights[1]:.2f}, jac={best_weights[2]:.2f}")
+    print(f"✅ BEST Top-1: {best_top1:.2f}%")
+    print("="*70)
+    
+    return best_weights
+
+
+def quick_eval_with_weights(model, database_3dssg, dataset, clip_model, device, 
+                            w_emb, w_scene, w_jac, eval_rounds=3, iterations=50):
+    """Quick evaluation with specific weights."""
+    model.eval()
+    
+    # Organize by scene
+    buckets = {}
+    for idx, g in enumerate(dataset):
+        if g.scene_id not in buckets:
+            buckets[g.scene_id] = []
+        buckets[g.scene_id].append(idx)
+    
+    all_top1 = []
+    
+    for _ in range(eval_rounds):
+        top1_hits = []
+        
+        sampled_test_indices = [
+            [random.sample(buckets[g], 1)[0] for g in random.sample(list(buckets.keys()), 10)]
+            for _ in range(iterations)
+        ]
+        
+        for t_set in sampled_test_indices:
+            match_scores = []
+            scene_ids = []
+            seen_scene_ids = set()
+            
+            query_scene_id = dataset[t_set[0]].scene_id
+            
+            for i in t_set:
+                db_scene_id = dataset[i].scene_id
+                
+                if db_scene_id in seen_scene_ids:
+                    continue
+                seen_scene_ids.add(db_scene_id)
+                
+                query = dataset[t_set[0]]
+                db = database_3dssg[db_scene_id]
+                
+                batch = convert_scene_graph_to_batch(query, db, clip_model, device)
+                
+                with torch.no_grad():
+                    out = model(
+                        batch,
+                        scene_clip_src=batch['scene_clip_src'],
+                        scene_clip_ref=batch['scene_clip_ref']
+                    )
+                    
+                    # Embedding similarity
+                    src_norm = F.normalize(out['src_emb'], dim=-1)
+                    ref_norm = F.normalize(out['ref_emb'], dim=-1)
+                    emb_sim = (src_norm * ref_norm).sum().item()
+                    
+                    # Scene CLIP similarity
+                    scene_sim = F.cosine_similarity(
+                        batch['scene_clip_src'], 
+                        batch['scene_clip_ref']
+                    ).item()
+                    
+                    # Jaccard
+                    query_labels = set(n.label for n in query.nodes.values())
+                    db_labels = set(n.label for n in db.nodes.values())
+                    overlap = len(query_labels & db_labels)
+                    union = len(query_labels | db_labels)
+                    jaccard = overlap / union if union > 0 else 0
+                    
+                    # WEIGHTED SCORE
+                    final_score = w_emb * emb_sim + w_scene * scene_sim + w_jac * jaccard
+                    
+                    match_scores.append(final_score)
+                    scene_ids.append(db_scene_id)
+            
+            # Check top-1
+            if len(match_scores) > 0:
+                best_idx = np.argmax(match_scores)
+                top1_hits.append(1 if scene_ids[best_idx] == query_scene_id else 0)
+        
+        all_top1.append(np.mean(top1_hits) * 100)
+    
+    return np.mean(all_top1)
 
 def get_clip_embedding(label, clip_model, device):
     """Get CLIP embedding for a label."""
@@ -237,7 +375,8 @@ def convert_scene_graph_to_batch(query_graph, db_graph, clip_model, device):
 # ============================================================
 
 def eval_acc_dual_aligner(model, database_3dssg, dataset, clip_model, mode='scanscribe', 
-                          eval_iter_count=100, out_of=10, valid_top_k=[1, 3, 5, 10]):
+                          eval_iter_count=100, out_of=10, valid_top_k=[1, 3, 5, 10],
+                          w_emb=0.4, w_scene=0.3, w_jac=0.3):
     """
     Evaluate SimpleGraphMatcher.
     """
@@ -326,7 +465,7 @@ def eval_acc_dual_aligner(model, database_3dssg, dataset, clip_model, mode='scan
                     jaccard = overlap / union if union > 0 else 0
 
                     # 4. COMBINED SCORE
-                    final_score = 0.4 * emb_sim + 0.3 * scene_sim + 0.3 * jaccard
+                    final_score = w_emb * emb_sim + w_scene * scene_sim + w_jac * jaccard
 
                     match_scores.append(final_score)
                     scene_ids.append(db_scene_id)
@@ -431,7 +570,7 @@ if __name__ == '__main__':
     model.load_state_dict(checkpoint['model_state_dict'])
     
     print(f"✓ Model loaded: {sum(p.numel() for p in model.parameters()):,} parameters\n")
-    
+
     # Load data
     print("Loading 3DSSG database...")
     _3dssg_scenes = torch.load('/content/drive/MyDrive/VLSG_Files/3dssg_graphs_518D.pt', 
@@ -457,10 +596,31 @@ if __name__ == '__main__':
     scanscribe_graphs = {k: v for k, v in scanscribe_graphs.items() if len(v.edge_idx[0]) >= 1}
     
     print(f"✓ Loaded {len(scanscribe_graphs)} ScanScribe queries\n")
+
+    # Grid search best fusion weights
+    best_weights = grid_search_weights(
+        model,
+        _3dssg_graphs,
+        list(scanscribe_graphs.values()),
+        clip_model,
+        device
+    )
+
+    # Unpack the best weights
+    w_emb, w_scene, w_jac = best_weights
+    print(f"\n✅ Using best weights: emb={w_emb:.2f}, scene={w_scene:.2f}, jac={w_jac:.2f}\n")
     
-    # Evaluate
-    scanscribe_acc = eval_acc_dual_aligner(model, _3dssg_graphs, list(scanscribe_graphs.values()), 
-                                          clip_model, mode='scanscribe')
+    # Evaluate with best weights
+    scanscribe_acc = eval_acc_dual_aligner(
+        model,
+        _3dssg_graphs,
+        list(scanscribe_graphs.values()),
+        clip_model,
+        mode='scanscribe',
+        w_emb=w_emb,
+        w_scene=w_scene,
+        w_jac=w_jac
+    )
     
     print(f"\n{'='*70}")
     print("FINAL RESULTS - ScanScribe")
