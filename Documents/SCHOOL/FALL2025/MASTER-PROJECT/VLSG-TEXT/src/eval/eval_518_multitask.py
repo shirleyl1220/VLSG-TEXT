@@ -463,7 +463,11 @@ def eval_acc_dual_aligner(model, database_3dssg, dataset, clip_model, mode='scan
                         batch['scene_clip_ref']
                     ).item()
 
-                    # With F1 calculation:
+                    # 3. Label overlap (F1 Score)
+                    query_labels = set(n.label for n in query.nodes.values())
+                    db_labels = set(n.label for n in db.nodes.values())
+                    overlap = len(query_labels & db_labels)
+                    
                     if len(query_labels) > 0 and len(db_labels) > 0:
                         precision = overlap / len(db_labels)
                         recall = overlap / len(query_labels)
@@ -471,7 +475,7 @@ def eval_acc_dual_aligner(model, database_3dssg, dataset, clip_model, mode='scan
                     else:
                         f1 = 0
 
-                    # Update final score:
+                    # 4. COMBINED SCORE (using F1)
                     final_score = w_emb * emb_sim + w_scene * scene_sim + w_jac * f1 
 
                     match_scores.append(final_score)
