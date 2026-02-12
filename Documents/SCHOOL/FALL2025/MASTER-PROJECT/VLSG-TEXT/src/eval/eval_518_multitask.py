@@ -212,15 +212,21 @@ def quick_eval_with_weights(model, database_3dssg, dataset, clip_model, device,
                     ).item()
                     
                     # Jaccard
+                    #  Label overlap (F1 Score - better than Jaccard!)
                     query_labels = set(n.label for n in query.nodes.values())
                     db_labels = set(n.label for n in db.nodes.values())
                     overlap = len(query_labels & db_labels)
-                    union = len(query_labels | db_labels)
-                    jaccard = overlap / union if union > 0 else 0
-                    
-                    # WEIGHTED SCORE
-                    final_score = w_emb * emb_sim + w_scene * scene_sim + w_jac * jaccard
-                    
+
+                    if len(query_labels) > 0 and len(db_labels) > 0:
+                        precision = overlap / len(db_labels)
+                        recall = overlap / len(query_labels)
+                        f1 = (2 * precision * recall) / (precision + recall + 1e-8) if (precision + recall) > 0 else 0
+                    else:
+                        f1 = 0
+
+                    # COMBINED SCORE (using F1 instead of Jaccard)
+                    final_score = w_emb * emb_sim + w_scene * scene_sim + w_jac * f1  # ← Using F1!
+                                        
                     match_scores.append(final_score)
                     scene_ids.append(db_scene_id)
             
@@ -376,7 +382,7 @@ def convert_scene_graph_to_batch(query_graph, db_graph, clip_model, device):
 
 def eval_acc_dual_aligner(model, database_3dssg, dataset, clip_model, mode='scanscribe', 
                           eval_iter_count=100, out_of=10, valid_top_k=[1, 3, 5, 10],
-                          w_emb=0.4, w_scene=0.3, w_jac=0.3):
+                          w_emb=0.33, w_scene=0.33, w_jac=0.34):
     """
     Evaluate SimpleGraphMatcher.
     """
@@ -457,15 +463,16 @@ def eval_acc_dual_aligner(model, database_3dssg, dataset, clip_model, mode='scan
                         batch['scene_clip_ref']
                     ).item()
 
-                    # 3. Label overlap (Jaccard)
-                    query_labels = set(n.label for n in query.nodes.values())
-                    db_labels = set(n.label for n in db.nodes.values())
-                    overlap = len(query_labels & db_labels)
-                    union = len(query_labels | db_labels)
-                    jaccard = overlap / union if union > 0 else 0
+                    # With F1 calculation:
+                    if len(query_labels) > 0 and len(db_labels) > 0:
+                        precision = overlap / len(db_labels)
+                        recall = overlap / len(query_labels)
+                        f1 = (2 * precision * recall) / (precision + recall + 1e-8) if (precision + recall) > 0 else 0
+                    else:
+                        f1 = 0
 
-                    # 4. COMBINED SCORE
-                    final_score = w_emb * emb_sim + w_scene * scene_sim + w_jac * jaccard
+                    # Update final score:
+                    final_score = w_emb * emb_sim + w_scene * scene_sim + w_jac * f1 
 
                     match_scores.append(final_score)
                     scene_ids.append(db_scene_id)
@@ -598,16 +605,17 @@ if __name__ == '__main__':
     print(f"✓ Loaded {len(scanscribe_graphs)} ScanScribe queries\n")
 
     # Grid search best fusion weights
-    best_weights = grid_search_weights(
-        model,
-        _3dssg_graphs,
-        list(scanscribe_graphs.values()),
-        clip_model,
-        device
-    )
+    # best_weights = grid_search_weights(
+    #     model,
+    #     _3dssg_graphs,
+    #     list(scanscribe_graphs.values()),
+    #     clip_model,
+    #     device
+    # )
 
     # Unpack the best weights
-    w_emb, w_scene, w_jac = best_weights
+    # w_emb, w_scene, w_jac = best_weights
+    w_emb, w_scene, w_jac = 0.33, 0.33, 0.34
     print(f"\n✅ Using best weights: emb={w_emb:.2f}, scene={w_scene:.2f}, jac={w_jac:.2f}\n")
     
     # Evaluate with best weights
