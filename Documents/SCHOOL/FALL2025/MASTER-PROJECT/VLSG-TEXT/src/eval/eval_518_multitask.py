@@ -594,8 +594,11 @@ if __name__ == '__main__':
     print(f"✓ Loaded {len(_3dssg_graphs)} 3DSSG scenes")
     
     print("Loading ScanScribe test...")
-    scanscribe_test = torch.load('/content/drive/MyDrive/VLSG_Files/scanscribe_graphs_test_518D.pt',
+    # scanscribe_test = torch.load('/content/drive/MyDrive/VLSG_Files/scanscribe_graphs_test_518D.pt',
+    #                              weights_only=False, map_location='cpu')
+    scanscribe_test = torch.load('/content/drive/MyDrive/VLSG_Files/scanscribe_cleaned_original_518D.pt',
                                  weights_only=False, map_location='cpu')
+                    
     scanscribe_graphs = {}
     for sid in tqdm(scanscribe_test, desc="ScanScribe"):
         for tid in scanscribe_test[sid].keys():
