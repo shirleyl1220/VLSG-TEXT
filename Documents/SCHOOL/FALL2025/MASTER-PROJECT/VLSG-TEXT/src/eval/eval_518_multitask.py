@@ -499,12 +499,12 @@ def eval_acc_dual_aligner(model, database_3dssg, dataset, clip_model, mode='scan
                     is_correct = "✓ CORRECT" if scene_id == query_scene_id else "✗ wrong"
                     print(f"  Rank {rank_idx+1}: {scene_id:40s} score={score:.4f} {is_correct}")
                 
-                #finding cause of failure for top-1 wrong predictions
-                failure_analysis = {
-                        'same_prefix_confused': 0,  # wrong scene has same first 8 chars
-                        'score_too_close': 0,       # correct score within 0.1 of top-1
-                        'correct_not_in_top5': 0,
-                    }
+                # #finding cause of failure for top-1 wrong predictions
+                # failure_analysis = {
+                #         'same_prefix_confused': 0,  # wrong scene has same first 8 chars
+                #         'score_too_close': 0,       # correct score within 0.1 of top-1
+                #         'correct_not_in_top5': 0,
+                #     }
                
                 # Ground truth rank
                 gt_rank = None
@@ -517,17 +517,38 @@ def eval_acc_dual_aligner(model, database_3dssg, dataset, clip_model, mode='scan
                 
                 top1_scene_id = scene_ids[sorted_indices[0]]  
                 top1_score = match_scores[sorted_indices[0]]
-                gt_score = match_scores[scene_ids.index(query_scene_id)]
+                    top_wrong_idx = sorted_indices[0] if scene_ids[sorted_indices[0]] != query_scene_id else sorted_indices[1]
+                top_wrong_scene_id = scene_ids[top_wrong_idx]
+                
+                # Get labels
+                query_labels = [n.label for n in query.nodes.values()]
+                wrong_db = database_3dssg[top_wrong_scene_id]
+                correct_db = database_3dssg[query_scene_id]
+                
+                wrong_labels = [n.label for n in wrong_db.nodes.values()]
+                correct_labels = [n.label for n in correct_db.nodes.values()]
+                
+                print(f"Query labels:   {sorted(query_labels)}")
+                print(f"Correct DB labels: {sorted(correct_labels)}")
+                print(f"Wrong DB labels:   {sorted(wrong_labels)}")
+                
+                # Overlap scores
+                q_set = set(query_labels)
+                correct_overlap = len(q_set & set(correct_labels)) / len(q_set)
+                wrong_overlap = len(q_set & set(wrong_labels)) / len(q_set)
+                print(f"Label overlap with correct: {correct_overlap:.2f}")
+                print(f"Label overlap with wrong:   {wrong_overlap:.2f}")
+                # gt_score = match_scores[scene_ids.index(query_scene_id)]
 
-                if top1_scene_id != query_scene_id:
-                    if top1_scene_id[:8] == query_scene_id[:8]:
-                        failure_analysis['same_prefix_confused'] += 1
-                    if abs(top1_score - gt_score) < 0.1:
-                        failure_analysis['score_too_close'] += 1
-                    if gt_rank > 5:
-                        failure_analysis['correct_not_in_top5'] += 1
+                # if top1_scene_id != query_scene_id:
+                #     if top1_scene_id[:8] == query_scene_id[:8]:
+                #         failure_analysis['s ame_prefix_confused'] += 1
+                #     if abs(top1_score - gt_score) < 0.1:
+                #         failure_analysis['score_too_close'] += 1
+                #     if gt_rank > 5:
+                #         failure_analysis['correct_not_in_top5'] += 1
 
-                print(f"Failure analysis: {failure_analysis}")
+                # print(f"Failure analysis: {failure_analysis}")
 
                 if gt_rank and gt_rank <= 3:
                     print(f"  ✅ GOOD!")
