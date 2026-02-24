@@ -505,6 +505,16 @@ def eval_acc_dual_aligner(model, database_3dssg, dataset, clip_model, mode='scan
                         'score_too_close': 0,       # correct score within 0.1 of top-1
                         'correct_not_in_top5': 0,
                     }
+               
+                # Ground truth rank
+                gt_rank = None
+                for rank_idx, idx in enumerate(sorted_indices):
+                    if scene_ids[idx] == query_scene_id:
+                        gt_rank = rank_idx + 1
+                        break
+                
+                print(f"\n  📊 Ground truth ranked at: {gt_rank}/{len(sorted_indices)}")
+                
                 top1_scene_id = scene_ids[sorted_indices[0]]  
                 top1_score = match_scores[sorted_indices[0]]
                 gt_score = match_scores[scene_ids.index(query_scene_id)]
@@ -519,15 +529,6 @@ def eval_acc_dual_aligner(model, database_3dssg, dataset, clip_model, mode='scan
 
                 print(f"Failure analysis: {failure_analysis}")
 
-                # Ground truth rank
-                gt_rank = None
-                for rank_idx, idx in enumerate(sorted_indices):
-                    if scene_ids[idx] == query_scene_id:
-                        gt_rank = rank_idx + 1
-                        break
-                
-                print(f"\n  📊 Ground truth ranked at: {gt_rank}/{len(sorted_indices)}")
-                
                 if gt_rank and gt_rank <= 3:
                     print(f"  ✅ GOOD!")
                 elif gt_rank and gt_rank <= 5:
