@@ -379,146 +379,119 @@ def convert_scene_graph_to_batch(query_graph, db_graph, clip_model, device):
 # ============================================================
 # Evaluation Function
 # ============================================================
-
-def eval_acc_dual_aligner(model, database_3dssg, dataset, clip_model, mode='scanscribe', 
-                          eval_iter_count=100, out_of=10, valid_top_k=[1, 3, 5, 10],
+def eval_acc_dual_aligner(model, database_3dssg, query_dataset, pool_dataset,
+                          clip_model, mode='scanscribe', 
+                          eval_iter_count=100, out_of=10, valid_top_k=[1, 2, 3, 5],
                           w_emb=0.33, w_scene=0.33, w_jac=0.34):
-    """
-    Evaluate SimpleGraphMatcher.
-    """
     model.eval()
     
     print(f"\n{'='*70}")
     print(f"Evaluating on {mode}")
     print(f"{'='*70}")
     
-    # Organize by scene
-    buckets = {}
-    for idx, g in enumerate(dataset):
-        if g.scene_id not in buckets:
-            buckets[g.scene_id] = []
-        buckets[g.scene_id].append(idx)
+    # Query buckets: 55 test scenes only
+    query_buckets = {}
+    for idx, g in enumerate(query_dataset):
+        if g.scene_id not in query_buckets:
+            query_buckets[g.scene_id] = []
+        query_buckets[g.scene_id].append(idx)
     
-    print(f"Unique scenes: {len(buckets)}, Total graphs: {len(dataset)}")
+    # Pool buckets: all 218 scenes (for sampling candidates)
+    pool_buckets = {}
+    for idx, g in enumerate(pool_dataset):
+        if g.scene_id not in pool_buckets:
+            pool_buckets[g.scene_id] = []
+        pool_buckets[g.scene_id].append(idx)
     
-    # Evaluation
+    print(f"Query scenes: {len(query_buckets)}, Pool scenes: {len(pool_buckets)}")
+    
     eval_iters = 10
     all_valid = {}
-    
     debug_count = 0
     
     for eval_round in tqdm(range(eval_iters), desc=f"Eval {mode}"):
         valid = {k: [] for k in valid_top_k}
         
-        sampled_test_indices = [
-            [random.sample(buckets[g], 1)[0] for g in random.sample(list(buckets.keys()), out_of)]
-            for _ in range(eval_iter_count)
-        ]
-        
-        for batch_idx, t_set in enumerate(sampled_test_indices):
+        for batch_idx in range(eval_iter_count):
+            # 1. Pick ONE query from the 55-scene test set
+            query_scene_id = random.choice(list(query_buckets.keys()))
+            query_idx = random.sample(query_buckets[query_scene_id], 1)[0]
+            query = query_dataset[query_idx]
+            
+            # 2. Sample 9 OTHER scenes from the 218-scene pool
+            other_pool_scenes = [s for s in pool_buckets.keys() if s != query_scene_id]
+            sampled_scenes = random.sample(other_pool_scenes, out_of - 1)
+            
+            # 3. Candidates = query scene + 9 others = 10 total
+            candidate_scenes = [query_scene_id] + sampled_scenes
+            
             match_scores = []
             scene_ids = []
-            seen_scene_ids = set()  # ← Track unique scenes
             
-            query_scene_id = dataset[t_set[0]].scene_id
-            
-            for i in t_set:
-                db_scene_id = dataset[i].scene_id
+            for scene_id in candidate_scenes:
+                # Get one graph from pool for this scene
+                pool_idx = random.sample(pool_buckets[scene_id], 1)[0]
+                db_scene = pool_dataset[pool_idx]
                 
-                # SKIP DUPLICATES
-                if db_scene_id in seen_scene_ids:
+                # Get 3DSSG graph for scoring
+                if scene_id not in database_3dssg:
                     continue
-                seen_scene_ids.add(db_scene_id)  # ← CRITICAL: Mark as seen!
+                db = database_3dssg[scene_id]
                 
-                query = dataset[t_set[0]]
-                db = database_3dssg[db_scene_id]
-                
-                # Optional: Subgraph matching
-                query_subgraph = query
-                db_subgraph = db
-                
-                # Convert to batch
-                batch = convert_scene_graph_to_batch(query_subgraph, db_subgraph, clip_model, device)
+                batch = convert_scene_graph_to_batch(query, db, clip_model, device)
                 
                 with torch.no_grad():
-                    # Forward through model
                     out = model(
                         batch,
                         scene_clip_src=batch['scene_clip_src'],
                         scene_clip_ref=batch['scene_clip_ref']
                     )
                     
-                    # Compute similarity
-                    src_emb = out['src_emb']
-                    ref_emb = out['ref_emb']
-                    
-                    # 1. Embedding similarity
-                    src_norm = F.normalize(src_emb, dim=-1)
-                    ref_norm = F.normalize(ref_emb, dim=-1)
+                    src_norm = F.normalize(out['src_emb'], dim=-1)
+                    ref_norm = F.normalize(out['ref_emb'], dim=-1)
                     emb_sim = (src_norm * ref_norm).sum().item()
-
-                    # 2. Scene CLIP similarity
+                    
                     scene_sim = F.cosine_similarity(
-                        batch['scene_clip_src'], 
+                        batch['scene_clip_src'],
                         batch['scene_clip_ref']
                     ).item()
-
-                    # 3. Label overlap (F1 Score)
+                    
                     query_labels = set(n.label for n in query.nodes.values())
                     db_labels = set(n.label for n in db.nodes.values())
                     overlap = len(query_labels & db_labels)
-                    
                     if len(query_labels) > 0 and len(db_labels) > 0:
                         precision = overlap / len(db_labels)
                         recall = overlap / len(query_labels)
-                        f1 = (2 * precision * recall) / (precision + recall + 1e-8) if (precision + recall) > 0 else 0
+                        f1 = (2 * precision * recall) / (precision + recall + 1e-8)
                     else:
                         f1 = 0
-
-                    # 4. COMBINED SCORE (using F1)
-                    final_score = w_emb * emb_sim + w_scene * scene_sim + w_jac * f1 
-
+                    
+                    final_score = w_emb * emb_sim + w_scene * scene_sim + w_jac * f1
                     match_scores.append(final_score)
-                    scene_ids.append(db_scene_id)
+                    scene_ids.append(scene_id)
             
-            # Sort by similarity (high to low)
             match_scores = np.array(match_scores)
             sorted_indices = np.argsort(match_scores)[::-1]
-                       
-            # DEBUG: Show first 5 batches
+            
+            # Debug
             if debug_count < 21:
                 print(f"\n{'='*70}")
-                print(f"DEBUG Batch {debug_count + 1} (Round {eval_round}, Batch {batch_idx})")
+                print(f"DEBUG Batch {debug_count+1} (Round {eval_round}, Batch {batch_idx})")
                 print(f"{'='*70}")
                 print(f"Query scene: {query_scene_id}")
-                
                 print(f"\n🎯 TOP 10 PREDICTIONS:")
                 for rank_idx, idx in enumerate(sorted_indices[:10]):
-                    scene_id = scene_ids[idx]
+                    sid = scene_ids[idx]
                     score = match_scores[idx]
-                    is_correct = "✓ CORRECT" if scene_id == query_scene_id else "✗ wrong"
-                    print(f"  Rank {rank_idx+1}: {scene_id:40s} score={score:.4f} {is_correct}")
+                    is_correct = "✓ CORRECT" if sid == query_scene_id else "✗ wrong"
+                    print(f"  Rank {rank_idx+1}: {sid:40s} score={score:.4f} {is_correct}")
                 
-                # Ground truth rank
-                gt_rank = None
-                for rank_idx, idx in enumerate(sorted_indices):
-                    if scene_ids[idx] == query_scene_id:
-                        gt_rank = rank_idx + 1
-                        break
-                
+                gt_rank = next((r+1 for r, idx in enumerate(sorted_indices) if scene_ids[idx] == query_scene_id), None)
                 print(f"\n  📊 Ground truth ranked at: {gt_rank}/{len(sorted_indices)}")
-                
-                if gt_rank and gt_rank <= 3:
-                    print(f"  ✅ GOOD!")
-                elif gt_rank and gt_rank <= 5:
-                    print(f"  ⚠️  OKAY")
-                else:
-                    print(f"  ❌ POOR")
-                
+                print("  ✅ GOOD!" if gt_rank <= 3 else "  ⚠️ OKAY" if gt_rank <= 5 else "  ❌ POOR")
                 print(f"{'='*70}\n")
                 debug_count += 1
             
-            # Check top-k
             for k in valid_top_k:
                 top_k_scenes = [scene_ids[idx] for idx in sorted_indices[:k]]
                 valid[k].append(1 if query_scene_id in top_k_scenes else 0)
@@ -528,9 +501,7 @@ def eval_acc_dual_aligner(model, database_3dssg, dataset, clip_model, mode='scan
                 all_valid[k] = []
             all_valid[k].append(np.mean(valid[k]))
     
-    # Results
     accuracy = {k: (np.mean(all_valid[k]), np.std(all_valid[k])) for k in valid_top_k}
-    
     print(f"\nResults:")
     for k in accuracy:
         mean, std = accuracy[k]
@@ -538,8 +509,6 @@ def eval_acc_dual_aligner(model, database_3dssg, dataset, clip_model, mode='scan
     
     model.train()
     return accuracy
-
-
 # ============================================================
 # Main
 # ============================================================
@@ -593,22 +562,34 @@ if __name__ == '__main__':
     
     print(f"✓ Loaded {len(_3dssg_graphs)} 3DSSG scenes")
     
-    print("Loading ScanScribe test...")
-    scanscribe_test = torch.load('/content/drive/MyDrive/VLSG_Files/scanscribe_graphs_test_518D.pt',
-                                 weights_only=False, map_location='cpu')
-    scanscribe_graphs = {}
-    for sid in tqdm(scanscribe_test, desc="ScanScribe"):
-        for tid in scanscribe_test[sid].keys():
+    # Queries: 55-scene test set
+    print("Loading ScanScribe 55-scene test...")
+    scanscribe_test_55 = torch.load('/content/drive/MyDrive/VLSG_Files/scanscribe_graphs_test_518D.pt',
+                                weights_only=False, map_location='cpu')
+    query_graphs = {}
+    for sid in tqdm(scanscribe_test_55, desc="ScanScribe 55"):
+        for tid in scanscribe_test_55[sid].keys():
             key = f"{sid}_{str(tid).zfill(5)}"
-            scanscribe_graphs[key] = SceneGraph(sid, txt_id=tid, graph_type='scanscribe',
-                                               graph=scanscribe_test[sid][tid],
-                                               embedding_type='word2vec', use_attributes=True)
-    
-    scanscribe_graphs = {k: v for k, v in scanscribe_graphs.items() if len(v.edge_idx[0]) >= 1}
-    
-    print(f"✓ Loaded {len(scanscribe_graphs)} ScanScribe queries\n")
+            query_graphs[key] = SceneGraph(sid, txt_id=tid, graph_type='scanscribe',
+                                        graph=scanscribe_test_55[sid][tid],
+                                        embedding_type='word2vec', use_attributes=True)
+    query_graphs = {k: v for k, v in query_graphs.items() if len(v.edge_idx[0]) >= 1}
+    print(f"✓ Loaded {len(query_graphs)} query graphs from 55 scenes")
 
-    # Grid search best fusion weights
+    # Candidate pool: 218-scene pool
+    print("Loading ScanScribe 218-scene pool...")
+    scanscribe_218 = torch.load('/content/drive/MyDrive/VLSG_Files/scanscribe_cleaned_original_518D.pt',
+                                weights_only=False, map_location='cpu')
+    pool_graphs = {}
+    for sid in tqdm(scanscribe_218, desc="ScanScribe 218"):
+        for tid in scanscribe_218[sid].keys():
+            key = f"{sid}_{str(tid).zfill(5)}"
+            pool_graphs[key] = SceneGraph(sid, txt_id=tid, graph_type='scanscribe',
+                                        graph=scanscribe_218[sid][tid],
+                                        embedding_type='word2vec', use_attributes=True)
+    pool_graphs = {k: v for k, v in pool_graphs.items() if len(v.edge_idx[0]) >= 1}
+    print(f"✓ Loaded {len(pool_graphs)} pool graphs from 218 scenes")
+        # Grid search best fusion weights
     # best_weights = grid_search_weights(
     #     model,
     #     _3dssg_graphs,
@@ -626,14 +607,14 @@ if __name__ == '__main__':
     scanscribe_acc = eval_acc_dual_aligner(
         model,
         _3dssg_graphs,
-        list(scanscribe_graphs.values()),
-        clip_model,
-        mode='scanscribe',
-        w_emb=w_emb,
-        w_scene=w_scene,
-        w_jac=w_jac
+        query_dataset=list(query_graphs.values()),   # 55 scenes
+        pool_dataset=list(pool_graphs.values()),      # 218 scenes
+        clip_model=clip_model,
+        mode='scanscribe_table1',
+        valid_top_k=[1, 2, 3, 5],
+        out_of=10,
+        w_emb=0.33, w_scene=0.33, w_jac=0.34
     )
-    
     print(f"\n{'='*70}")
     print("FINAL RESULTS - ScanScribe")
     print(f"{'='*70}")
