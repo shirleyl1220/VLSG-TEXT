@@ -226,7 +226,29 @@ def quick_eval_with_weights(model, database_3dssg, dataset, clip_model, device,
 
                     # COMBINED SCORE (using F1 instead of Jaccard)
                     final_score = w_emb * emb_sim + w_scene * scene_sim + w_jac * f1  # ← Using F1!
-                                        
+                    print (f"  [DEBUG] Scores for DB scene {db_scene_id}: emb={emb_sim:.4f}, scene={scene_sim:.4f}, f1={f1:.4f}, final={final_score:.4f}")
+                    #print query nodes and edges
+                    print(f"    Query labels: {query_labels}")
+                    print(f"    DB labels: {db_labels}")
+
+                    # Query nodes + edges (debug)
+                    if hasattr(query, 'nodes'):
+                        query_node_labels = {nid: (node.label if hasattr(node, 'label') else str(node))
+                                             for nid, node in query.nodes.items()}
+                        print(f"    Query nodes: {query_node_labels}")
+
+                        if hasattr(query, 'edge_idx') and len(query.edge_idx) > 0:
+                            edge_src = query.edge_idx[0]
+                            edge_dst = query.edge_idx[1]
+                            query_edges = []
+                            for s, t in zip(edge_src, edge_dst):
+                                s_label = query_node_labels.get(s, str(s))
+                                t_label = query_node_labels.get(t, str(t))
+                                query_edges.append((s, t, s_label, t_label))
+                            print(f"    Query edges: {query_edges}")
+                        else:
+                            print("    Query edges: []")
+                    
                     match_scores.append(final_score)
                     scene_ids.append(db_scene_id)
             
@@ -575,7 +597,9 @@ if __name__ == '__main__':
                                         embedding_type='word2vec', use_attributes=True)
     query_graphs = {k: v for k, v in query_graphs.items() if len(v.edge_idx[0]) >= 1}
     print(f"✓ Loaded {len(query_graphs)} query graphs from 55 scenes")
-
+    node_counts = [len(g.nodes) for g in query_graphs.values()]
+    print(f"Mean nodes: {np.mean(node_counts):.1f}")
+    print(f"Min: {min(node_counts)}, Max: {max(node_counts)}")
     # Candidate pool: 218-scene pool
     print("Loading ScanScribe 218-scene pool...")
     scanscribe_218 = torch.load('/content/drive/MyDrive/VLSG_Files/scanscribe_cleaned_original_518D.pt',
