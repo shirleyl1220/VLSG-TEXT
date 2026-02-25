@@ -2,17 +2,15 @@ import torch
 import torch.nn as nn
 from torch_geometric.nn import GATv2Conv
 
-
 class EdgeGATLayer(nn.Module):
     def __init__(self, in_dim, out_dim, heads, edge_dim, dropout=0.0):
         super().__init__()
 
-        self.proj_edge = nn.Linear(edge_dim, in_dim)
         self.gat = GATv2Conv(
             in_channels=in_dim,
-            out_channels=out_dim // heads,   # correct
+            out_channels=out_dim // heads,
             heads=heads,
-            edge_dim=in_dim,
+            edge_dim=edge_dim,  # Use original edge_dim (8 for geom, 512 for text)
             dropout=dropout,
             add_self_loops=False
         )
@@ -30,10 +28,6 @@ class EdgeGATLayer(nn.Module):
         # print("Edge index:", None if edge_index is None else edge_index.shape)
         # print("Edge attr:", None if edge_attr is None else edge_attr.shape)
 
-        if edge_attr is not None:
-            edge_attr = self.proj_edge(edge_attr)
-            # print("Projected edge attr:", edge_attr.shape)
-
         out = self.gat(x, edge_index, edge_attr)
         # print("GAT output:", out.shape)
         out = out + self.res_proj(x)         # residual connection
@@ -42,6 +36,7 @@ class EdgeGATLayer(nn.Module):
         # print("Output after norm and activation:", out.shape)
 
         return out
+
 class MultiGAT_Edge(nn.Module):
     def __init__(self, n_units, n_heads, edge_dim, dropout=0.0):
         super().__init__()
