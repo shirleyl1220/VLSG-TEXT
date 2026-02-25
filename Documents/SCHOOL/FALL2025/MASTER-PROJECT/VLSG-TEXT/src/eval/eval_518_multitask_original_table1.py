@@ -151,6 +151,19 @@ def grid_search_weights(model, database_3dssg, dataset, clip_model, device):
     
     return best_weights
 
+def get_base_label(label):
+    # "chair_south_middle" → "chair"
+    # "table_center_lower" → "table"
+    parts = label.split('_')
+    # base label is everything before spatial descriptors
+    spatial = {'north','south','east','west','center','upper','middle','lower'}
+    base = []
+    for part in parts:
+        if part in spatial:
+            break
+        base.append(part)
+    return '_'.join(base) if base else label
+
 
 def quick_eval_with_weights(model, database_3dssg, dataset, clip_model, device, 
                             w_emb, w_scene, w_jac, eval_rounds=3, iterations=50):
@@ -213,8 +226,8 @@ def quick_eval_with_weights(model, database_3dssg, dataset, clip_model, device,
                     
                     # Jaccard
                     #  Label overlap (F1 Score - better than Jaccard!)
-                    query_labels = set(n.label for n in query.nodes.values())
-                    db_labels = set(n.label for n in db.nodes.values())
+                    query_labels = set(get_base_label(n.label) for n in query.nodes.values())
+                    db_labels = set(get_base_label(n.label) for n in db.nodes.values())
                     overlap = len(query_labels & db_labels)
 
                     if len(query_labels) > 0 and len(db_labels) > 0:
@@ -478,8 +491,8 @@ def eval_acc_dual_aligner(model, database_3dssg, query_dataset, pool_dataset,
                         batch['scene_clip_ref']
                     ).item()
                     
-                    query_labels = set(n.label for n in query.nodes.values())
-                    db_labels = set(n.label for n in db.nodes.values())
+                    query_labels = set(get_base_label(n.label) for n in query.nodes.values())
+                    db_labels = set(get_base_label(n.label) for n in db.nodes.values())
                     overlap = len(query_labels & db_labels)
                     if len(query_labels) > 0 and len(db_labels) > 0:
                         precision = overlap / len(db_labels)
