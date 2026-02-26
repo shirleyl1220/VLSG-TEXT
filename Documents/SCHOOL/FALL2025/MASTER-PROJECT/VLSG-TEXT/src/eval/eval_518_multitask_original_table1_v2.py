@@ -1,692 +1,282 @@
 """
-Evaluation script for SimpleGraphMatcher (518-dim + Scene CLIP fusion).
+Fast evaluation using precomputed embeddings.
+Usage:
+  # Top-k out of 10 (Table 1 protocol)
+  python eval_cached.py --checkpoint /path/to/ckpt.pth --mode top10
 
-Properly loads the SimpleGraphMatcher wrapper with fusion layer.
-
-
-# update 12 feb 5.30pm : 
-Results:
-  Top-1: 42.10% ± 4.04%
-  Top-3: 68.40% ± 3.47%
-  Top-5: 82.90% ± 3.05%
-  Top-10: 100.00% ± 0.00%
+  # Top-k out of all scenes (Table 2 protocol)
+  python eval_cached.py --checkpoint /path/to/ckpt.pth --mode full
 """
 
-
-import time
-import argparse
-import sys
 import torch
 import torch.nn.functional as F
-from tqdm import tqdm
 import numpy as np
 import random
-import clip
+import argparse
+from tqdm import tqdm
+import sys
 from pathlib import Path
 
-sys.path.append('../data_processing')
-sys.path.append('../../../')
-from scene_graph import SceneGraph
-from helper import get_matching_subgraph
+# ── Args ───────────────────────────────────────────────────
+parser = argparse.ArgumentParser()
+parser.add_argument('--checkpoint',      type=str,   required=True)
+parser.add_argument('--cache_dir',       type=str,   default='/content/drive/MyDrive/VLSG_Files')
+parser.add_argument('--mode',            type=str,   default='top10',
+                    choices=['top10', 'full'],
+                    help='top10: rank against 10 candidates (Table 1), '
+                         'full: rank against all 55 test scenes (Table 2)')
+parser.add_argument('--w_emb',           type=float, default=0.33)
+parser.add_argument('--w_scene',         type=float, default=0.33)
+parser.add_argument('--w_jac',           type=float, default=0.34)
+parser.add_argument('--eval_iters',      type=int,   default=10)
+parser.add_argument('--eval_iter_count', type=int,   default=100)
+parser.add_argument('--out_of',          type=int,   default=10,
+                    help='Only used in top10 mode')
+parser.add_argument('--seed',            type=int,   default=42)
+args = parser.parse_args()
 
-# Import base model
+random.seed(args.seed)
+np.random.seed(args.seed)
+torch.manual_seed(args.seed)
+
 REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.append(str(REPO_ROOT))
-sys.path.append('../../../../')
-from src.models.sgaligner.src.aligner.dual_scene_aligner_v2 import DualSceneAligner
-import torch.nn as nn
+from src.eval.scene_graph import SceneGraph
 
-torch.cuda.empty_cache()
-device = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Using device: {device}")
+print(f"Eval mode:    {args.mode}")
 
-# Load CLIP
-print("Loading CLIP...")
-clip_model, _ = clip.load("ViT-B/32", device=device)
-print("✓ CLIP loaded")
-
-random.seed(42)
-#add seed to torch
-torch.manual_seed(42)
-if torch.cuda.is_available():
-    torch.cuda.manual_seed_all(42)  
-
-
-# ============================================================
-# Model Definition (Must match training script!)
-# ============================================================
-
-class SimpleGraphMatcher(nn.Module):
-    """Just GNN + Scene CLIP fusion. No overlap head."""
-    def __init__(self, base_model, scene_clip_dim=512, hidden_dim=256):
-        super().__init__()
-        self.base_model = base_model
-        
-        # Simple fusion (MUST match training!)
-        self.fusion = nn.Sequential(
-            nn.LayerNorm(base_model.hidden_dim + scene_clip_dim),
-            nn.Linear(base_model.hidden_dim + scene_clip_dim, hidden_dim),  
-            nn.ReLU(),
-            nn.Dropout(0.3),
-            nn.Linear(hidden_dim, hidden_dim),
-            nn.LayerNorm(hidden_dim)
-        )
-    
-    def forward(self, batch, scene_clip_src, scene_clip_ref):
-        # GNN
-        out = self.base_model(batch)
-        gnn_src = out["src_emb"]
-        gnn_ref = out["ref_emb"]
-        
-        # Fusion
-        src_combined = torch.cat([gnn_src, scene_clip_src], dim=-1)
-        ref_combined = torch.cat([gnn_ref, scene_clip_ref], dim=-1)
-        
-        src_emb = self.fusion(src_combined)
-        ref_emb = self.fusion(ref_combined)
-        
-        return {
-            "src_emb": src_emb,
-            "ref_emb": ref_emb
-        }
-
-
-# ============================================================
-# Helper Functions
-# ============================================================
-def grid_search_weights(model, database_3dssg, dataset, clip_model, device):
-    """Find optimal fusion weights."""
-    
-    print("\n" + "="*70)
-    print("GRID SEARCH: Finding optimal fusion weights")
-    print("="*70)
-    
-    weight_configs = [
-        # (emb_weight, scene_clip_weight, jaccard_weight)
-        (0.5, 0.3, 0.2),  # Favor learned embeddings
-        (0.4, 0.4, 0.2),  # Balance emb + scene
-        (0.4, 0.3, 0.3),  # Current baseline
-        (0.3, 0.5, 0.2),  # Favor scene CLIP
-        (0.3, 0.4, 0.3),  # Balance scene + jaccard
-        (0.3, 0.3, 0.4),  # Favor label overlap
-        (0.2, 0.5, 0.3),  # Strong scene CLIP
-        (0.2, 0.4, 0.4),  # Favor semantics
-        (0.33, 0.33, 0.34), # Equal weights
-        (0.25, 0.5, 0.25), # Very strong scene CLIP
-    ]
-    
-    best_top1 = 0
-    
-    best_weights = None
-    results = []
-    
-    # Quick eval: 3 rounds, 50 iterations
-    for w_emb, w_scene, w_jac in weight_configs:
-        print(f"\nTesting: emb={w_emb:.2f}, scene={w_scene:.2f}, jaccard={w_jac:.2f}")
-        
-        # Run quick eval
-        top1_acc = quick_eval_with_weights(
-            model, database_3dssg, dataset, clip_model, device,
-            w_emb, w_scene, w_jac,
-            eval_rounds=3, iterations=50
-        )
-        
-        results.append((w_emb, w_scene, w_jac, top1_acc))
-        print(f"  → Top-1: {top1_acc:.2f}%")
-        
-        if top1_acc > best_top1:
-            best_top1 = top1_acc
-            best_weights = (w_emb, w_scene, w_jac)
-    
-    print("\n" + "="*70)
-    print("GRID SEARCH RESULTS:")
-    print("="*70)
-    results.sort(key=lambda x: x[3], reverse=True)
-    for w_emb, w_scene, w_jac, acc in results[:5]:
-        print(f"  emb={w_emb:.2f}, scene={w_scene:.2f}, jac={w_jac:.2f} → {acc:.2f}%")
-    
-    print(f"\n✅ BEST WEIGHTS: emb={best_weights[0]:.2f}, scene={best_weights[1]:.2f}, jac={best_weights[2]:.2f}")
-    print(f"✅ BEST Top-1: {best_top1:.2f}%")
-    print("="*70)
-    
-    return best_weights
-
+# ── Helper ─────────────────────────────────────────────────
 def get_base_label(label):
-    # "chair_south_middle" → "chair"
-    # "table_center_lower" → "table"
-    parts = label.split('_')
-    # base label is everything before spatial descriptors
+    parts   = label.split('_')
     spatial = {'north','south','east','west','center','upper','middle','lower'}
-    base = []
+    base    = []
     for part in parts:
         if part in spatial:
             break
         base.append(part)
     return '_'.join(base) if base else label
 
+def score_pair(q_cache, db_cache, w_emb, w_scene, w_jac):
+    emb_sim   = (q_cache['emb'] * db_cache['emb']).sum().item()
+    scene_sim = F.cosine_similarity(
+        q_cache['scene_clip'], db_cache['scene_clip']
+    ).item()
+    overlap   = len(q_cache['labels'] & db_cache['labels'])
+    if len(q_cache['labels']) > 0 and len(db_cache['labels']) > 0:
+        precision = overlap / len(db_cache['labels'])
+        recall    = overlap / len(q_cache['labels'])
+        f1        = (2 * precision * recall) / (precision + recall + 1e-8)
+    else:
+        f1 = 0
+    return w_emb * emb_sim + w_scene * scene_sim + w_jac * f1
 
-def quick_eval_with_weights(model, database_3dssg, dataset, clip_model, device, 
-                            w_emb, w_scene, w_jac, eval_rounds=3, iterations=50):
-    """Quick evaluation with specific weights."""
-    model.eval()
-    
-    # Organize by scene
-    buckets = {}
-    for idx, g in enumerate(dataset):
-        if g.scene_id not in buckets:
-            buckets[g.scene_id] = []
-        buckets[g.scene_id].append(idx)
-    
-    all_top1 = []
-    
-    for _ in range(eval_rounds):
-        top1_hits = []
-        
-        sampled_test_indices = [
-            [random.sample(buckets[g], 1)[0] for g in random.sample(list(buckets.keys()), 10)]
-            for _ in range(iterations)
-        ]
-        
-        for t_set in sampled_test_indices:
-            match_scores = []
-            scene_ids = []
-            seen_scene_ids = set()
-            
-            query_scene_id = dataset[t_set[0]].scene_id
-            
-            for i in t_set:
-                db_scene_id = dataset[i].scene_id
-                
-                if db_scene_id in seen_scene_ids:
-                    continue
-                seen_scene_ids.add(db_scene_id)
-                
-                query = dataset[t_set[0]]
-                db = database_3dssg[db_scene_id]
-                
-                batch = convert_scene_graph_to_batch(query, db, clip_model, device)
-                
-                with torch.no_grad():
-                    out = model(
-                        batch,
-                        scene_clip_src=batch['scene_clip_src'],
-                        scene_clip_ref=batch['scene_clip_ref']
-                    )
-                    
-                    # Embedding similarity
-                    src_norm = F.normalize(out['src_emb'], dim=-1)
-                    ref_norm = F.normalize(out['ref_emb'], dim=-1)
-                    emb_sim = (src_norm * ref_norm).sum().item()
-                    
-                    # Scene CLIP similarity
-                    scene_sim = F.cosine_similarity(
-                        batch['scene_clip_src'], 
-                        batch['scene_clip_ref']
-                    ).item()
-                    
-                    # Jaccard
-                    #  Label overlap (F1 Score - better than Jaccard!)
-                    query_labels = set(get_base_label(n.label) for n in query.nodes.values())
-                    db_labels = set(get_base_label(n.label) for n in db.nodes.values())
-                    overlap = len(query_labels & db_labels)
+# ── Load cached embeddings ─────────────────────────────────
+print("\nLoading cached embeddings...")
+db_emb_cache    = torch.load(f'{args.cache_dir}/db_emb_cache.pt',    weights_only=False)
+query_emb_cache = torch.load(f'{args.cache_dir}/query_emb_cache.pt', weights_only=False)
+print(f"✓ DB embeddings:    {len(db_emb_cache)} scenes")
+print(f"✓ Query embeddings: {len(query_emb_cache)} queries")
 
-                    if len(query_labels) > 0 and len(db_labels) > 0:
-                        precision = overlap / len(db_labels)
-                        recall = overlap / len(query_labels)
-                        f1 = (2 * precision * recall) / (precision + recall + 1e-8) if (precision + recall) > 0 else 0
-                    else:
-                        f1 = 0
+# ── Load pool graphs for scene_id lookup ──────────────────
+print("\nLoading pool graphs for scene ID lookup...")
+scanscribe_218 = torch.load(f'{args.cache_dir}/scanscribe_cleaned_original_518D.pt',
+                             weights_only=False, map_location='cpu')
+pool_graphs = {}
+for sid in tqdm(scanscribe_218, desc="Pool"):
+    for tid in scanscribe_218[sid].keys():
+        key = f"{sid}_{str(tid).zfill(5)}"
+        pool_graphs[key] = SceneGraph(sid, txt_id=tid, graph_type='scanscribe',
+                                      graph=scanscribe_218[sid][tid],
+                                      embedding_type='word2vec', use_attributes=True)
+pool_graphs = {k: v for k, v in pool_graphs.items() if len(v.edge_idx[0]) >= 1}
+print(f"✓ Loaded {len(pool_graphs)} pool graphs")
 
-                    # COMBINED SCORE (using F1 instead of Jaccard)
-                    final_score = w_emb * emb_sim + w_scene * scene_sim + w_jac * f1  # ← Using F1!
-                    print (f"  [DEBUG] Scores for DB scene {db_scene_id}: emb={emb_sim:.4f}, scene={scene_sim:.4f}, f1={f1:.4f}, final={final_score:.4f}")
-                    #print query nodes and edges
-                    print(f"    Query labels: {query_labels}")
-                    print(f"    DB labels: {db_labels}")
+# ── Build buckets ──────────────────────────────────────────
+# Query buckets: scene_id → list of query keys (from 55-scene test set)
+query_buckets = {}
+for key, cache in query_emb_cache.items():
+    sid = cache['scene_id']
+    if sid not in query_buckets:
+        query_buckets[sid] = []
+    query_buckets[sid].append(key)
 
-                    # Query nodes + edges (debug)
-                    if hasattr(query, 'nodes'):
-                        query_node_labels = {nid: (node.label if hasattr(node, 'label') else str(node))
-                                             for nid, node in query.nodes.items()}
-                        print(f"    Query nodes: {query_node_labels}")
+# Pool buckets: scene_id → list of pool keys (218 scenes)
+pool_buckets = {}
+for key, g in pool_graphs.items():
+    if g.scene_id not in pool_buckets:
+        pool_buckets[g.scene_id] = []
+    pool_buckets[g.scene_id].append(key)
 
-                        if hasattr(query, 'edge_idx') and len(query.edge_idx) > 0:
-                            edge_src = query.edge_idx[0]
-                            edge_dst = query.edge_idx[1]
-                            query_edges = []
-                            for s, t in zip(edge_src, edge_dst):
-                                s_label = query_node_labels.get(s, str(s))
-                                t_label = query_node_labels.get(t, str(t))
-                                query_edges.append((s, t, s_label, t_label))
-                            print(f"    Query edges: {query_edges}")
-                        else:
-                            print("    Query edges: []")
-                    
-                    match_scores.append(final_score)
-                    scene_ids.append(db_scene_id)
-            
-            # Check top-1
-            if len(match_scores) > 0:
-                best_idx = np.argmax(match_scores)
-                top1_hits.append(1 if scene_ids[best_idx] == query_scene_id else 0)
-        
-        all_top1.append(np.mean(top1_hits) * 100)
-    
-    return np.mean(all_top1)
+# 55 test scene IDs (intersection of query scenes and DB)
+test_scene_ids = [sid for sid in query_buckets.keys() if sid in db_emb_cache]
 
-def get_clip_embedding(label, clip_model, device):
-    """Get CLIP embedding for a label."""
-    with torch.no_grad():
-        tokens = clip.tokenize([label]).to(device)
-        emb = clip_model.encode_text(tokens)
-        emb = emb / emb.norm(dim=-1, keepdim=True)
-    return emb[0].cpu().numpy()
+print(f"\nQuery scenes:     {len(query_buckets)}")
+print(f"Pool scenes:      {len(pool_buckets)}")
+print(f"Test scenes in DB:{len(test_scene_ids)}")
 
+# ── Eval: top10 mode ───────────────────────────────────────
+def eval_top10(query_emb_cache, db_emb_cache, query_buckets, pool_buckets,
+               eval_iters, eval_iter_count, out_of, valid_top_k,
+               w_emb, w_scene, w_jac):
+    """Table 1 protocol: rank query against 10 candidates (1 correct + 9 random)."""
 
-def get_scene_clip_embedding(labels_list, clip_model, device):
-    """Get scene-level CLIP from list of object labels."""
-    unique_labels = list(set(labels_list))[:10]
-    scene_desc = f"A room with {', '.join(unique_labels)}"
-    
-    with torch.no_grad():
-        tokens = clip.tokenize([scene_desc]).to(device)
-        emb = clip_model.encode_text(tokens)
-        emb = emb / emb.norm(dim=-1, keepdim=True)
-    return emb[0].cpu().numpy()
-
-
-def convert_scene_graph_to_batch(query_graph, db_graph, clip_model, device):
-    """
-    Convert two SceneGraph objects to 518-dim format + scene CLIP.
-    
-    Node features: centroid(3) + color(3) + node_CLIP(512) = 518 dims
-    Scene CLIP: 512 dims (separate, not in nodes)
-    """
-    
-    def get_node_features_518(graph):
-        """Convert SceneGraph to 518-dim features (NO scene CLIP in nodes!)."""
-        node_feats = []
-        
-        for node_id in graph.nodes:
-            node = graph.nodes[node_id]
-            
-            # Centroid (3D) - zero out for fair comparison
-            centroid = np.zeros(3, dtype=np.float32)
-            
-            # Color (3D) - default gray
-            color = np.array([0.5, 0.5, 0.5], dtype=np.float32)
-            
-            # Node-level CLIP (512D)
-            node_clip = get_clip_embedding(node.label, clip_model, device)
-            
-            # Concatenate: 3 + 3 + 512 = 518
-            feat = np.concatenate([centroid, color, node_clip])
-            node_feats.append(feat)
-        
-        return torch.tensor(np.array(node_feats), dtype=torch.float32)
-    
-    def get_scene_clip_512(graph):
-        """Get scene-level CLIP (512D)."""
-        labels = [graph.nodes[nid].label for nid in graph.nodes]
-        return get_scene_clip_embedding(labels, clip_model, device)
-    
-    def get_edge_info(graph, clip_model, device):
-        edge_idx = graph.edge_idx
-        num_nodes = len(graph.nodes)
-        
-        if len(edge_idx) > 0 and len(edge_idx[0]) > 0:
-            edges = torch.tensor(edge_idx, dtype=torch.long)
-            valid_mask = (edges[0] < num_nodes) & (edges[1] < num_nodes)
-            edges = edges[:, valid_mask]
-            num_edges = edges.size(1)
-            
-            geom_attr = torch.zeros(num_edges, 8, dtype=torch.float32)
-            
-            # Get CLIP embeddings for relations (512D)
-            if hasattr(graph, 'edge_relations') and graph.edge_relations:
-                valid_indices = valid_mask.nonzero(as_tuple=True)[0].tolist()
-                valid_relations = [graph.edge_relations[i] for i in valid_indices]
-                rel_clip = get_relation_clip_embeddings(valid_relations, clip_model, device)
-                text_attr = rel_clip  # (E, 512) CLIP embeddings
-            else:
-                text_attr = torch.zeros(num_edges, 512, dtype=torch.float32)
-            
-            return edges, geom_attr, edges.clone(), text_attr
-        else:
-            return (torch.zeros(2, 0, dtype=torch.long),
-                    torch.zeros(0, 8, dtype=torch.float32),
-                    torch.zeros(2, 0, dtype=torch.long),
-                    torch.zeros(0, 512, dtype=torch.float32))
-                    
-    def get_relation_clip_embeddings(edge_relations, clip_model, device):
-        rel_embs = []
-        for rel in edge_relations:
-            emb = get_clip_embedding(str(rel).lower(), clip_model, device)
-            rel_embs.append(emb)
-        return torch.tensor(np.array(rel_embs), dtype=torch.float32)
-
-    # Get features
-    query_nodes = get_node_features_518(query_graph)
-    query_edges, query_geom_attr, query_text_edges, query_text_attr = get_edge_info(query_graph, clip_model, device)
-    query_scene_clip = get_scene_clip_512(query_graph)
-    
-    db_nodes = get_node_features_518(db_graph)
-    db_edges, db_geom_attr, db_text_edges, db_text_attr = get_edge_info(db_graph, clip_model, device)
-    db_scene_clip = get_scene_clip_512(db_graph)
-    
-    # Create batch
-    batch = {
-        "node_feats_src": query_nodes.to(device),
-        "geom_edges_src": query_edges.to(device),
-        "geom_attr_src": query_geom_attr.to(device),
-        "text_edges_src": query_text_edges.to(device),
-        "text_attr_src": query_text_attr.to(device),
-        
-        "node_feats_ref": db_nodes.to(device),
-        "geom_edges_ref": db_edges.to(device),
-        "geom_attr_ref": db_geom_attr.to(device),
-        "text_edges_ref": db_text_edges.to(device),
-        "text_attr_ref": db_text_attr.to(device),
-        
-        "src_batch": torch.zeros(query_nodes.size(0), dtype=torch.long).to(device),
-        "ref_batch": torch.zeros(db_nodes.size(0), dtype=torch.long).to(device),
-        "batch_size": 1,
-        
-        # Scene CLIP (separate!)
-        "scene_clip_src": torch.tensor(query_scene_clip, dtype=torch.float32).unsqueeze(0).to(device),
-        "scene_clip_ref": torch.tensor(db_scene_clip, dtype=torch.float32).unsqueeze(0).to(device),
-    }
-    
-    return batch
-
-
-# ============================================================
-# Evaluation Function
-# ============================================================
-def eval_acc_dual_aligner(model, database_3dssg, query_dataset, pool_dataset,
-                          clip_model, db_emb_cache, query_emb_cache,
-                          mode='scanscribe', 
-                          eval_iter_count=100, out_of=10, valid_top_k=[1, 2, 3, 5],
-                          w_emb=0.33, w_scene=0.33, w_jac=0.34):
-    model.eval()
-    
-    print(f"\n{'='*70}")
-    print(f"Evaluating on {mode}")
-    print(f"{'='*70}")
-    
-    # Query buckets: 55 test scenes only
-    query_buckets = {}
-    for idx, g in enumerate(query_dataset):
-        if g.scene_id not in query_buckets:
-            query_buckets[g.scene_id] = []
-        query_buckets[g.scene_id].append(idx)
-    
-    # Pool buckets: all 218 scenes (for sampling candidates)
-    pool_buckets = {}
-    for idx, g in enumerate(pool_dataset):
-        if g.scene_id not in pool_buckets:
-            pool_buckets[g.scene_id] = []
-        pool_buckets[g.scene_id].append(idx)
-    
-    print(f"Query scenes: {len(query_buckets)}, Pool scenes: {len(pool_buckets)}")
-    
-    eval_iters = 10
-    all_valid = {}
+    all_valid   = {k: [] for k in valid_top_k}
     debug_count = 0
-    
-    for eval_round in tqdm(range(eval_iters), desc=f"Eval {mode}"):
+
+    for eval_round in tqdm(range(eval_iters), desc="Eval rounds [top10]"):
         valid = {k: [] for k in valid_top_k}
-        
+
         for batch_idx in range(eval_iter_count):
-            # 1. Pick ONE query from the 55-scene test set
             query_scene_id = random.choice(list(query_buckets.keys()))
-            query_idx = random.sample(query_buckets[query_scene_id], 1)[0]
-            query = query_dataset[query_idx]
-            
-            # 2. Sample 9 OTHER scenes from the 218-scene pool
+            query_key      = random.choice(query_buckets[query_scene_id])
+            q_cache        = query_emb_cache[query_key]
+
             other_pool_scenes = [s for s in pool_buckets.keys() if s != query_scene_id]
-            sampled_scenes = random.sample(other_pool_scenes, out_of - 1)
-            
-            # 3. Candidates = query scene + 9 others = 10 total
-            candidate_scenes = [query_scene_id] + sampled_scenes
-            
+            sampled_scenes    = random.sample(other_pool_scenes, out_of - 1)
+            candidate_scenes  = [query_scene_id] + sampled_scenes
+
             match_scores = []
-            scene_ids = []
-            
+            scene_ids    = []
+
             for scene_id in candidate_scenes:
-                query_key = f"{query.scene_id}_{query.txt_id}"
                 if scene_id not in db_emb_cache:
                     continue
-                
-                db_cache = db_emb_cache[scene_id]
-                q_cache = query_emb_cache[query_key]
-                
-                emb_sim = (q_cache['emb'] * db_cache['emb']).sum().item()
-                scene_sim = F.cosine_similarity(q_cache['scene_clip'], 
-                                                db_cache['scene_clip']).item()
-                overlap = len(q_cache['labels'] & db_cache['labels'])
-                precision = overlap / len(db_cache['labels']) if db_cache['labels'] else 0
-                recall = overlap / len(q_cache['labels']) if q_cache['labels'] else 0
-                f1 = (2 * precision * recall) / (precision + recall + 1e-8)
-                
-                final_score = w_emb * emb_sim + w_scene * scene_sim + w_jac * f1
+                final_score = score_pair(q_cache, db_emb_cache[scene_id],
+                                         w_emb, w_scene, w_jac)
                 match_scores.append(final_score)
                 scene_ids.append(scene_id)
 
-            match_scores = np.array(match_scores)
+            if len(match_scores) == 0:
+                continue
+
+            match_scores   = np.array(match_scores)
             sorted_indices = np.argsort(match_scores)[::-1]
-            
-            # Debug
-            if debug_count < 21:
-                print(f"\n{'='*70}")
-                print(f"DEBUG Batch {debug_count+1} (Round {eval_round}, Batch {batch_idx})")
-                print(f"{'='*70}")
-                print(f"Query scene: {query_scene_id}")
-                print(f"\n🎯 TOP 10 PREDICTIONS:")
-                for rank_idx, idx in enumerate(sorted_indices[:10]):
-                    sid = scene_ids[idx]
-                    score = match_scores[idx]
-                    is_correct = "✓ CORRECT" if sid == query_scene_id else "✗ wrong"
-                    print(f"  Rank {rank_idx+1}: {sid:40s} score={score:.4f} {is_correct}")
-                
-                gt_rank = next((r+1 for r, idx in enumerate(sorted_indices) if scene_ids[idx] == query_scene_id), None)
-                print(f"\n  📊 Ground truth ranked at: {gt_rank}/{len(sorted_indices)}")
-                print("  ✅ GOOD!" if gt_rank <= 3 else "  ⚠️ OKAY" if gt_rank <= 5 else "  ❌ POOR")
-                print(f"{'='*70}\n")
+
+            if debug_count < 3:
+                print(f"\n{'='*60}")
+                print(f"DEBUG {debug_count+1} | Query: {query_scene_id}")
+                for rank_idx, idx in enumerate(sorted_indices[:5]):
+                    sid  = scene_ids[idx]
+                    tag  = "✓ CORRECT" if sid == query_scene_id else "✗ wrong"
+                    print(f"  Rank {rank_idx+1}: {sid[:40]} "
+                          f"score={match_scores[idx]:.4f} {tag}")
+                gt_rank = next((r+1 for r, idx in enumerate(sorted_indices)
+                                if scene_ids[idx] == query_scene_id), None)
+                print(f"GT rank: {gt_rank}/{len(sorted_indices)}")
                 debug_count += 1
-            
+
             for k in valid_top_k:
                 top_k_scenes = [scene_ids[idx] for idx in sorted_indices[:k]]
                 valid[k].append(1 if query_scene_id in top_k_scenes else 0)
-        
+
         for k in valid_top_k:
-            if k not in all_valid:
-                all_valid[k] = []
             all_valid[k].append(np.mean(valid[k]))
-    
-    accuracy = {k: (np.mean(all_valid[k]), np.std(all_valid[k])) for k in valid_top_k}
-    print(f"\nResults:")
-    for k in accuracy:
-        mean, std = accuracy[k]
-        print(f"  Top-{k}: {mean*100:.2f}% ± {std*100:.2f}%")
-    
-    model.train()
-    return accuracy
-# ============================================================
-# Main
-# ============================================================
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--checkpoint', type=str, required=True)
-    parser.add_argument('--num_relations', type=int, default=9)
-    parser.add_argument('--use_cache', action='store_true', help='Load precomputed embeddings from cache')
-    parser.add_argument('--db_cache_path', type=str, default='/content/drive/MyDrive/VLSG_Files/db_emb_cache.pt')
-    parser.add_argument('--query_cache_path', type=str, default='/content/drive/MyDrive/VLSG_Files/query_emb_cache.pt')
-    args = parser.parse_args()
-    
-    print(f"\nCheckpoint: {args.checkpoint}\n")
-    
-    # Load checkpoint
-    print("Loading checkpoint...")
-    checkpoint = torch.load(args.checkpoint, map_location=device, weights_only=False)
-    print(f"Checkpoint keys: {checkpoint.keys()}")
-    
-    # Create base model (no relation embeddings needed anymore)
-    base_model = DualSceneAligner(
-        node_input_dim=518,
-        relation_dim=512,  # Not used, but kept for compatibility
-        hidden_dim=256,
-        rel_clip_matrix=None,
-        dropout=0.0
-    ).to(device)
-    
-    # Wrap with SimpleGraphMatcher
-    model = SimpleGraphMatcher(
-        base_model=base_model,
-        scene_clip_dim=512,
-        hidden_dim=256
-    ).to(device)
-    
-    # Load model weights (strict=False to ignore rel_emb from old checkpoint)
-    model.load_state_dict(checkpoint['model_state_dict'], strict=False)
-    
-    print(f"✓ Model loaded: {sum(p.numel() for p in model.parameters()):,} parameters\n")
+    return {k: (np.mean(all_valid[k]), np.std(all_valid[k])) for k in valid_top_k}
 
-    # Load data
-    print("Loading 3DSSG database...")
-    _3dssg_scenes = torch.load('/content/drive/MyDrive/VLSG_Files/3dssg_graphs_518D.pt', 
-                               weights_only=False, map_location='cpu')
-    _3dssg_graphs = {}
-    for sid in tqdm(_3dssg_scenes, desc="3DSSG"):
-        _3dssg_graphs[sid] = SceneGraph(sid, graph_type='3dssg', graph=_3dssg_scenes[sid],
-                                       max_dist=1.0, embedding_type='word2vec', use_attributes=True)
-    
-    print(f"✓ Loaded {len(_3dssg_graphs)} 3DSSG scenes")
-    
-    # Queries: 55-scene test set
-    print("Loading ScanScribe 55-scene test...")
-    scanscribe_test_55 = torch.load('/content/drive/MyDrive/VLSG_Files/scanscribe_graphs_test_518D.pt',
-                                weights_only=False, map_location='cpu')
-    query_graphs = {}
-    for sid in tqdm(scanscribe_test_55, desc="ScanScribe 55"):
-        for tid in scanscribe_test_55[sid].keys():
-            key = f"{sid}_{str(tid).zfill(5)}"
-            query_graphs[key] = SceneGraph(sid, txt_id=tid, graph_type='scanscribe',
-                                        graph=scanscribe_test_55[sid][tid],
-                                        embedding_type='word2vec', use_attributes=True)
-    query_graphs = {k: v for k, v in query_graphs.items() if len(v.edge_idx[0]) >= 1}
-    print(f"✓ Loaded {len(query_graphs)} query graphs from 55 scenes")
-    node_counts = [len(g.nodes) for g in query_graphs.values()]
-    print(f"Mean nodes: {np.mean(node_counts):.1f}")
-    print(f"Min: {min(node_counts)}, Max: {max(node_counts)}")
-    # Candidate pool: 218-scene pool
-    print("Loading ScanScribe 218-scene pool...")
-    scanscribe_218 = torch.load('/content/drive/MyDrive/VLSG_Files/scanscribe_cleaned_original_518D.pt',
-                                weights_only=False, map_location='cpu')
-    pool_graphs = {}
-    for sid in tqdm(scanscribe_218, desc="ScanScribe 218"):
-        for tid in scanscribe_218[sid].keys():
-            key = f"{sid}_{str(tid).zfill(5)}"
-            pool_graphs[key] = SceneGraph(sid, txt_id=tid, graph_type='scanscribe',
-                                        graph=scanscribe_218[sid][tid],
-                                        embedding_type='word2vec', use_attributes=True)
-    pool_graphs = {k: v for k, v in pool_graphs.items() if len(v.edge_idx[0]) >= 1}
-    print(f"✓ Loaded {len(pool_graphs)} pool graphs from 218 scenes")
-        # Grid search best fusion weights
-    # best_weights = grid_search_weights(
-    #     model,
-    #     _3dssg_graphs,
-    #     list(scanscribe_graphs.values()),
-    #     clip_model,
-    #     device
-    # )
 
-    # Unpack the best weights
-    # w_emb, w_scene, w_jac = best_weights
-    w_emb, w_scene, w_jac = 0.33, 0.33, 0.34
-    print(f"\n✅ Using best weights: emb={w_emb:.2f}, scene={w_scene:.2f}, jac={w_jac:.2f}\n")
-    
-    # Load or compute embeddings
-    if args.use_cache:
-        print("Loading precomputed embeddings from cache...")
-        db_emb_cache = torch.load(args.db_cache_path, map_location='cpu', weights_only=False)
-        query_emb_cache = torch.load(args.query_cache_path, map_location='cpu', weights_only=False)
-        
-        # Move to device
-        for scene_id in db_emb_cache:
-            db_emb_cache[scene_id]['emb'] = db_emb_cache[scene_id]['emb'].to(device)
-            db_emb_cache[scene_id]['scene_clip'] = db_emb_cache[scene_id]['scene_clip'].to(device)
-        
-        for key in query_emb_cache:
-            query_emb_cache[key]['emb'] = query_emb_cache[key]['emb'].to(device)
-            query_emb_cache[key]['scene_clip'] = query_emb_cache[key]['scene_clip'].to(device)
-        
-        print(f"✓ Loaded {len(db_emb_cache)} DB embeddings and {len(query_emb_cache)} query embeddings from cache")
-    else:
-        # Precompute embeddings for all database scenes (3DSSG)
-        print("Precomputing embeddings for 3DSSG database...")
-        db_emb_cache = {}
-        model.eval()
-        with torch.no_grad():
-            for scene_id, db_graph in tqdm(_3dssg_graphs.items(), desc="Caching DB"):
-                batch = convert_scene_graph_to_batch(
-                    list(query_graphs.values())[0],  # dummy query for batch structure
-                    db_graph, 
-                    clip_model, 
-                    device
-                )
-                out = model(batch, 
-                           scene_clip_src=batch['scene_clip_src'],
-                           scene_clip_ref=batch['scene_clip_ref'])
-                
-                db_emb_cache[scene_id] = {
-                    'emb': F.normalize(out['ref_emb'], dim=-1),
-                    'scene_clip': batch['scene_clip_ref'],
-                    'labels': set(get_base_label(n.label) for n in db_graph.nodes.values())
-                }
-        print(f"✓ Cached {len(db_emb_cache)} database embeddings")
-        
-        # Precompute embeddings for all query graphs
-        print("Precomputing embeddings for query graphs...")
-        query_emb_cache = {}
-        with torch.no_grad():
-            for key, query_graph in tqdm(query_graphs.items(), desc="Caching Queries"):
-                batch = convert_scene_graph_to_batch(
-                    query_graph,
-                    list(_3dssg_graphs.values())[0],  # dummy db for batch structure
-                    clip_model,
-                    device
-                )
-                out = model(batch,
-                           scene_clip_src=batch['scene_clip_src'],
-                           scene_clip_ref=batch['scene_clip_ref'])
-                
-                query_emb_cache[key] = {
-                    'emb': F.normalize(out['src_emb'], dim=-1),
-                    'scene_clip': batch['scene_clip_src'],
-                    'labels': set(get_base_label(n.label) for n in query_graph.nodes.values())
-                }
-        print(f"✓ Cached {len(query_emb_cache)} query embeddings")
-    
-    # Evaluate with best weights
-    scanscribe_acc = eval_acc_dual_aligner(
-        model,
-        _3dssg_graphs,
-        query_dataset=list(query_graphs.values()),   # 55 scenes
-        pool_dataset=list(pool_graphs.values()),      # 218 scenes
-        clip_model=clip_model,
-        db_emb_cache=db_emb_cache,
-        query_emb_cache=query_emb_cache,
-        mode='scanscribe_table1',
-        valid_top_k=[1, 2, 3, 5],
-        out_of=10,
-        w_emb=0.33, w_scene=0.33, w_jac=0.34
+# ── Eval: full mode ────────────────────────────────────────
+def eval_full(query_emb_cache, db_emb_cache, query_buckets, test_scene_ids,
+              eval_iters, eval_iter_count, valid_top_k,
+              w_emb, w_scene, w_jac):
+    """Table 2 protocol: rank query against ALL 55 test scenes."""
+
+    all_valid   = {k: [] for k in valid_top_k}
+    debug_count = 0
+
+    for eval_round in tqdm(range(eval_iters), desc="Eval rounds [full]"):
+        valid = {k: [] for k in valid_top_k}
+
+        for batch_idx in range(eval_iter_count):
+            query_scene_id = random.choice(list(query_buckets.keys()))
+            query_key      = random.choice(query_buckets[query_scene_id])
+            q_cache        = query_emb_cache[query_key]
+
+            # Rank against ALL 55 test scenes
+            match_scores = []
+            scene_ids    = []
+
+            for scene_id in test_scene_ids:
+                if scene_id not in db_emb_cache:
+                    continue
+                final_score = score_pair(q_cache, db_emb_cache[scene_id],
+                                         w_emb, w_scene, w_jac)
+                match_scores.append(final_score)
+                scene_ids.append(scene_id)
+
+            if len(match_scores) == 0:
+                continue
+
+            match_scores   = np.array(match_scores)
+            sorted_indices = np.argsort(match_scores)[::-1]
+
+            if debug_count < 3:
+                print(f"\n{'='*60}")
+                print(f"DEBUG {debug_count+1} | Query: {query_scene_id}")
+                print(f"Ranking against {len(scene_ids)} scenes")
+                for rank_idx, idx in enumerate(sorted_indices[:5]):
+                    sid  = scene_ids[idx]
+                    tag  = "✓ CORRECT" if sid == query_scene_id else "✗ wrong"
+                    print(f"  Rank {rank_idx+1}: {sid[:40]} "
+                          f"score={match_scores[idx]:.4f} {tag}")
+                gt_rank = next((r+1 for r, idx in enumerate(sorted_indices)
+                                if scene_ids[idx] == query_scene_id), None)
+                print(f"GT rank: {gt_rank}/{len(sorted_indices)}")
+                debug_count += 1
+
+            for k in valid_top_k:
+                top_k_scenes = [scene_ids[idx] for idx in sorted_indices[:k]]
+                valid[k].append(1 if query_scene_id in top_k_scenes else 0)
+
+        for k in valid_top_k:
+            all_valid[k].append(np.mean(valid[k]))
+
+    return {k: (np.mean(all_valid[k]), np.std(all_valid[k])) for k in valid_top_k}
+
+
+# ── Run ────────────────────────────────────────────────────
+valid_top_k_of_10 = [1, 2, 3, 5]
+valid_top_k_full   = [1, 2, 3, 5, 10]
+
+print(f"\nWeights: emb={args.w_emb}, scene={args.w_scene}, jac={args.w_jac}")
+
+if args.mode == 'top10':
+    print(f"Protocol: top-k out of {args.out_of} candidates (Table 1)\n")
+    results = eval_top10(
+        query_emb_cache  = query_emb_cache,
+        db_emb_cache     = db_emb_cache,
+        query_buckets    = query_buckets,
+        pool_buckets     = pool_buckets,
+        eval_iters       = args.eval_iters,
+        eval_iter_count  = args.eval_iter_count,
+        out_of           = args.out_of,
+        valid_top_k      = valid_top_k_of_10,
+        w_emb            = args.w_emb,
+        w_scene          = args.w_scene,
+        w_jac            = args.w_jac
     )
-    print(f"\n{'='*70}")
-    print("FINAL RESULTS - ScanScribe")
-    print(f"{'='*70}")
-    for k in [1, 3, 5, 10]:
-        mean, std = scanscribe_acc[k]
-        print(f"  Top-{k}: {mean*100:.2f}% ± {std*100:.2f}%")
-    print(f"{'='*70}\n")
+
+elif args.mode == 'full':
+    print(f"Protocol: top-k out of all {len(test_scene_ids)} test scenes (Table 2)\n")
+    results = eval_full(
+        query_emb_cache  = query_emb_cache,
+        db_emb_cache     = db_emb_cache,
+        query_buckets    = query_buckets,
+        test_scene_ids   = test_scene_ids,
+        eval_iters       = args.eval_iters,
+        eval_iter_count  = args.eval_iter_count,
+        valid_top_k      = valid_top_k_full,
+        w_emb            = args.w_emb,
+        w_scene          = args.w_scene,
+        w_jac            = args.w_jac
+    )
+
+print(f"\n{'='*60}")
+print(f"FINAL RESULTS [{args.mode.upper()}]")
+print(f"{'='*60}")
+for k in valid_top_k_full if args.mode == 'full' else valid_top_k_of_10:
+    mean, std = results[k]
+    print(f"  Top-{k}: {mean*100:.2f}% ± {std*100:.2f}%")
+print(f"{'='*60}")  
