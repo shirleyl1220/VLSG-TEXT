@@ -33,7 +33,7 @@ from helper import get_matching_subgraph
 REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.append(str(REPO_ROOT))
 sys.path.append('../../../../')
-from src.models.sgaligner.src.aligner.dual_scene_aligner import DualSceneAligner
+from src.models.sgaligner.src.aligner.dual_scene_aligner_v2 import DualSceneAligner
 import torch.nn as nn
 
 torch.cuda.empty_cache()
@@ -367,11 +367,11 @@ def convert_scene_graph_to_batch(query_graph, db_graph, clip_model, device):
 
     # Get features
     query_nodes = get_node_features_518(query_graph)
-    query_edges, query_geom_attr, query_text_edges, query_text_attr = get_edge_info(query_graph)
+    query_edges, query_geom_attr, query_text_edges, query_text_attr = get_edge_info(query_graph, clip_model, device)
     query_scene_clip = get_scene_clip_512(query_graph)
     
     db_nodes = get_node_features_518(db_graph)
-    db_edges, db_geom_attr, db_text_edges, db_text_attr = get_edge_info(db_graph)
+    db_edges, db_geom_attr, db_text_edges, db_text_attr = get_edge_info(db_graph, clip_model, device)
     db_scene_clip = get_scene_clip_512(db_graph)
     
     # Create batch
@@ -404,7 +404,8 @@ def convert_scene_graph_to_batch(query_graph, db_graph, clip_model, device):
 # Evaluation Function
 # ============================================================
 def eval_acc_dual_aligner(model, database_3dssg, query_dataset, pool_dataset,
-                          clip_model, mode='scanscribe', 
+                          clip_model, db_emb_cache, query_emb_cache,
+                          mode='scanscribe', 
                           eval_iter_count=100, out_of=10, valid_top_k=[1, 2, 3, 5],
                           w_emb=0.33, w_scene=0.33, w_jac=0.34):
     model.eval()
@@ -453,47 +454,25 @@ def eval_acc_dual_aligner(model, database_3dssg, query_dataset, pool_dataset,
             scene_ids = []
             
             for scene_id in candidate_scenes:
-                # Get one graph from pool for this scene
-                pool_idx = random.sample(pool_buckets[scene_id], 1)[0]
-                db_scene = pool_dataset[pool_idx]
-                
-                # Get 3DSSG graph for scoring
-                if scene_id not in database_3dssg:
+                query_key = f"{query.scene_id}_{query.txt_id}"
+                if scene_id not in db_emb_cache:
                     continue
-                db = database_3dssg[scene_id]
                 
-                batch = convert_scene_graph_to_batch(query, db, clip_model, device)
+                db_cache = db_emb_cache[scene_id]
+                q_cache = query_emb_cache[query_key]
                 
-                with torch.no_grad():
-                    out = model(
-                        batch,
-                        scene_clip_src=batch['scene_clip_src'],
-                        scene_clip_ref=batch['scene_clip_ref']
-                    )
-                    
-                    src_norm = F.normalize(out['src_emb'], dim=-1)
-                    ref_norm = F.normalize(out['ref_emb'], dim=-1)
-                    emb_sim = (src_norm * ref_norm).sum().item()
-                    
-                    scene_sim = F.cosine_similarity(
-                        batch['scene_clip_src'],
-                        batch['scene_clip_ref']
-                    ).item()
-                    
-                    query_labels = set(get_base_label(n.label) for n in query.nodes.values())
-                    db_labels = set(get_base_label(n.label) for n in db.nodes.values())
-                    overlap = len(query_labels & db_labels)
-                    if len(query_labels) > 0 and len(db_labels) > 0:
-                        precision = overlap / len(db_labels)
-                        recall = overlap / len(query_labels)
-                        f1 = (2 * precision * recall) / (precision + recall + 1e-8)
-                    else:
-                        f1 = 0
-                    
-                    final_score = w_emb * emb_sim + w_scene * scene_sim + w_jac * f1
-                    match_scores.append(final_score)
-                    scene_ids.append(scene_id)
-            
+                emb_sim = (q_cache['emb'] * db_cache['emb']).sum().item()
+                scene_sim = F.cosine_similarity(q_cache['scene_clip'], 
+                                                db_cache['scene_clip']).item()
+                overlap = len(q_cache['labels'] & db_cache['labels'])
+                precision = overlap / len(db_cache['labels']) if db_cache['labels'] else 0
+                recall = overlap / len(q_cache['labels']) if q_cache['labels'] else 0
+                f1 = (2 * precision * recall) / (precision + recall + 1e-8)
+                
+                final_score = w_emb * emb_sim + w_scene * scene_sim + w_jac * f1
+                match_scores.append(final_score)
+                scene_ids.append(scene_id)
+
             match_scores = np.array(match_scores)
             sorted_indices = np.argsort(match_scores)[::-1]
             
@@ -541,6 +520,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--checkpoint', type=str, required=True)
     parser.add_argument('--num_relations', type=int, default=9)
+    parser.add_argument('--use_cache', action='store_true', help='Load precomputed embeddings from cache')
+    parser.add_argument('--db_cache_path', type=str, default='/content/drive/MyDrive/VLSG_Files/db_emb_cache.pt')
+    parser.add_argument('--query_cache_path', type=str, default='/content/drive/MyDrive/VLSG_Files/query_emb_cache.pt')
     args = parser.parse_args()
     
     print(f"\nCheckpoint: {args.checkpoint}\n")
@@ -566,8 +548,8 @@ if __name__ == '__main__':
         hidden_dim=256
     ).to(device)
     
-    # Load model weights
-    model.load_state_dict(checkpoint['model_state_dict'])
+    # Load model weights (strict=False to ignore rel_emb from old checkpoint)
+    model.load_state_dict(checkpoint['model_state_dict'], strict=False)
     
     print(f"✓ Model loaded: {sum(p.numel() for p in model.parameters()):,} parameters\n")
 
@@ -625,6 +607,68 @@ if __name__ == '__main__':
     w_emb, w_scene, w_jac = 0.33, 0.33, 0.34
     print(f"\n✅ Using best weights: emb={w_emb:.2f}, scene={w_scene:.2f}, jac={w_jac:.2f}\n")
     
+    # Load or compute embeddings
+    if args.use_cache:
+        print("Loading precomputed embeddings from cache...")
+        db_emb_cache = torch.load(args.db_cache_path, map_location='cpu', weights_only=False)
+        query_emb_cache = torch.load(args.query_cache_path, map_location='cpu', weights_only=False)
+        
+        # Move to device
+        for scene_id in db_emb_cache:
+            db_emb_cache[scene_id]['emb'] = db_emb_cache[scene_id]['emb'].to(device)
+            db_emb_cache[scene_id]['scene_clip'] = db_emb_cache[scene_id]['scene_clip'].to(device)
+        
+        for key in query_emb_cache:
+            query_emb_cache[key]['emb'] = query_emb_cache[key]['emb'].to(device)
+            query_emb_cache[key]['scene_clip'] = query_emb_cache[key]['scene_clip'].to(device)
+        
+        print(f"✓ Loaded {len(db_emb_cache)} DB embeddings and {len(query_emb_cache)} query embeddings from cache")
+    else:
+        # Precompute embeddings for all database scenes (3DSSG)
+        print("Precomputing embeddings for 3DSSG database...")
+        db_emb_cache = {}
+        model.eval()
+        with torch.no_grad():
+            for scene_id, db_graph in tqdm(_3dssg_graphs.items(), desc="Caching DB"):
+                batch = convert_scene_graph_to_batch(
+                    list(query_graphs.values())[0],  # dummy query for batch structure
+                    db_graph, 
+                    clip_model, 
+                    device
+                )
+                out = model(batch, 
+                           scene_clip_src=batch['scene_clip_src'],
+                           scene_clip_ref=batch['scene_clip_ref'])
+                
+                db_emb_cache[scene_id] = {
+                    'emb': F.normalize(out['ref_emb'], dim=-1),
+                    'scene_clip': batch['scene_clip_ref'],
+                    'labels': set(get_base_label(n.label) for n in db_graph.nodes.values())
+                }
+        print(f"✓ Cached {len(db_emb_cache)} database embeddings")
+        
+        # Precompute embeddings for all query graphs
+        print("Precomputing embeddings for query graphs...")
+        query_emb_cache = {}
+        with torch.no_grad():
+            for key, query_graph in tqdm(query_graphs.items(), desc="Caching Queries"):
+                batch = convert_scene_graph_to_batch(
+                    query_graph,
+                    list(_3dssg_graphs.values())[0],  # dummy db for batch structure
+                    clip_model,
+                    device
+                )
+                out = model(batch,
+                           scene_clip_src=batch['scene_clip_src'],
+                           scene_clip_ref=batch['scene_clip_ref'])
+                
+                query_emb_cache[key] = {
+                    'emb': F.normalize(out['src_emb'], dim=-1),
+                    'scene_clip': batch['scene_clip_src'],
+                    'labels': set(get_base_label(n.label) for n in query_graph.nodes.values())
+                }
+        print(f"✓ Cached {len(query_emb_cache)} query embeddings")
+    
     # Evaluate with best weights
     scanscribe_acc = eval_acc_dual_aligner(
         model,
@@ -632,6 +676,8 @@ if __name__ == '__main__':
         query_dataset=list(query_graphs.values()),   # 55 scenes
         pool_dataset=list(pool_graphs.values()),      # 218 scenes
         clip_model=clip_model,
+        db_emb_cache=db_emb_cache,
+        query_emb_cache=query_emb_cache,
         mode='scanscribe_table1',
         valid_top_k=[1, 2, 3, 5],
         out_of=10,
