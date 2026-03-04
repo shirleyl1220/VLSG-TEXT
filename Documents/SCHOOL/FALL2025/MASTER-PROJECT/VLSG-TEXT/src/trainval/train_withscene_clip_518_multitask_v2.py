@@ -9,9 +9,10 @@ import torch.nn.functional as F
 import numpy as np
 import os
 import argparse
+import clip
 
 from src.datasets.dual_scene_graph_dataset_518_v3 import DualSceneGraphDataset
-from src.models.sgaligner.src.aligner.dual_scene_aligner import DualSceneAligner
+from src.models.sgaligner.src.aligner.dual_scene_aligner_v2 import DualSceneAligner
 import torch.nn as nn
 from torch.optim.lr_scheduler import LambdaLR
 
@@ -169,7 +170,7 @@ def collate_fn(batch_list):
         if t_edges.size(1) > 0:
             t_edges = t_edges + src_node_offset
         text_edges_src_list.append(t_edges)
-        text_attr_src_list.append(sample["text_attr_src"].view(-1, 1))
+        text_attr_src_list.append(sample["text_attr_src"]) 
 
         src_batch_idx.extend([i] * n_src)
         src_node_offset += n_src
@@ -188,7 +189,7 @@ def collate_fn(batch_list):
         if t_edges.size(1) > 0:
             t_edges = t_edges + ref_node_offset
         text_edges_ref_list.append(t_edges)
-        text_attr_ref_list.append(sample["text_attr_ref"].view(-1, 1))
+        text_attr_ref_list.append(sample["text_attr_ref"])  # Don't reshape - already (E, 512)
 
         ref_batch_idx.extend([i] * n_ref)
         ref_node_offset += n_ref
@@ -235,11 +236,18 @@ def train(args):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Using device: {device}\n")
     
-    # Dataset
+    # Load CLIP model for relation embeddings
+    print("Loading CLIP model...")
+    clip_model, _ = clip.load("ViT-B/32", device=device)
+    print("✓ CLIP loaded\n")
+    
+    # Dataset with CLIP model for relation embeddings
     dataset = DualSceneGraphDataset(
         dataset_dir=args.dataset_dir,
         metadata_path=args.metadata_path,
-        negative_ratio=0.5
+        negative_ratio=0.5,
+        clip_model=clip_model,
+        device=device
     )
     
     dataloader = DataLoader(
@@ -254,14 +262,11 @@ def train(args):
     # Model
     num_relations = max(dataset.rel2id.values()) + 1
     
-    rel_embeddings = nn.Embedding(num_relations, 64).to(device)
-    nn.init.normal_(rel_embeddings.weight, mean=0, std=0.1)
-    
     base_model = DualSceneAligner(
         node_input_dim=518,
-        relation_dim=64,
+        relation_dim=512,  # Not used anymore, but kept for compatibility
         hidden_dim=256,
-        rel_clip_matrix=rel_embeddings.weight,
+        rel_clip_matrix=None,
         dropout=0.0
     ).to(device)
     
@@ -282,7 +287,7 @@ def train(args):
     loss_fn = SimpleContrastiveLoss(temperature=0.07).to(device)  # Lower temp = sharper gradients
     
     optimizer = torch.optim.AdamW(
-        list(model.parameters()) + list(rel_embeddings.parameters()),
+        model.parameters(),
         lr=args.lr * 0.5,  # Reduce initial LR by half
         weight_decay=1e-4,
         betas=(0.9, 0.999)
@@ -420,7 +425,7 @@ def train(args):
                     'epoch': epoch,
                     'model_state_dict': model.state_dict(),
                     'optimizer_state_dict': optimizer.state_dict(),
-                }, f"/Users/shirley/Documents/SCHOOL/FALL2025/MASTERSPROJECT/VLSG-TEXT/Documents/SCHOOL/FALL2025/MASTER-PROJECT/VLSG-TEXT/checkpoints/checkpoints_multitask/epoch_{epoch}_163.pth")
+                }, f"/Users/shirley/Documents/SCHOOL/FALL2025/MASTERSPROJECT/VLSG-TEXT/Documents/SCHOOL/FALL2025/MASTER-PROJECT/VLSG-TEXT/checkpoints/checkpoints_multitask/epoch_{epoch}_163_cliprel.pth")
                 
                 print("Training complete!")
 

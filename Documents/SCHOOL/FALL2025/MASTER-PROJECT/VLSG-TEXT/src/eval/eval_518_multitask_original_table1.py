@@ -2,14 +2,7 @@
 Evaluation script for SimpleGraphMatcher (518-dim + Scene CLIP fusion).
 
 Properly loads the SimpleGraphMatcher wrapper with fusion layer.
-
-
-# update 12 feb 5.30pm : 
-Results:
-  Top-1: 42.10% ± 4.04%
-  Top-3: 68.40% ± 3.47%
-  Top-5: 82.90% ± 3.05%
-  Top-10: 100.00% ± 0.00%
+#dont use, use the v2 version that can do both table 1 and table 2 evaluation protocols with precomputed embeddings (much faster).
 """
 
 

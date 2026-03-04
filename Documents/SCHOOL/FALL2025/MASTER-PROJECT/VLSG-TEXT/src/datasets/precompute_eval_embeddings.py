@@ -9,7 +9,7 @@ import sys
 
 sys.path.append('../data_processing')
 sys.path.append('../../../')
-from scene_graph import SceneGraph
+from src.eval.scene_graph import SceneGraph
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.append(str(REPO_ROOT))

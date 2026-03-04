@@ -1,5 +1,6 @@
 """
 Fast evaluation using precomputed embeddings.
+use this! you can run either table 1 or 2.
 Usage:
   # Top-k out of 10 (Table 1 protocol)
   python eval_cached.py --checkpoint /path/to/ckpt.pth --mode top10
@@ -238,7 +239,7 @@ def eval_full(query_emb_cache, db_emb_cache, query_buckets, test_scene_ids,
 
 # ── Run ────────────────────────────────────────────────────
 valid_top_k_of_10 = [1, 2, 3, 5]
-valid_top_k_full   = [1, 2, 3, 5, 10]
+valid_top_k_full   = [5,10,20,30]
 
 print(f"\nWeights: emb={args.w_emb}, scene={args.w_scene}, jac={args.w_jac}")
 
@@ -276,7 +277,8 @@ elif args.mode == 'full':
 print(f"\n{'='*60}")
 print(f"FINAL RESULTS [{args.mode.upper()}]")
 print(f"{'='*60}")
-for k in valid_top_k_full if args.mode == 'full' else valid_top_k_of_10:
+valid_top_k_to_print = valid_top_k_full if args.mode == 'full' else valid_top_k_of_10
+for k in valid_top_k_to_print:
     mean, std = results[k]
     print(f"  Top-{k}: {mean*100:.2f}% ± {std*100:.2f}%")
-print(f"{'='*60}")  
+print(f"{'='*60}")
