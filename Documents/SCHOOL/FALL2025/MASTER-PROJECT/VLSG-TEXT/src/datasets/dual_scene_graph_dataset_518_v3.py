@@ -14,6 +14,7 @@ import torch
 import random
 import numpy as np
 from torch.utils.data import Dataset
+import clip
 
 
 def build_node_features(node_dict):
@@ -86,14 +87,14 @@ def build_geometric_edges_knn(nodes, k=5):
     )
 
 
-def build_text_edges(relations, rel2id, id_to_idx):
-    """Build text edges with relation IDs (learned embeddings)."""
+def build_text_edges(relations, rel2id, id_to_idx, rel_clip_cache=None):
+    """Build text edges with CLIP embeddings (512D) instead of relation IDs."""
     
     if len(relations) > 1000:
         relations = relations[:500]
     
     edge_index = []
-    rel_ids = []
+    rel_embs = []
     
     for r in relations:
         subj = str(r.get("subject", ""))
@@ -106,20 +107,24 @@ def build_text_edges(relations, rel2id, id_to_idx):
         if s is None or o is None:
             continue
         
-        rel_id = rel2id.get(rel_name, 0)
+        # Get CLIP embedding for relation
+        if rel_clip_cache is not None and rel_name in rel_clip_cache:
+            rel_emb = rel_clip_cache[rel_name]  # (512,)
+        else:
+            rel_emb = np.zeros(512, dtype=np.float32)
         
         edge_index.append([s, o])
-        rel_ids.append(rel_id)
+        rel_embs.append(rel_emb)
     
     if not edge_index:
         return (
             torch.zeros((2, 0), dtype=torch.long),
-            torch.zeros((0, 1), dtype=torch.long)
+            torch.zeros((0, 512), dtype=torch.float32)
         )
     
     return (
         torch.tensor(edge_index, dtype=torch.long).t(),
-        torch.tensor(rel_ids, dtype=torch.long).unsqueeze(-1)
+        torch.tensor(np.array(rel_embs), dtype=torch.float32)
     )
 
 
@@ -135,10 +140,12 @@ class DualSceneGraphDataset(Dataset):
     - is_positive flag (True if same room, False if different)
     """
     
-    def __init__(self, dataset_dir, metadata_path, augment_ratio=0.0, negative_ratio=0.5):
+    def __init__(self, dataset_dir, metadata_path, augment_ratio=0.0, negative_ratio=0.5, clip_model=None, device='cpu'):
         self.dataset_dir = dataset_dir
         self.augment_ratio = augment_ratio
         self.negative_ratio = negative_ratio
+        self.device = device
+        self.clip_model = clip_model
         
         # Load scene files
         self.scene_files = sorted([
@@ -215,8 +222,9 @@ class DualSceneGraphDataset(Dataset):
         # Build list of all groups for efficient negative sampling
         self.all_groups = list(self.group_to_scenes.keys())
         
-        # Build relation vocabulary
+        # Build relation vocabulary and pre-compute CLIP embeddings
         self.rel2id = {"unknown": 0}
+        self.rel_clip_cache = {}  # {rel_name: (512,) embedding}
         rel_idx = 1
         
         for scene_file in self.scene_files[:50]:
@@ -227,6 +235,15 @@ class DualSceneGraphDataset(Dataset):
                     if rel not in self.rel2id:
                         self.rel2id[rel] = rel_idx
                         rel_idx += 1
+        
+        # Pre-compute CLIP embeddings for all relations
+        if self.clip_model is not None:
+            for rel_name in self.rel2id.keys():
+                self.rel_clip_cache[rel_name] = self._get_clip_embedding(rel_name)
+        else:
+            # If no CLIP model, use zeros
+            for rel_name in self.rel2id.keys():
+                self.rel_clip_cache[rel_name] = np.zeros(512, dtype=np.float32)
         
         # Statistics
         print(f"✓ Loaded {len(self.scene_files)} scenes")
@@ -241,6 +258,17 @@ class DualSceneGraphDataset(Dataset):
         if groups_with_multiple < len(self.all_groups) * 0.1:
             print(f"⚠️  WARNING: Very few groups have multiple scenes!")
             print(f"   → Positive pairs will be rare")
+    
+    def _get_clip_embedding(self, text):
+        """Get CLIP embedding for relation text."""
+        if self.clip_model is None:
+            return np.zeros(512, dtype=np.float32)
+        
+        with torch.no_grad():
+            tokens = clip.tokenize([text]).to(self.device)
+            emb = self.clip_model.encode_text(tokens)
+            emb = emb / emb.norm(dim=-1, keepdim=True)
+        return emb[0].cpu().numpy().astype(np.float32)
     
     def _load_scene_from_data(self, data):
         """Load scene from data dict."""
@@ -260,7 +288,7 @@ class DualSceneGraphDataset(Dataset):
         
         # Build edges
         geom_edges, geom_attr = build_geometric_edges_knn(nodes)
-        text_edges, text_attr = build_text_edges(text_relations, self.rel2id, id_to_idx)
+        text_edges, text_attr = build_text_edges(text_relations, self.rel2id, id_to_idx, self.rel_clip_cache)
         
         return node_feats, geom_edges, geom_attr, text_edges, text_attr
     

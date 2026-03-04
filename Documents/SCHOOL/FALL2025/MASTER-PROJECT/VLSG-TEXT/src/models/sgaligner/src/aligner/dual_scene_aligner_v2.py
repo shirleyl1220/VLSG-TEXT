@@ -5,7 +5,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch_scatter import scatter_mean, scatter_max
 
-from src.models.sgaligner.src.aligner.networks.edge_gat import MultiGAT_Edge
+from src.models.sgaligner.src.aligner.networks.edge_gat_v2 import MultiGAT_Edge
 
 
 # ============================================================
@@ -19,7 +19,7 @@ class RelationEmbedding(nn.Module):
     """
     def __init__(self, num_relations, emb_dim=64):
         super().__init__()
-        self.emb = nn.Embedding(num_relations, emb_dim)
+        self.emb = nn.Embedding(num_relations, emb_dim) 
         # Initialize with reasonable variance
         nn.init.normal_(self.emb.weight, mean=0.0, std=0.5)
 

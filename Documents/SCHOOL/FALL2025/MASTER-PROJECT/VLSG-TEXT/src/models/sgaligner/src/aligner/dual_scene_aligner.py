@@ -258,7 +258,8 @@ class DualSceneAligner(nn.Module):
             rel_ids = text_attr.squeeze(-1).long()
             rel_emb = self.rel_emb(rel_ids)  # (E_text, relation_dim)
             
-            t = self.gat_text(g, text_edges, rel_emb)  # Use geometric features as input
+            # IMPORTANT: Use x (encoded nodes) not g (geometric output) as input
+            t = self.gat_text(x, text_edges, rel_emb)  # Start from encoded nodes
             t = self.norm_text(t)
         else:
             # No text edges - just use geometric features
