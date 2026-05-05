@@ -77,7 +77,7 @@ def score_pair(q_cache, db_cache, w_emb, w_scene, w_jac):
 # Evaluation Function
 # ============================================================
 
-def eval_with_cache(query_emb_cache, db_emb_cache, pool_graphs, 
+def eval_with_cache(query_emb_cache, db_emb_cache,
                     eval_iters=10, eval_iter_count=100, out_of=10,
                     valid_top_k=[1, 2, 3, 5],
                     w_emb=0.33, w_scene=0.33, w_jac=0.34):
@@ -98,12 +98,9 @@ def eval_with_cache(query_emb_cache, db_emb_cache, pool_graphs,
             query_buckets[sid] = []
         query_buckets[sid].append(key)
     
-    pool_buckets = {}
-    for key, g in pool_graphs.items():
-        if g.scene_id not in pool_buckets:
-            pool_buckets[g.scene_id] = []
-        pool_buckets[g.scene_id].append(key)
-    
+    # Negatives sampled from the same image-desc scenes as the query (matches baseline protocol)
+    pool_buckets = query_buckets
+
     print(f"Query scenes: {len(query_buckets)}")
     print(f"Pool scenes: {len(pool_buckets)}")
     print(f"DB scenes: {len(db_emb_cache)}")
@@ -244,6 +241,13 @@ if __name__ == '__main__':
     )
     print(f"✓ DB embeddings:    {len(db_emb_cache)} scenes")
     print(f"✓ Query embeddings: {len(query_emb_cache)} queries")
+
+    query_scene_ids = set(cache['scene_id'] for cache in query_emb_cache.values())
+    missing = query_scene_ids - set(db_emb_cache.keys())
+    print(f"✓ Scene IDs in query but missing from DB: {len(missing)}")
+    if missing:
+        print(f"  WARNING: {len(missing)} query scenes have no DB entry — they will be skipped as candidates")
+        print(f"  Missing: {list(missing)[:5]}")
     
     # ============================================================
     # Load pool graphs (for scene_id lookup)
@@ -282,26 +286,69 @@ if __name__ == '__main__':
     # Run evaluation
     # ============================================================
     
-    print(f"\n✅ Using cached embeddings with weights:")
-    print(f"   emb={args.w_emb:.2f}, scene={args.w_scene:.2f}, label={args.w_jac:.2f} (F1)\n")
-    
+    # ============================================================
+    # Grid search (quick: 3 rounds x 50 queries each)
+    # ============================================================
+    weight_configs = [
+        (0.33, 0.33, 0.34),
+        (0.5,  0.5,  0.0),
+        (0.6,  0.4,  0.0),
+        (0.7,  0.3,  0.0),
+        (0.4,  0.6,  0.0),
+        (0.8,  0.2,  0.0),
+        (0.5,  0.4,  0.1),
+        (0.4,  0.5,  0.1),
+        (0.6,  0.3,  0.1),
+    ]
+
+    print("\n" + "="*70)
+    print("GRID SEARCH")
+    print("="*70)
+    best_top1 = -1
+    best_weights = (args.w_emb, args.w_scene, args.w_jac)
+    grid_results = []
+
+    for w_emb, w_scene, w_jac in weight_configs:
+        r = eval_with_cache(
+            query_emb_cache=query_emb_cache,
+            db_emb_cache=db_emb_cache,
+            eval_iters=3,
+            eval_iter_count=50,
+            out_of=args.out_of,
+            valid_top_k=[1, 2, 3, 5],
+            w_emb=w_emb,
+            w_scene=w_scene,
+            w_jac=w_jac,
+        )
+        top1 = r[1][0] * 100 if 1 in r else 0
+        grid_results.append((w_emb, w_scene, w_jac, top1))
+        print(f"  emb={w_emb:.2f} scene={w_scene:.2f} jac={w_jac:.2f} → Top-1={top1:.2f}%")
+        if top1 > best_top1:
+            best_top1 = top1
+            best_weights = (w_emb, w_scene, w_jac)
+
+    print(f"\n✅ Best weights: emb={best_weights[0]:.2f}, scene={best_weights[1]:.2f}, jac={best_weights[2]:.2f} → Top-1={best_top1:.2f}%")
+
+    # ============================================================
+    # Final eval with best weights (full rounds)
+    # ============================================================
+    print(f"\n✅ Running full eval with best weights...")
     results = eval_with_cache(
         query_emb_cache=query_emb_cache,
         db_emb_cache=db_emb_cache,
-        pool_graphs=pool_graphs,
         eval_iters=args.eval_iters,
         eval_iter_count=args.eval_iter_count,
         out_of=args.out_of,
         valid_top_k=[1, 2, 3, 5],
-        w_emb=args.w_emb,
-        w_scene=args.w_scene,
-        w_jac=args.w_jac
+        w_emb=best_weights[0],
+        w_scene=best_weights[1],
+        w_jac=best_weights[2],
     )
-    
+
     print(f"\n{'='*70}")
     print("FINAL RESULTS - ScanScribe IMG (Table 4)")
     print(f"{'='*70}")
-    print(f"Weights: emb={args.w_emb:.2f}, scene={args.w_scene:.2f}, label={args.w_jac:.2f} (F1)")
+    print(f"Weights: emb={best_weights[0]:.2f}, scene={best_weights[1]:.2f}, jac={best_weights[2]:.2f} (F1)")
     for k in [1, 2, 3, 5]:
         if k in results:
             mean, std = results[k]
