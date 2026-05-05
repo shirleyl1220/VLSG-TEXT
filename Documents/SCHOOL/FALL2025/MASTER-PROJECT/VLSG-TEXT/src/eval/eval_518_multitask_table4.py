@@ -49,28 +49,31 @@ def get_base_label(label):
     return '_'.join(base) if base else label
 
 
-def score_pair(q_cache, db_cache, w_emb, w_scene, w_jac):
+def score_pair(q_cache, db_cache, w_emb, w_scene, w_jac, return_components=False):
     """Compute score between query and database using cached embeddings."""
     # 1. Embedding similarity
     emb_sim = (q_cache['emb'] * db_cache['emb']).sum().item()
-    
+
     # 2. Scene CLIP similarity
     scene_sim = F.cosine_similarity(
-        q_cache['scene_clip'], 
+        q_cache['scene_clip'],
         db_cache['scene_clip']
     ).item()
-    
+
     # 3. Label overlap (F1 score)
-    overlap = len(q_cache['labels'] & db_cache['labels'])
+    matched_labels = q_cache['labels'] & db_cache['labels']
+    overlap = len(matched_labels)
     if len(q_cache['labels']) > 0 and len(db_cache['labels']) > 0:
         precision = overlap / len(db_cache['labels'])
         recall = overlap / len(q_cache['labels'])
         f1 = (2 * precision * recall) / (precision + recall + 1e-8)
     else:
         f1 = 0
-    
-    # Combined score
-    return w_emb * emb_sim + w_scene * scene_sim + w_jac * f1
+
+    total = w_emb * emb_sim + w_scene * scene_sim + w_jac * f1
+    if return_components:
+        return total, emb_sim, scene_sim, f1, matched_labels
+    return total
 
 
 # ============================================================
@@ -80,9 +83,11 @@ def score_pair(q_cache, db_cache, w_emb, w_scene, w_jac):
 def eval_with_cache(query_emb_cache, db_emb_cache,
                     eval_iters=10, eval_iter_count=100, out_of=10,
                     valid_top_k=[1, 2, 3, 5],
-                    w_emb=0.33, w_scene=0.33, w_jac=0.34):
+                    w_emb=0.33, w_scene=0.33, w_jac=0.34,
+                    debug_n=0):
     """
     Fast evaluation using precomputed embeddings.
+    debug_n: print score breakdown for the first N top-1 failures.
     """
     
     print(f"\n{'='*70}")
@@ -125,55 +130,54 @@ def eval_with_cache(query_emb_cache, db_emb_cache,
             
             match_scores = []
             scene_ids = []
-            
+            score_components = []  # (emb_sim, scene_sim, f1, matched_labels)
+
             for scene_id in candidate_scenes:
                 if scene_id not in db_emb_cache:
                     continue
-                
-                final_score = score_pair(q_cache, db_emb_cache[scene_id],
-                                        w_emb, w_scene, w_jac)
-                match_scores.append(final_score)
+
+                total, emb_sim, scene_sim, f1, matched = score_pair(
+                    q_cache, db_emb_cache[scene_id],
+                    w_emb, w_scene, w_jac, return_components=True
+                )
+                match_scores.append(total)
                 scene_ids.append(scene_id)
-            
+                score_components.append((emb_sim, scene_sim, f1, matched))
+
             if len(match_scores) == 0:
                 continue
-            
+
             # Sort by score (high to low)
             match_scores = np.array(match_scores)
             sorted_indices = np.argsort(match_scores)[::-1]
-            
-            # DEBUG: Show first 5 batches
-            if debug_count < 5:
-                print(f"\n{'='*70}")
-                print(f"DEBUG Batch {debug_count + 1} (Round {eval_round})")
-                print(f"{'='*70}")
-                print(f"Query scene: {query_scene_id}")
-                
-                print(f"\n🎯 TOP 10 PREDICTIONS:")
-                for rank_idx, idx in enumerate(sorted_indices[:min(10, len(sorted_indices))]):
-                    sid = scene_ids[idx]
-                    score = match_scores[idx]
-                    is_correct = "✓ CORRECT" if sid == query_scene_id else "✗ wrong"
-                    print(f"  Rank {rank_idx+1}: {sid:40s} score={score:.4f} {is_correct}")
-                
-                # Ground truth rank
-                gt_rank = None
-                for rank_idx, idx in enumerate(sorted_indices):
-                    if scene_ids[idx] == query_scene_id:
-                        gt_rank = rank_idx + 1
-                        break
-                
-                print(f"\n  📊 Ground truth ranked at: {gt_rank}/{len(sorted_indices)}")
-                
-                if gt_rank and gt_rank <= 3:
-                    print(f"  ✅ GOOD!")
-                elif gt_rank and gt_rank <= 5:
-                    print(f"  ⚠️  OKAY")
-                else:
-                    print(f"  ❌ POOR")
-                
-                print(f"{'='*70}\n")
+
+            # Ground truth rank
+            gt_rank = next(
+                (r + 1 for r, idx in enumerate(sorted_indices) if scene_ids[idx] == query_scene_id),
+                None
+            )
+
+            # Print debug breakdown for top-1 failures
+            is_failure = gt_rank is None or gt_rank > 1
+            if debug_count < debug_n and is_failure:
                 debug_count += 1
+                q_labels = sorted(q_cache['labels'])
+                print(f"\n{'='*70}")
+                print(f"DEBUG FAILURE #{debug_count}  (round {eval_round}, batch {batch_idx})")
+                print(f"  Query scene : {query_scene_id}")
+                print(f"  Query labels: {q_labels}")
+                print(f"  GT ranked   : {gt_rank}/{len(sorted_indices)}")
+                print(f"  {'Rank':<5} {'Scene ID':<40} {'Total':>7} {'Emb':>7} {'SceneCLIP':>10} {'F1':>6}  Matched labels")
+                print(f"  {'-'*5} {'-'*40} {'-'*7} {'-'*7} {'-'*10} {'-'*6}  {'-'*30}")
+                for rank_idx, idx in enumerate(sorted_indices):
+                    sid = scene_ids[idx]
+                    total_s = match_scores[idx]
+                    emb_s, scene_s, f1_s, matched = score_components[idx]
+                    tag = " <-- GT" if sid == query_scene_id else ""
+                    db_labels = sorted(db_emb_cache[sid]['labels'])
+                    print(f"  {rank_idx+1:<5} {sid:<40} {total_s:>7.4f} {emb_s:>7.4f} {scene_s:>10.4f} {f1_s:>6.4f}  "
+                          f"matched={sorted(matched)}  db_labels={db_labels}{tag}")
+                print(f"{'='*70}\n")
             
             # Check top-k
             for k in valid_top_k:
@@ -220,6 +224,8 @@ if __name__ == '__main__':
                        help='Number of samples per round')
     parser.add_argument('--out_of', type=int, default=10,
                        help='Number of candidates to rank')
+    parser.add_argument('--debug_n', type=int, default=0,
+                       help='Print score breakdown for the first N top-1 failures (0 = off)')
     args = parser.parse_args()
     
     print(f"\nCache directory: {args.cache_dir}")
@@ -286,53 +292,13 @@ if __name__ == '__main__':
     # Run evaluation
     # ============================================================
     
-    # ============================================================
-    # Grid search (quick: 3 rounds x 50 queries each)
-    # ============================================================
-    weight_configs = [
-        (0.33, 0.33, 0.34),
-        (0.5,  0.5,  0.0),
-        (0.6,  0.4,  0.0),
-        (0.7,  0.3,  0.0),
-        (0.4,  0.6,  0.0),
-        (0.8,  0.2,  0.0),
-        (0.5,  0.4,  0.1),
-        (0.4,  0.5,  0.1),
-        (0.6,  0.3,  0.1),
-    ]
-
-    print("\n" + "="*70)
-    print("GRID SEARCH")
-    print("="*70)
-    best_top1 = -1
+    # Best weights found via grid search: (0.33, 0.33, 0.34)
     best_weights = (args.w_emb, args.w_scene, args.w_jac)
-    grid_results = []
-
-    for w_emb, w_scene, w_jac in weight_configs:
-        r = eval_with_cache(
-            query_emb_cache=query_emb_cache,
-            db_emb_cache=db_emb_cache,
-            eval_iters=3,
-            eval_iter_count=50,
-            out_of=args.out_of,
-            valid_top_k=[1, 2, 3, 5],
-            w_emb=w_emb,
-            w_scene=w_scene,
-            w_jac=w_jac,
-        )
-        top1 = r[1][0] * 100 if 1 in r else 0
-        grid_results.append((w_emb, w_scene, w_jac, top1))
-        print(f"  emb={w_emb:.2f} scene={w_scene:.2f} jac={w_jac:.2f} → Top-1={top1:.2f}%")
-        if top1 > best_top1:
-            best_top1 = top1
-            best_weights = (w_emb, w_scene, w_jac)
-
-    print(f"\n✅ Best weights: emb={best_weights[0]:.2f}, scene={best_weights[1]:.2f}, jac={best_weights[2]:.2f} → Top-1={best_top1:.2f}%")
 
     # ============================================================
-    # Final eval with best weights (full rounds)
+    # Final eval
     # ============================================================
-    print(f"\n✅ Running full eval with best weights...")
+    print(f"\nRunning eval with weights: emb={best_weights[0]:.2f}, scene={best_weights[1]:.2f}, jac={best_weights[2]:.2f}...")
     results = eval_with_cache(
         query_emb_cache=query_emb_cache,
         db_emb_cache=db_emb_cache,
@@ -343,6 +309,7 @@ if __name__ == '__main__':
         w_emb=best_weights[0],
         w_scene=best_weights[1],
         w_jac=best_weights[2],
+        debug_n=args.debug_n,
     )
 
     print(f"\n{'='*70}")
