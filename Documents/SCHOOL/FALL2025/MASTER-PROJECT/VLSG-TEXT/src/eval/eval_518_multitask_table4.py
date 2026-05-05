@@ -253,7 +253,7 @@ if __name__ == '__main__':
     
     # Determine which pool file to use based on suffix
     if args.cache_suffix == '_img':
-        pool_file = 'scanscribe_graphs_test_518D.pt'
+        pool_file = 'scanscribe_graphs_test_518D_gpt_labels.pt'
         print("Using IMG dataset pool")
     else:
         pool_file = 'scanscribe_cleaned_original_518D.pt'
